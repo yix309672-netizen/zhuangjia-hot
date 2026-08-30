@@ -1,6 +1,5 @@
 {
-  "version": "1.0.26",
+  "version": "1.0.27",
   "appUrl": "https://yix309672-netizen.github.io/zhuangjia-hot/app.js",
-  "desc": "赔率表放大美化 界面重构",
-  "date": "2026-08-31"
+  "desc": "增加激活码+设备绑定"
 }

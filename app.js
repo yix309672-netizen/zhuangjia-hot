@@ -860,7 +860,7 @@ function fetchDraw(dk){
     if(wantHK && !hkSp) fetchWithFallback('https://api.hkmarksix.com/draw/latest','hk');
   },9000);
 }
-var APP_VERSION='1.0.26';
+var APP_VERSION='1.0.27';
 function applyHotPatch(code){
   try{
     // 用 Function 避免污染局部作用域，直接覆盖全局函数
