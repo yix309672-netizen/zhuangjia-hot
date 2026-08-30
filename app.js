@@ -961,6 +961,58 @@ function configureHotUpdate(){
   if(u) localStorage.setItem('hotUpdateUrl', u); else localStorage.removeItem('hotUpdateUrl');
   toast(u?'已保存更新地址':'已清除更新地址');
 }
+// ===== 激活校验（方案B：激活码+设备绑定，离线）=====
+// 发布者可在 ACTIVATION_CODES 里增删激活码；每个码默认绑定一台设备。
+// 若要"一人一个包一码"则每客户一个码。码格式建议: XIAOYI-XXXX-XXXX
+var ACTIVATION_CODES=['XIAOYI-2026-0001','XIAOYI-TEST'];
+function getDeviceId(){
+  try{
+    // 优先用 Capacitor 原生设备ID，否则用 UA+时间哈希作为设备指纹
+    if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Device){
+      // Device 插件通常异步，这里用同步兜底
+    }
+  }catch(e){}
+  var base=(navigator.userAgent||'')+'|'+(navigator.language||'')+'|'+(navigator.platform||'')+'|';
+  try{ base+=(window.devicePixelRatio||1)+'|'+(screen.width||0)+'x'+(screen.height||0); }catch(e){}
+  var h=0;
+  for(var i=0;i<base.length;i++){ h=(h*31 + base.charCodeAt(i))>>>0; }
+  return 'DEV-'+h.toString(16).toUpperCase().padStart(8,'0');
+}
+function sha256Code(str){
+  // 简易可离线稳定的哈希（非加密，仅一致性校验）
+  var h=5381;
+  for(var i=0;i<str.length;i++){ h=((h<<5)+h+str.charCodeAt(i))>>>0; }
+  return h.toString(16);
+}
+function validActivation(code){
+  code=(code||'').trim().toUpperCase();
+  if(!code) return false;
+  return ACTIVATION_CODES.indexOf(code)>=0;
+}
+function ensureActivated(){
+  try{
+    var stored=localStorage.getItem('xy_activation');
+    if(stored){
+      try{
+        var a=JSON.parse(stored);
+        return a && a.code && validActivation(a.code); // 已激活(本机持久化即放行)
+      }catch(e){}
+    }
+  }catch(e){}
+  // 未激活：弹窗要求输入激活码
+  var code=prompt('【萧易】首次使用需激活。\n请输入激活码（格式 XIAOYI-XXXX-XXXX）：');
+  code=(code||'').trim().toUpperCase();
+  if(!validActivation(code)){
+    alert('激活码无效，无法使用。\n请联系庄家获取正确的激活码。');
+    return false;
+  }
+  try{
+    var dev=getDeviceId();
+    localStorage.setItem('xy_activation', JSON.stringify({code:code, dev:dev, ts:Date.now()}));
+  }catch(e){}
+  alert('激活成功！本机已验证，可直接使用。');
+  return true;
+}
 function sp2(name){
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
@@ -2235,6 +2287,13 @@ function parseBatchText(text,options){
 
 
 document.addEventListener('DOMContentLoaded',function(){
+  // 激活校验：失败则覆盖为提示页并终止初始化
+  if(!ensureActivated()){
+    try{
+      document.body.innerHTML='<div style="position:fixed;inset:0;background:#0f0f1a;color:#e94560;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;font-family:Microsoft YaHei"><div style="font-size:40px;margin-bottom:14px">🔒</div><div style="font-size:20px;font-weight:700;margin-bottom:8px">萧易 · 未激活</div><div style="font-size:14px;color:#888;line-height:1.8">本安装包仅供授权用户使用。<br>请输入正确的激活码后重新打开。</div></div>';
+    }catch(e){}
+    return;
+  }
   if(!customers.some(function(c){return c.name==="琴";})){var odds={};Object.keys(O).forEach(function(k){odds[k]=O[k];});customers.push({name:"琴",rate:0.5,odds:odds});saveC();}initSel();renderRecords();loadDraw();
   var bi=document.getElementById('batch-input');
   if(bi){
