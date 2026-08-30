@@ -927,9 +927,26 @@ function checkHotUpdate(manual){
   try{
     var hot=localStorage.getItem('__hot_app_js');
     var ver=localStorage.getItem('__hot_app_ver');
-    if(hot && hot.length>1000){
+    var builtIn=APP_VERSION;
+    // 版本比较：内置版 >= 热更缓存版 → 丢弃旧缓存，绝不让旧代码覆盖新版
+    var shouldUse=false;
+    if(hot && hot.length>1000 && ver){
+      var bv=(builtIn||'0').split('.').map(Number);
+      var hv=(ver||'0').split('.').map(Number);
+      for(var i=0;i<4;i++){
+        var a=bv[i]||0, b=hv[i]||0;
+        if(a>b){ shouldUse=false; break; }
+        if(a<b){ shouldUse=true; break; }
+        if(i===3) shouldUse=false; // 相等→不用缓存
+      }
+    }
+    if(hot && hot.length>1000 && !shouldUse){
+      // 内置版更新或相同 → 清除旧热更缓存，防止旧代码覆盖
+      localStorage.removeItem('__hot_app_js');
+      localStorage.removeItem('__hot_app_ver');
+      console.log('已清除旧热更缓存(内置版本更新)', ver, builtIn);
+    } else if(hot && hot.length>1000 && shouldUse){
       console.log('检测到热更新缓存', ver);
-      // 延迟应用，确保基础脚本已加载
       setTimeout(function(){
         try{ applyHotPatch(hot); console.log('热缓存已应用', ver); }catch(e){ console.error(e); }
       }, 300);
