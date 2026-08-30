@@ -185,18 +185,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 </div>
 </div>
 <div id="pg-rs" class="pg">
+<div style="margin-bottom:10px"><button class="btn ba" onclick="fetchDraw()" style="width:100%;padding:14px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);font-size:16px;letter-spacing:2px">一键获取最新开奖号码</button></div>
 <div class="cd" style="padding:12px">
 <div class="ct">香港开奖</div>
-<div class="draw-num" id="draw-display-hk" style="font-size:14px;word-break:break-all;min-height:18px;color:#ffab00">-</div>
-<div class="draw-info" id="draw-info-hk" style="font-size:11px">6正码+1特码</div>
-<input type="text" id="dn-hk" placeholder="12,9,34,25,40,7,29" style="width:100%;margin-top:8px;padding:14px;background:#0f0f1a;border:1.5px solid #ffab00;border-radius:10px;color:#fff;font-size:18px;letter-spacing:1px;text-align:center">
+<div class="draw-num" id="draw-display-hk" style="font-size:20px;word-break:break-all;min-height:22px;color:#ffab00;font-weight:700">-</div>
+<div class="draw-info" id="draw-info-hk" style="font-size:11px">6正码+1特码 · 一键获取后自动填入</div>
+<input type="text" id="dn-hk" placeholder="12,9,34,25,40,7,29" style="display:none">
 <button class="btn bc" onclick="manualInput('hk')" style="margin-top:10px;padding:14px;font-size:16px;letter-spacing:2px">确认香港开奖</button>
 </div>
 <div class="cd" style="padding:12px">
 <div class="ct">澳门开奖</div>
-<div class="draw-num" id="draw-display-am" style="font-size:14px;word-break:break-all;min-height:18px;color:#00b894">-</div>
-<div class="draw-info" id="draw-info-am" style="font-size:11px">6正码+1特码</div>
-<input type="text" id="dn-am" placeholder="25,30,37,19,7,17,39" style="width:100%;margin-top:8px;padding:14px;background:#0f0f1a;border:1.5px solid #00b894;border-radius:10px;color:#fff;font-size:18px;letter-spacing:1px;text-align:center">
+<div class="draw-num" id="draw-display-am" style="font-size:20px;word-break:break-all;min-height:22px;color:#00b894;font-weight:700">-</div>
+<div class="draw-info" id="draw-info-am" style="font-size:11px">6正码+1特码 · 一键获取后自动填入</div>
+<input type="text" id="dn-am" placeholder="25,30,37,19,7,17,39" style="display:none">
 <button class="btn bc" onclick="manualInput('am')" style="margin-top:10px;padding:14px;font-size:16px;letter-spacing:2px;background:linear-gradient(135deg,#00b894,#00a381)">确认澳门开奖</button>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn ba" onclick="settleAll('hk');settleAll('am')" style="flex:1;padding:12px;background:linear-gradient(135deg,#e94560,#c23152);font-size:14px">一键结算两盘</button><button class="btn bt" onclick="undoSettle()" style="flex:0 0 90px;padding:12px">撤销</button></div>
