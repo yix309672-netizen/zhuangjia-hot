@@ -964,7 +964,7 @@ function configureHotUpdate(){
 // ===== 激活校验（方案B：激活码+设备绑定，离线）=====
 // 发布者可在 ACTIVATION_CODES 里增删激活码；每个码默认绑定一台设备。
 // 若要"一人一个包一码"则每客户一个码。码格式建议: XIAOYI-XXXX-XXXX
-var ACTIVATION_CODES=['XIAOYI-2026-0001','XIAOYI-TEST'];
+var ACTIVATION_CODES=['XIAOYI-NAP3-ASDM','XIAOYI-6SNK-2KC7','XIAOYI-GAAP-3GJS','XIAOYI-EJCL-N58X','XIAOYI-GSAE-34DG','XIAOYI-725F-MQAC','XIAOYI-VJ73-U8LG','XIAOYI-ARCT-S5G4','XIAOYI-XC62-DA7B','XIAOYI-4NTV-HGGM'];
 function getDeviceId(){
   try{
     // 优先用 Capacitor 原生设备ID，否则用 UA+时间哈希作为设备指纹
