@@ -3,24 +3,24 @@ var RED=[1,2,7,8,12,13,18,19,23,24,29,30,34,35,40,45,46];
 var BLUE=[3,4,9,10,14,15,20,25,26,31,36,37,41,42,47,48];
 var GREEN=[5,6,11,16,17,21,22,27,28,32,33,38,39,43,44,49];
 var SX=[[7,19,31,43],[6,18,30,42],[5,17,29,41],[4,16,28,40],[3,15,27,39],[2,14,26,38],[1,13,25,37,49],[12,24,36,48],[11,23,35,47],[10,22,34,46],[9,21,33,45],[8,20,32,44]];
-var SXN=['�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?];
+var SXN=['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
 var BATCH_GROUPS={
-  '�?:[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49],
-  '�?:[2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48],
-  '�?:[25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49],
-  '�?:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],
-  '�?:RED,'�?:BLUE,'�?:GREEN,'红波':RED,'蓝波':BLUE,'绿波':GREEN,
+  '单':[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49],
+  '双':[2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48],
+  '大':[25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49],
+  '小':[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],
+  '红':RED,'蓝':BLUE,'绿':GREEN,'红波':RED,'蓝波':BLUE,'绿波':GREEN,
   '大单':[25,27,29,31,33,35,37,39,41,43,45,47,49],'大双':[26,28,30,32,34,36,38,40,42,44,46,48],
   '小单':[1,3,5,7,9,11,13,15,17,19,21,23],'小双':[2,4,6,8,10,12,14,16,18,20,22,24],
-  '0�?:[10,20,30,40],'1�?:[1,11,21,31,41],'2�?:[2,12,22,32,42],'3�?:[3,13,23,33,43],
-  '4�?:[4,14,24,34,44],'5�?:[5,15,25,35,45],'6�?:[6,16,26,36,46],'7�?:[7,17,27,37,47],
-  '8�?:[8,18,28,38,48],'9�?:[9,19,29,39,49]
+  '0尾':[10,20,30,40],'1尾':[1,11,21,31,41],'2尾':[2,12,22,32,42],'3尾':[3,13,23,33,43],
+  '4尾':[4,14,24,34,44],'5尾':[5,15,25,35,45],'6尾':[6,16,26,36,46],'7尾':[7,17,27,37,47],
+  '8尾':[8,18,28,38,48],'9尾':[9,19,29,39,49]
 };
 function expandRange(s){
   return s.replace(/(\d{1,2})\+\+(\d{1,2})\+?(\d+)/g,function(m,a,b,amt){
     var start=parseInt(a),end=parseInt(b),price=parseInt(amt);
     var nums=[];for(var i=start;i<=end;i++)nums.push(i);
-    return nums.join(',')+'�?+price;
+    return nums.join(',')+'各'+price;
   });
 }
 function expandStarTotal(s){
@@ -35,25 +35,25 @@ function expandStarTotal(s){
         var two=grp.substring(i,i+2);
         if(BATCH_GROUPS[two]){BATCH_GROUPS[two].forEach(function(n){if(nums.indexOf(n)<0)nums.push(n);});i++;}
         else{
-          // 尝试匹配单字分组�?
+          // 尝试匹配单字分组名
           if(BATCH_GROUPS[c]){BATCH_GROUPS[c].forEach(function(n){if(nums.indexOf(n)<0)nums.push(n);});}
         }
       }
     }
     if(nums.length===0)return m;
     var per=Math.floor(total/nums.length);
-    return nums.join(',')+'�?+per;
+    return nums.join(',')+'各'+per;
   });
 }
 function expandBatchGroups(s){
   Object.keys(BATCH_GROUPS).sort(function(a,b){return b.length-a.length;}).forEach(function(k){
     var re=new RegExp(k+'\\s*各\\s*(\\d+)','g');
     s=s.replace(re,function(m,amt){
-      return BATCH_GROUPS[k].join(',')+'�?+amt;
+      return BATCH_GROUPS[k].join(',')+'各'+amt;
     });
-    var re2=new RegExp(k+'\\s*(\\d+)\\s*(?=[�?、\\n]|$)','g');
+    var re2=new RegExp(k+'\\s*(\\d+)\\s*(?=[，,、\\n]|$)','g');
     s=s.replace(re2,function(m,amt){
-      return BATCH_GROUPS[k].join(',')+'�?+amt;
+      return BATCH_GROUPS[k].join(',')+'各'+amt;
     });
   });
   return s;
@@ -66,7 +66,7 @@ O.bdx=1.8; O.bds=1.8; O.w0=2; O.w1=1.8; O.w2p=3; O.w3p=7; O.w4p=15;
 O.b5=2; O.b6=2.5; O.b7=3; O.b8=3.5; O.b9=4; O.b10=5; O.b11=6; O.b12=7; O.b13=8.5; O.b14=10; O.b15=12; O.b16=15;
 O.zx=2; O.zx1=1.8; O.tx=11; O.tx1=9; O.bsdx=5;
 O.x2l=2; O.x3l=3.5; O.x4l=6; O.x5l=10; O.w2l=2; O.w3l=3.5; O.w4l=6; O.w5l=10;
-var TN={tema:'特马',eryou:'2�?,sanyou:'3�?,siyou:'4�?,wuyou:'5�?,tetuo:'特托',d1e:'�?�?�?,d1s:'�?�?�?,d1si:'�?�?�?,d1w:'�?�?�?,e2:'二中�?二连',s2:'三中�?,s3:'三中�?三连',s4:'四中�?四连',l5:'五连',s3x:'三肖中特',s4x:'四肖中特',s5x:'五肖中特',s6x:'六肖中特',hong:'红波',lv:'绿波',lan:'蓝波',bdx:'包大�?,bds:'包单�?,w0:'0�?,w1:'尾数',w2p:'2尾碰',w3p:'3尾碰',w4p:'四尾�?,b5:'五不�?,b6:'六不�?,b7:'七不�?,b8:'八不�?,b9:'九不�?,b10:'十不�?,b11:'十一不中',b12:'十二不中',b13:'十三不中',b14:'十四不中',b15:'十五不中',b16:'十六不中',zx:'中肖',zx1:'1号中�?,tx:'特肖',tx1:'1号特�?,bsdx:'波色大小单双',x2l:'二肖�?,x3l:'三肖�?,x4l:'四肖�?,x5l:'五肖�?,w2l:'二尾�?,w3l:'三尾�?,w4l:'四尾�?,w5l:'五尾�?};
+var TN={tema:'特马',eryou:'2有',sanyou:'3有',siyou:'4有',wuyou:'5有',tetuo:'特托',d1e:'带1的2有',d1s:'带1的3有',d1si:'带1的4有',d1w:'带1的5有',e2:'二中二/二连',s2:'三中二',s3:'三中三/三连',s4:'四中四/四连',l5:'五连',s3x:'三肖中特',s4x:'四肖中特',s5x:'五肖中特',s6x:'六肖中特',hong:'红波',lv:'绿波',lan:'蓝波',bdx:'包大小',bds:'包单双',w0:'0尾',w1:'尾数',w2p:'2尾碰',w3p:'3尾碰',w4p:'四尾碰',b5:'五不中',b6:'六不中',b7:'七不中',b8:'八不中',b9:'九不中',b10:'十不中',b11:'十一不中',b12:'十二不中',b13:'十三不中',b14:'十四不中',b15:'十五不中',b16:'十六不中',zx:'中肖',zx1:'1号中肖',tx:'特肖',tx1:'1号特肖',bsdx:'波色大小单双',x2l:'二肖连',x3l:'三肖连',x4l:'四肖连',x5l:'五肖连',w2l:'二尾连',w3l:'三尾连',w4l:'四尾连',w5l:'五尾连'};
 if(window.lottoDb&&window.lottoDb.getRules) window.lottoDb.getRules().then(function(rows){rows.forEach(function(r){if(r.code&&typeof r.odds==='number')O[r.code]=r.odds;});}).catch(function(err){console.error('SQLite规则加载失败',err);});
 var customers=JSON.parse(localStorage.getItem('mc')||'[]');
 var G=JSON.parse(localStorage.getItem('hg')||'[]');
@@ -109,7 +109,7 @@ setTimeout(function(){
 function getNumSX(n){for(var i=0;i<SX.length;i++){if(SX[i].indexOf(n)>=0)return i;}return-1;}
 function getColor(n){return RED.indexOf(n)>=0?'red':BLUE.indexOf(n)>=0?'blue':'green';}
 function formatNums(g){ var zTypes=['zx','zx1','tx','tx1','s3x','s4x','s5x','s6x']; if(zTypes.indexOf(g.type)>=0) return g.nums.map(function(n){return SXN[n]||n;}).join(','); return g.nums.join(','); }
-function getNumInfo(n){var col=getColor(n);return{num:n,color:col,colorName:col==='red'?'红波':col==='blue'?'蓝波':'绿波',big:n>=25?'�?:'�?,odd:n%2===1?'�?:'�?,tail:n%10,zodiac:SXN[getNumSX(n)]};}
+function getNumInfo(n){var col=getColor(n);return{num:n,color:col,colorName:col==='red'?'红波':col==='blue'?'蓝波':'绿波',big:n>=25?'大':'小',odd:n%2===1?'单':'双',tail:n%10,zodiac:SXN[getNumSX(n)]};}
 function getCustomerRate(name){for(var i=0;i<customers.length;i++){if(customers[i].name===name)return customers[i].rate;}return 0.5;}
 function getCustomerOdds(name,type){for(var i=0;i<customers.length;i++){if(customers[i].name===name&&customers[i].odds&&customers[i].odds[type]!==undefined)return customers[i].odds[type];}return O[type]!==undefined?O[type]:2;}
 function countMatch(a,b){var c=0;for(var i=0;i<a.length;i++){if(b.indexOf(a[i])>=0)c++;}return c;}
@@ -132,12 +132,12 @@ function checkWin(g,drawNums,spNum){
   if(t==='s3')return countMatch(nums,drawNums.concat([spNum]))>=3;
   if(t==='s4')return countMatch(nums,drawNums.concat([spNum]))>=4;
   if(t==='l5')return countMatch(nums,drawNums.concat([spNum]))>=5;
-  // 生肖连：nums存生肖索引，检查开�?个号码中包含几个目标生肖
+  // 生肖连：nums存生肖索引，检查开奖7个号码中包含几个目标生肖
   if(t==='x2l')return countMatch(nums,allZ)>=2;
   if(t==='x3l')return countMatch(nums,allZ)>=3;
   if(t==='x4l')return countMatch(nums,allZ)>=4;
   if(t==='x5l')return countMatch(nums,allZ)>=5;
-  // 尾数连：nums存尾�?0-9)，检查开�?个号码中包含几个目标尾数
+  // 尾数连：nums存尾数(0-9)，检查开奖7个号码中包含几个目标尾数
   if(t==='w2l'){var _wt=0;all7.forEach(function(n){if(nums.indexOf(n%10)>=0)_wt++;});return _wt>=2;}
   if(t==='w3l'){var _wt=0;all7.forEach(function(n){if(nums.indexOf(n%10)>=0)_wt++;});return _wt>=3;}
   if(t==='w4l'){var _wt=0;all7.forEach(function(n){if(nums.indexOf(n%10)>=0)_wt++;});return _wt>=4;}
@@ -184,9 +184,9 @@ function sp(id){
 }
 function initSel(){
   var s=document.getElementById('c-type');
-  var cats=[{g:'特码/�?,items:['tema','eryou','sanyou','siyou','wuyou','tetuo']},{g:'�?',items:['d1e','d1s','d1si','d1w']},{g:'连码',items:['e2','s2','s3','s4','l5']},{g:'胆拖',items:['e2','s3','s4','l5']},{g:'肖连',items:['x2l','x3l','x4l','x5l']},{g:'尾连',items:['w2l','w3l','w4l','w5l']},{g:'肖中�?,items:['s3x','s4x','s5x','s6x']},{g:'波色',items:['hong','lv','lan']},{g:'大小单双',items:['bdx','bds']},{g:'尾数',items:['w0','w1','w2p','w3p','w4p']},{g:'不中',items:['b5','b6','b7','b8','b9','b10','b11','b12','b13','b14','b15','b16']},{g:'�?特肖',items:['zx','zx1','tx','tx1']},{g:'其他',items:['bsdx']}];
+  var cats=[{g:'特码/有',items:['tema','eryou','sanyou','siyou','wuyou','tetuo']},{g:'带1',items:['d1e','d1s','d1si','d1w']},{g:'连码',items:['e2','s2','s3','s4','l5']},{g:'胆拖',items:['e2','s3','s4','l5']},{g:'肖连',items:['x2l','x3l','x4l','x5l']},{g:'尾连',items:['w2l','w3l','w4l','w5l']},{g:'肖中特',items:['s3x','s4x','s5x','s6x']},{g:'波色',items:['hong','lv','lan']},{g:'大小单双',items:['bdx','bds']},{g:'尾数',items:['w0','w1','w2p','w3p','w4p']},{g:'不中',items:['b5','b6','b7','b8','b9','b10','b11','b12','b13','b14','b15','b16']},{g:'肖/特肖',items:['zx','zx1','tx','tx1']},{g:'其他',items:['bsdx']}];
   cats.forEach(function(c){var og=document.createElement('optgroup');og.label=c.g;c.items.forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=TN[k]+' ('+O[k]+')';og.appendChild(o);});s.appendChild(og);});
-  uo();// 49选号已取�?
+  uo();// 49选号已取消
 }
 function uo(){
   var nameEl=document.getElementById('c-name-sel');
@@ -194,8 +194,8 @@ function uo(){
   var t=document.getElementById('c-type').value;
   var odds=getCustomerOdds(name,t);
   document.getElementById('c-odds').value=odds;
-  document.getElementById('oi').textContent='赔率�?+odds+'（投100�?+odds*100+'�?;
-  var needNum=false; // 49选号已取�?// var needNum=numTypes.indexOf(t)<0||['hong','lv','lan','bdx','bds','w0','w1','w2p','w3p','w4p','zx','zx1','tx','tx1','bsdx','b5','b6','b7','b8','b9','b10','b11','b12','b13','b14','b15','b16'].indexOf(t)>=0;
+  document.getElementById('oi').textContent='赔率：'+odds+'（投100中'+odds*100+'）';
+  var needNum=false; // 49选号已取消 // var needNum=numTypes.indexOf(t)<0||['hong','lv','lan','bdx','bds','w0','w1','w2p','w3p','w4p','zx','zx1','tx','tx1','bsdx','b5','b6','b7','b8','b9','b10','b11','b12','b13','b14','b15','b16'].indexOf(t)>=0;
   document.getElementById('num-sel').style.display=needNum?'none':'block';
   if(needNum)selNums=[];
   updateSelNums();
@@ -220,7 +220,7 @@ function toggleNum(n){
   }
   updateSelNums();
 }
-function updateSelNums(){document.getElementById('sel-nums').textContent=selNums.length?selNums.join(', '):'�?;}
+function updateSelNums(){document.getElementById('sel-nums').textContent=selNums.length?selNums.join(', '):'无';}
 function refreshCustomerDropdown(){
   var sel=document.getElementById('c-name-sel');
   if(!sel)return;
@@ -274,15 +274,15 @@ function configureBatchOcr(){
   }
   var key=prompt('OCR密钥（可留空；不会写入代码，仅保存在本机）：',cfg.apiKey||'');
   if(key===null)return;
-  var mode=prompt('请求模式：multipart �?json',cfg.requestMode||'multipart');
+  var mode=prompt('请求模式：multipart 或 json',cfg.requestMode||'multipart');
   if(mode===null)return;
   cfg.endpoint=endpoint;cfg.apiKey=key;cfg.requestMode=/^json$/i.test(mode.trim())?'json':'multipart';
-  try{localStorage.setItem('batchOcrConfig',JSON.stringify(cfg));refreshBatchOcrStatus();toast('OCR配置已保�?);}
+  try{localStorage.setItem('batchOcrConfig',JSON.stringify(cfg));refreshBatchOcrStatus();toast('OCR配置已保存');}
   catch(e){alert('OCR配置保存失败');}
 }
 function handleBatchImageFile(file){
   if(!file)return;
-  if(!file.type||file.type.indexOf('image/')!==0)return alert('这里只支持图片截�?);
+  if(!file.type||file.type.indexOf('image/')!==0)return alert('这里只支持图片截图');
   if(batchOcrObjectUrl)URL.revokeObjectURL(batchOcrObjectUrl);
   batchOcrImage=file;
   batchOcrText='';
@@ -305,7 +305,7 @@ function cancelBatchImage(){
   if(img)img.removeAttribute('src');
   if(txt)txt.value='';
   if(box)box.classList.remove('on');
-  batchOcrStatus('截图已取消：可重新选择或粘贴截�?,true);
+  batchOcrStatus('截图已取消：可重新选择或粘贴截图',true);
 }
 function readBatchClipboardImage(){
   if(!navigator.clipboard||!navigator.clipboard.read)return alert('当前环境不支持读取剪贴板图片，请使用“选择截图”或直接粘贴');
@@ -375,12 +375,12 @@ var batchOcrEnginePromise=null;
 function loadBatchOfflineOcr(){
   if(window.Tesseract)return Promise.resolve(window.Tesseract);
   if(batchOcrEnginePromise)return batchOcrEnginePromise;
-  batchOcrStatus('正在加载离线OCR引擎（首次需要联网下载）�?,false);
+  batchOcrStatus('正在加载离线OCR引擎（首次需要联网下载）…',false);
   batchOcrEnginePromise=new Promise(function(resolve,reject){
     var script=document.createElement('script');
     script.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
     script.onload=function(){window.Tesseract?resolve(window.Tesseract):reject(new Error('OCR引擎加载失败'));};
-    script.onerror=function(){reject(new Error('无法下载离线OCR引擎，请检查网�?));};
+    script.onerror=function(){reject(new Error('无法下载离线OCR引擎，请检查网络'));};
     document.head.appendChild(script);
   });
   return batchOcrEnginePromise;
@@ -392,7 +392,7 @@ function runBatchOfflineOcr(file){
       batchOcrWorker=batchOcrWorkerPromise;
     }
     return batchOcrWorker.then(function(worker){
-      batchOcrStatus('正在本机识别截图，图片不会上传�?,false);
+      batchOcrStatus('正在本机识别截图，图片不会上传…',false);
       return worker.recognize(file);
     });
   }).then(function(result){
@@ -406,15 +406,15 @@ function runBatchOfflineOcr(file){
   });
 }
 function runBatchOcr(){
-  if(!batchOcrImage)return alert('请先选择或拖入截�?);
+  if(!batchOcrImage)return alert('请先选择或拖入截图');
   var cfg=getBatchOcrConfig();
   if(!cfg.endpoint){
     runBatchOfflineOcr(batchOcrImage).catch(function(err){
-      batchOcrStatus('离线OCR失败�?+(err.message||'请检查网络或图片'),false);
+      batchOcrStatus('离线OCR失败：'+(err.message||'请检查网络或图片'),false);
     });
     return;
   }
-  batchOcrStatus('OCR识别中，请稍候�?,false);
+  batchOcrStatus('OCR识别中，请稍候…',false);
   requestBatchOcr(batchOcrImage,cfg).then(function(res){
     return res.text().then(function(body){
       if(!res.ok)throw new Error('HTTP '+res.status+' '+body.substring(0,160));
@@ -426,13 +426,13 @@ function runBatchOcr(){
       var preview=document.getElementById('batch-ocr-text-preview');
       if(preview)preview.value=batchOcrText;
       document.getElementById('batch-input').value=batchOcrText;
-      batchOcrStatus('识别完成：请核对下方文字，再点击“预览识别下单”确�?,true);
+      batchOcrStatus('识别完成：请核对下方文字，再点击“预览识别下单”确认',true);
     });
-  }).catch(function(err){batchOcrStatus('OCR失败�?+(err.message||'请检查接口配置和网络'),false);});
+  }).catch(function(err){batchOcrStatus('OCR失败：'+(err.message||'请检查接口配置和网络'),false);});
 }
 function useOcrTextForBatch(){
   var text=(document.getElementById('batch-ocr-text-preview')||{}).value||batchOcrText;
-  if(!text.trim())return alert('暂无OCR文字，请先识别截�?);
+  if(!text.trim())return alert('暂无OCR文字，请先识别截图');
   document.getElementById('batch-input').value=text;
   parseBatchText(text,{source:'ocr'});
 }
@@ -448,7 +448,7 @@ function discardBatchPreview(silent){
   }
   var panel=document.getElementById('debug-panel');
   if(panel)panel.remove();
-  if(!silent)toast('已取消，未入�?);
+  if(!silent)toast('已取消，未入账');
 }
 function cancelDbg(){discardBatchPreview(false);}
 function setAmount(v){document.getElementById('c-bet').value=v;document.getElementById('c-bet').focus();}
@@ -459,19 +459,19 @@ function addToCart(){
   var multi=parseInt(document.getElementById('c-multi').value)||1;
   var odds=parseFloat(document.getElementById('c-odds').value);
   var rate=parseFloat(document.getElementById('c-rate').value)||0;
-  if(!name)return alert('请输入客人姓�?);
-  if(!bet||bet<=0)return alert('请输入金�?);
+  if(!name)return alert('请输入客人姓名');
+  if(!bet||bet<=0)return alert('请输入金额');
   var needNum=false; // var needNum=['tema','eryou','sanyou','siyou','wuyou','tetuo','d1e','d1s','d1si','d1w','e2','s2','s3','s3x','s4x','s5x','s6x'].indexOf(type)>=0;
   if(needNum&&selNums.length===0)return alert('请选择号码');
   var tb=bet*multi;
   var cb=tb*rate/100;
   cart.push({type:type,nums:selNums.slice(),bet:bet,multi:multi,odds:odds,rate:rate,tb:tb,cb:cb,draw:'hk'});
-  speak('已�?'+selNums.length+' 个号 金额 '+tb+'�?);
+  speak('已选 '+selNums.length+' 个号 金额 '+tb+'元');
   selNums=[];updateSelNums();
   for(var i=1;i<=49;i++){var el=document.getElementById('nb'+i);if(el){var c=RED.indexOf(i)>=0?'#d32f2f':BLUE.indexOf(i)>=0?'#1565c0':'#2e7d32';el.style.background=c;}}
   document.getElementById('c-bet').value='';document.getElementById('c-multi').value='1';
   renderCart();
-  toast('已添�?'+TN[type]+' '+tb+'�?);
+  toast('已添加 '+TN[type]+' '+tb+'元');
 }
 function renderCart(){
   var box=document.getElementById('cart-box');
@@ -482,17 +482,17 @@ function renderCart(){
   box.style.display='block';
   count.textContent=cart.length;
   var sum=cart.reduce(function(a,b){return a+b.tb;},0);
-  total.textContent='合计: '+sum+'�?;
+  total.textContent='合计: '+sum+'元';
   list.innerHTML=cart.map(function(c,i){
-    return '<div class="li"><div class="lh"><span class="ln">'+(TN[c.type]||c.type)+'</span><button class="btn bd" onclick="removeFromCart('+i+')">删除</button></div><div class="ld">'+(c.nums.length?'['+formatNums(c)+'] ':'')+c.bet+'x'+c.multi+'='+c.tb+'�?| 赔率'+c.odds+' | 反水'+c.rate+'%</div></div>';
+    return '<div class="li"><div class="lh"><span class="ln">'+(TN[c.type]||c.type)+'</span><button class="btn bd" onclick="removeFromCart('+i+')">删除</button></div><div class="ld">'+(c.nums.length?'['+formatNums(c)+'] ':'')+c.bet+'x'+c.multi+'='+c.tb+'元 | 赔率'+c.odds+' | 反水'+c.rate+'%</div></div>';
   }).join('');
 }
 function removeFromCart(i){cart.splice(i,1);renderCart();}
 function clearCart(){cart=[];renderCart();}
 function submitCart(){
   var name=document.getElementById('c-name-sel').value||document.getElementById('c-name-input').value.trim();
-  if(!name)return alert('请输入客人姓�?);
-  if(cart.length===0)return alert('投注单为�?);
+  if(!name)return alert('请输入客人姓名');
+  if(cart.length===0)return alert('投注单为空');
   cart.forEach(function(c){
     G.push({id:nid(),batchId:curBatch,name:name,type:c.type,nums:c.nums,bet:c.bet,multi:c.multi,odds:c.odds,rate:c.rate,tb:c.tb,cb:c.cb,date:(typeof useDate!=="undefined"?useDate:today),draw:c.draw||'hk',settled:false,result:null});
   });
@@ -500,9 +500,9 @@ function submitCart(){
   var cnt=cart.length;
   cart=[];renderCart();
   document.getElementById('c-name-input').value='';
-  toast(name+' 已添�?'+cnt+' 笔投�?);
+  toast(name+' 已添加 '+cnt+' 笔投注');
 }
-function rg(id){if(confirm('确定删除�?)){G=G.filter(function(g){return g.id!==id});save();renderRecords();}}
+function rg(id){if(confirm('确定删除？')){G=G.filter(function(g){return g.id!==id});save();renderRecords();}}
 function cl2(){if(confirm('确定清空全部未结算数据？')){G=G.filter(function(g){return g.settled;});save();renderRecords();}}
 function getAllDates(){
   var dates=[];
@@ -523,35 +523,35 @@ function renderRecords(){
     var bets=getBetsByDate(date);
     var totalBet=bets.reduce(function(a,b){return a+b.tb;},0);
     html+='<div style="margin-bottom:16px">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:8px 12px;background:#16213e;border-radius:8px"><span style="font-weight:700;color:#ffab00">'+date+'</span><span style="font-size:12px;color:#888">'+bets.length+'�?| '+totalBet+'�?/span></div>';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:8px 12px;background:#16213e;border-radius:8px"><span style="font-weight:700;color:#ffab00">'+date+'</span><span style="font-size:12px;color:#888">'+bets.length+'笔 | '+totalBet+'元</span></div>';
     var names={};
     bets.forEach(function(g){if(!names[g.name])names[g.name]=[];names[g.name].push(g);});
     Object.keys(names).forEach(function(name){
       var nb=names[name];
       var ntb=nb.reduce(function(a,b){return a+b.tb;},0);
       html+='<div style="margin-left:8px;margin-bottom:8px">';
-      html+='<div style="font-weight:600;color:#e94560;font-size:13px;padding:4px 0">'+name+' <span style="color:#888;font-weight:400;font-size:11px">'+ntb+'�?/span></div>';
-      // 按批次分组，同一次粘贴的多个注在一个单�?
+      html+='<div style="font-weight:600;color:#e94560;font-size:13px;padding:4px 0">'+name+' <span style="color:#888;font-weight:400;font-size:11px">'+ntb+'元</span></div>';
+      // 按批次分组，同一次粘贴的多个注在一个单内
       var batches={}; nb.forEach(function(g){ var bid=g.batchId||g.id; if(!batches[bid]) batches[bid]=[]; batches[bid].push(g); });
       Object.keys(batches).forEach(function(bid){
         var grp=batches[bid];
         if(grp.length>1){
-          html+='<div class="li" style="margin-left:8px;border-left:3px solid #e94560"><div style="font-size:10px;color:#ffab00;margin-bottom:4px">�?'+bid.toString().slice(-4)+'�?+grp.length+'笔）</div>';
+          html+='<div class="li" style="margin-left:8px;border-left:3px solid #e94560"><div style="font-size:10px;color:#ffab00;margin-bottom:4px">单 '+bid.toString().slice(-4)+'（'+grp.length+'笔）</div>';
           grp.forEach(function(g){
             var st='';
-            if(g.settled&&g.result){st='<span class="'+(g.result.win?'w':'l')+'">'+(g.result.win?'�?+'+g.result.payout.toFixed(0):'未中')+'</span>';}
-            html+='<div style="padding:4px 0;border-bottom:1px solid #1a1a2e"><div style="display:flex;justify-content:space-between"><span style="color:#aaa">'+(TN[g.type]||g.type)+(g.nums&&g.nums.length?' ['+formatNums(g)+']':'')+'</span><span style="color:#666">'+g.tb+'�?/span></div>';
-            html+='<div style="font-size:10px;color:#666">赔率'+g.odds+' | 反水'+g.rate+'%('+g.cb.toFixed(1)+') '+st+' <button class="btn bd" onclick="editAmount('+g.id+')" style="padding:2px 6px;font-size:9px;margin-right:4px">改金�?/button><button class="btn bd" onclick="rg('+g.id+')" style="padding:2px 6px;font-size:9px">�?/button></div></div>';
+            if(g.settled&&g.result){st='<span class="'+(g.result.win?'w':'l')+'">'+(g.result.win?'赢 +'+g.result.payout.toFixed(0):'未中')+'</span>';}
+            html+='<div style="padding:4px 0;border-bottom:1px solid #1a1a2e"><div style="display:flex;justify-content:space-between"><span style="color:#aaa">'+(TN[g.type]||g.type)+(g.nums&&g.nums.length?' ['+formatNums(g)+']':'')+'</span><span style="color:#666">'+g.tb+'元</span></div>';
+            html+='<div style="font-size:10px;color:#666">赔率'+g.odds+' | 反水'+g.rate+'%('+g.cb.toFixed(1)+') '+st+' <button class="btn bd" onclick="editAmount('+g.id+')" style="padding:2px 6px;font-size:9px;margin-right:4px">改金额</button><button class="btn bd" onclick="rg('+g.id+')" style="padding:2px 6px;font-size:9px">删</button></div></div>';
           });
           var gtb=grp.reduce(function(a,b){return a+b.tb;},0);
-          html+='<div style="text-align:right;font-size:11px;color:#ffab00;margin-top:4px">小计 '+gtb+'�?/div></div>';
+          html+='<div style="text-align:right;font-size:11px;color:#ffab00;margin-top:4px">小计 '+gtb+'元</div></div>';
         } else {
           var g=grp[0];
           var st='';
-          if(g.settled&&g.result){st='<span class="'+(g.result.win?'w':'l')+'">'+(g.result.win?'�?+'+g.result.payout.toFixed(0):'未中')+'</span>';}
-          html+='<div class="li" style="margin-left:8px"><div class="lh"><span style="color:#aaa">'+(TN[g.type]||g.type)+(g.nums&&g.nums.length?' ['+formatNums(g)+']':'')+'</span><span style="color:#666">'+g.tb+'�?/span></div>';
+          if(g.settled&&g.result){st='<span class="'+(g.result.win?'w':'l')+'">'+(g.result.win?'赢 +'+g.result.payout.toFixed(0):'未中')+'</span>';}
+          html+='<div class="li" style="margin-left:8px"><div class="lh"><span style="color:#aaa">'+(TN[g.type]||g.type)+(g.nums&&g.nums.length?' ['+formatNums(g)+']':'')+'</span><span style="color:#666">'+g.tb+'元</span></div>';
           html+='<div class="ld">赔率'+g.odds+' | 反水'+g.rate+'%('+g.cb.toFixed(1)+') '+st+'</div>';
-          html+='<div style="text-align:right;margin-top:4px"><button class="btn bd" onclick="editAmount('+g.id+')" style="margin-right:4px">改金�?/button><button class="btn bd" onclick="rg('+g.id+')">�?/button></div></div>';
+          html+='<div style="text-align:right;margin-top:4px"><button class="btn bd" onclick="editAmount('+g.id+')" style="margin-right:4px">改金额</button><button class="btn bd" onclick="rg('+g.id+')">删</button></div></div>';
         }
       });
       html+='</div>';
@@ -562,7 +562,7 @@ function renderRecords(){
 }
 function renderSettlementList(){
   var el=document.getElementById('sl');
-  // 同步顶部筛选按钮高�?
+  // 同步顶部筛选按钮高亮
   try{
     document.querySelectorAll('#settle-filter .btn').forEach(function(b){b.style.background='#2a2a4a';b.style.color='#e94560';});
     var active=document.getElementById('sf-'+settleFilter);
@@ -588,7 +588,7 @@ function renderSettlementList(){
       var h='<div style="flex:1;min-width:280px;background:'+bgColor+';border:1.5px solid '+borderColor+';border-radius:12px;padding:10px;margin-bottom:8px">';
       h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:'+(isHK?'#2a1a0a':'#0a2a1a')+';border-radius:8px;margin-bottom:8px;border-left:4px solid '+borderColor+'">';
       h+='<span style="font-weight:700;color:'+borderColor+';font-size:14px">'+label+'</span>';
-      h+='<span style="font-size:10px;color:#888">'+arr.length+'�?'+totalBet+'�?/span>';
+      h+='<span style="font-size:10px;color:#888">'+arr.length+'笔 '+totalBet+'元</span>';
       h+='</div>';
       if(!arr.length){
         h+='<div style="text-align:center;color:#555;padding:16px;font-size:11px">暂无'+label+'投注</div>';
@@ -601,22 +601,22 @@ function renderSettlementList(){
         if(settled.length){
           var names={};
           settled.forEach(function(g){if(!names[g.name])names[g.name]={bets:[],totalBet:0,totalPayout:0,totalCB:0,winCount:0};names[g.name].bets.push(g);names[g.name].totalBet+=g.tb;names[g.name].totalPayout+=g.result?g.result.payout:0;names[g.name].totalCB+=g.cb;if(g.result&&g.result.win)names[g.name].winCount++;});
-          // 按投注额排序，方便对�?
+          // 按投注额排序，方便对奖
           var sortedNames=Object.keys(names).sort(function(a,b){return names[b].totalBet-names[a].totalBet;});
           sortedNames.forEach(function(name){
             var n=names[name];
             var p=n.totalBet-n.totalPayout;
             var winRate=n.bets.length? Math.round(n.winCount/n.bets.length*100) : 0;
             h+='<div style="background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;padding:8px;margin-bottom:6px">';
-            h+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#e94560;font-size:13px">'+name+'</span><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(p>=0?'#1a3a2a':'#3a1a1a')+';color:'+(p>=0?'#4caf50':'#ff5252')+'">'+(p>=0?'�?:'�?)+' '+Math.abs(p).toFixed(0)+'</span></div>';
+            h+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#e94560;font-size:13px">'+name+'</span><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(p>=0?'#1a3a2a':'#3a1a1a')+';color:'+(p>=0?'#4caf50':'#ff5252')+'">'+(p>=0?'赢':'亏')+' '+Math.abs(p).toFixed(0)+'</span></div>';
             h+='<div style="display:flex;gap:8px;font-size:10px;color:#888;margin-top:4px;flex-wrap:wrap">';
-            h+='<span>�?+n.bets.length+'�?'+n.totalBet+'�?/span><span>�?+n.winCount+'�?/span><span>�?+n.totalPayout.toFixed(0)+'</span><span>反水'+n.totalCB.toFixed(0)+'</span><span>胜率'+winRate+'%</span>';
+            h+='<span>投'+n.bets.length+'笔 '+n.totalBet+'元</span><span>中'+n.winCount+'笔</span><span>赔'+n.totalPayout.toFixed(0)+'</span><span>反水'+n.totalCB.toFixed(0)+'</span><span>胜率'+winRate+'%</span>';
             h+='</div>';
-            // 明细：每注类�?号码+金额+中不�?
+            // 明细：每注类型+号码+金额+中不中
             h+='<div style="margin-top:6px;border-top:1px dashed #2a2a4a;padding-top:4px">';
             n.bets.forEach(function(g){
-              var st=g.result&&g.result.win?'<span style="color:#4caf50">✓中 +'+g.result.payout.toFixed(0)+'</span>':'<span style="color:#666">✗不�?/span>';
-              h+='<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;color:#aaa"><span>'+(TN[g.type]||g.type)+' ['+formatNums(g)+'] '+g.tb+'�?/span><span>'+st+'</span></div>';
+              var st=g.result&&g.result.win?'<span style="color:#4caf50">✓中 +'+g.result.payout.toFixed(0)+'</span>':'<span style="color:#666">✗不中</span>';
+              h+='<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;color:#aaa"><span>'+(TN[g.type]||g.type)+' ['+formatNums(g)+'] '+g.tb+'元</span><span>'+st+'</span></div>';
             });
             h+='</div>';
             h+='</div>';
@@ -624,11 +624,11 @@ function renderSettlementList(){
         }
         if(unsettled.length){
           h+='<div style="margin-top:6px;padding:6px;background:rgba(255,152,0,0.08);border:1px dashed #ff9800;border-radius:6px">';
-          h+='<div style="font-size:10px;color:#ff9800;font-weight:600;margin-bottom:4px">待结�?'+unsettled.length+'�?/div>';
+          h+='<div style="font-size:10px;color:#ff9800;font-weight:600;margin-bottom:4px">待结算 '+unsettled.length+'笔</div>';
           var uNames={}; unsettled.forEach(function(g){if(!uNames[g.name])uNames[g.name]=[];uNames[g.name].push(g);});
           Object.keys(uNames).forEach(function(nm){
             var arr2=uNames[nm]; var tb2=arr2.reduce(function(a,b){return a+b.tb;},0);
-            h+='<div style="font-size:10px;color:#aaa;display:flex;justify-content:space-between"><span>'+nm+' '+arr2.length+'�?/span><span>'+tb2+'�?/span></div>';
+            h+='<div style="font-size:10px;color:#aaa;display:flex;justify-content:space-between"><span>'+nm+' '+arr2.length+'笔</span><span>'+tb2+'元</span></div>';
           });
           h+='</div>';
         }
@@ -642,16 +642,16 @@ function renderSettlementList(){
     html+='<div style="margin-bottom:16px;background:#16213e;border-radius:12px;padding:10px;border:1px solid #2a2a4a">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f0f1a;border-radius:8px;margin-bottom:10px">';
     html+='<span style="font-weight:700;color:#ffab00;font-size:13px">'+date+'</span>';
-    html+='<span style="font-size:11px;color:#888">'+dayTotal+'�?<span style="color:#ffab00">香港'+hkTotal+'</span> <span style="color:#00b894">澳门'+amTotal+'</span></span>';
+    html+='<span style="font-size:11px;color:#888">'+dayTotal+'元 <span style="color:#ffab00">香港'+hkTotal+'</span> <span style="color:#00b894">澳门'+amTotal+'</span></span>';
     html+='</div>';
     html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
     if(settleFilter==='all' || settleFilter==='hk') html+=block('香港', hkBets);
     if(settleFilter==='all' || settleFilter==='am') html+=block('澳门', amBets);
-    if(settleFilter==='hk' && !hkBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无香港数�?/div>';
-    if(settleFilter==='am' && !amBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无澳门数�?/div>';
+    if(settleFilter==='hk' && !hkBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无香港数据</div>';
+    if(settleFilter==='am' && !amBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无澳门数据</div>';
     html+='</div>';
     if(!hkBets.length && !amBets.length){
-      html+='<div style="padding:8px;color:#888;text-align:center">�?+date+'数据</div>';
+      html+='<div style="padding:8px;color:#888;text-align:center">无'+date+'数据</div>';
     }
     html+='</div>';
   });
@@ -660,12 +660,12 @@ function renderSettlementList(){
 function getDraw(dk){ return dk==='am' ? {nums:amDraw, sp:amSp} : {nums:hkDraw, sp:hkSp}; }
 function setDraw(dk, nums, sp){ if(dk==='am'){ amDraw=nums; amSp=sp; } else { hkDraw=nums; hkSp=sp; } drawNumbers=nums; specialNum=sp; saveHist(dk, nums, sp); }
 function manualInput(dk){
-  // 支持一次输�?4个号（香�?+澳门7）一起结�?
+  // 支持一次输入14个号（香港7+澳门7）一起结算
   if(!dk){
     let v=(document.getElementById('dn-hk')&&document.getElementById('dn-hk').value.trim())||'';
     let v2=(document.getElementById('dn-am')&&document.getElementById('dn-am').value.trim())||'';
     if(v && v2){
-      // 两盘都填�?
+      // 两盘都填了
       manualInput('hk'); manualInput('am'); return;
     }
     // 尝试从单框读14个号
@@ -683,9 +683,9 @@ function manualInput(dk){
   dk=dk||'hk';
   var input=document.getElementById(dk==='am'?'dn-am':'dn-hk').value.trim();
   if(!input) input=document.getElementById('dn')?document.getElementById('dn').value.trim():'';
-  if(!input) return alert('请输入号�?);
+  if(!input) return alert('请输入号码');
   var nums=input.split(/[,，\s]+/).map(function(s){return parseInt(s);}).filter(function(n){return n>=1&&n<=49;});
-  if(nums.length!==7) return alert('请输�?个号�?);
+  if(nums.length!==7) return alert('请输入7个号码');
   var unique=[];nums.forEach(function(n){if(unique.indexOf(n)===-1)unique.push(n);});
   if(unique.length!==7) return alert('号码不能重复');
   var d=nums.slice(0,6).sort(function(a,b){return a-b;}); var s=nums[6];
@@ -709,31 +709,31 @@ function displayNumbers(dk){
     html+='<div style="display:inline-block;margin:3px;padding:8px 10px;background:#b71c1c;border-radius:8px;border:2px solid #ff5252"><div style="font-size:24px;font-weight:bold;color:#ff5252">'+specialNum2+'</div><div style="font-size:10px;color:#ff5252">特码 '+sp.colorName+'/'+sp.big+sp.odd+'/'+sp.zodiac+'</div></div>';
   }
   el.innerHTML=html;
-  if(info) info.innerHTML='正码�?+drawNumbers2.join(', ')+'<br>特码�?b style="color:#ff5252">'+specialNum2+'</b>';
-  // 兼容�?display
+  if(info) info.innerHTML='正码：'+drawNumbers2.join(', ')+'<br>特码：<b style="color:#ff5252">'+specialNum2+'</b>';
+  // 兼容旧 display
   var el2=document.getElementById('draw-display'); var info2=document.getElementById('draw-info');
   if(el2 && el!==el2) el2.innerHTML=html;
   if(info2 && info!==info2) info2.innerHTML=info?info.innerHTML:'';
 }
 function settleAll(dk){
   if(!dk || dk==='all'){
-    // 一起结算：分别用香港和澳门开奖结算对应盘�?
+    // 一起结算：分别用香港和澳门开奖结算对应盘口
     let hk=false, am=false;
     if(hkSp && hkDraw.length) { settleAll('hk'); hk=true; }
     if(amSp && amDraw.length) { settleAll('am'); am=true; }
     if(!hk && !am){
-      // 若只输了一盘的号码�?个），则直接按单盘结算全�?
+      // 若只输了一盘的号码（7个），则直接按单盘结算全部
       dk='hk';
     } else return;
   }
   dk=dk||'hk';
   var dobj=getDraw(dk);
   var drawNumbers2=dobj.nums, specialNum2=dobj.sp;
-  if(!specialNum2||drawNumbers2.length===0) return alert(dk==='am'?'请先输入澳门开�?:'请先输入香港开�?);
+  if(!specialNum2||drawNumbers2.length===0) return alert(dk==='am'?'请先输入澳门开奖':'请先输入香港开奖');
   var todayBets=G.filter(function(g){return !g.settled && (g.draw===dk || (!g.draw && dk==='hk'));});
   if(!todayBets.length) return alert(dk==='am'?'今天没有澳门投注':'今天没有香港投注');
   var unsettled=todayBets.filter(function(g){return !g.settled;});
-  if(!unsettled.length) return alert('该盘已全部结�?);
+  if(!unsettled.length) return alert('该盘已全部结算');
   unsettled.forEach(function(g){
     var winningCombos=winningCombinationCount(g,drawNumbers2,specialNum2);
     var win=winningCombos>0;
@@ -744,7 +744,7 @@ function settleAll(dk){
   save();
   renderSettlementList();
   try{renderImportSettled();}catch(e){}
-  alert((dk==='am'?'澳门':'香港')+'结算完成�?);
+  alert((dk==='am'?'澳门':'香港')+'结算完成！');
 }
 function undoSettle(){
   if(!confirm('撤销所有结算？'))return;
@@ -753,13 +753,13 @@ function undoSettle(){
   save();
   renderSettlementList();
   try{renderImportSettled();}catch(e){}
-  toast('已撤销'+count+'笔结�?);
+  toast('已撤销'+count+'笔结算');
 }
-function saveHist(dk, nums, sp){ var date=new Date().toISOString().slice(0,10); var arr=dk==='hk'?hkHist:amHist; arr.unshift({nums:nums.slice(), sp:sp, date:date}); if(arr.length>100) arr.pop(); localStorage.setItem(dk==='hk'?'hkHist':'amHist', JSON.stringify(arr)); if(window.lottoDb&&window.lottoDb.syncDraw) window.lottoDb.syncDraw(dk,date,nums,sp).catch(function(err){console.error('SQLite开奖同步失�?,err);}); }
+function saveHist(dk, nums, sp){ var date=new Date().toISOString().slice(0,10); var arr=dk==='hk'?hkHist:amHist; arr.unshift({nums:nums.slice(), sp:sp, date:date}); if(arr.length>100) arr.pop(); localStorage.setItem(dk==='hk'?'hkHist':'amHist', JSON.stringify(arr)); if(window.lottoDb&&window.lottoDb.syncDraw) window.lottoDb.syncDraw(dk,date,nums,sp).catch(function(err){console.error('SQLite开奖同步失败',err);}); }
 function saveDraw(dk){
   dk=dk||'hk';
   var dobj=getDraw(dk);
-  if(!dobj.sp||dobj.nums.length===0) return alert('请先输入开奖号�?);
+  if(!dobj.sp||dobj.nums.length===0) return alert('请先输入开奖号码');
   var key=(dk==='am'?'draw_am_':'draw_')+today;
   localStorage.setItem(key, JSON.stringify({drawNumbers:dobj.nums,specialNum:dobj.sp}));
   alert((dk==='am'?'澳门':'香港')+'开奖已保存');
@@ -784,9 +784,9 @@ function setSettleFilter(v){
   try{renderImportSettled();}catch(e){}
 }
 function fetchDraw(dk){
-  if(dk==='hk') toast('正在获取香港开�?..');
-  else if(dk==='am') toast('正在获取澳门开�?..');
-  else toast('正在获取开奖号�?..');
+  if(dk==='hk') toast('正在获取香港开奖...');
+  else if(dk==='am') toast('正在获取澳门开奖...');
+  else toast('正在获取开奖号码...');
   var wantHK=!dk || dk==='hk' || dk==='all';
   var wantAM=!dk || dk==='am' || dk==='all';
   var totalWant=(wantHK?1:0)+(wantAM?1:0);
@@ -795,15 +795,15 @@ function fetchDraw(dk){
     if(ok) okCount++;
     done++;
     if(done===totalWant){
-      if(okCount===0) toast('获取失败，已用本�?手动输入为准');
-      else if(okCount < totalWant) toast('已获�?+okCount+'盘开�?);
+      if(okCount===0) toast('获取失败，已用本地/手动输入为准');
+      else if(okCount < totalWant) toast('已获取'+okCount+'盘开奖');
       else toast('开奖号码已获取');
     }
   }
   function handleResponse(txt, dk){
     try{
       var r=typeof txt==='string'? JSON.parse(txt) : txt;
-      // 兼容 allorigins 代理返回的文�?
+      // 兼容 allorigins 代理返回的文本
       if(typeof r==='string') r=JSON.parse(r);
       if(r.status==='10'&&r.data&&r.data.data&&r.data.data.length){
         var d=r.data.data[0];
@@ -830,7 +830,7 @@ function fetchDraw(dk){
     function tryNext(){
       if(idx>=proxies.length){ check(false); return; }
       var u=proxies[idx++];
-      // 优先�?Capacitor 原生请求（无跨域�?
+      // 优先用 Capacitor 原生请求（无跨域）
       if(isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp){
         window.Capacitor.Plugins.CapacitorHttp.get({url:u, headers:{}, connectTimeout:8000, readTimeout:8000}).then(function(res){
           var txt=res.data;
@@ -839,7 +839,7 @@ function fetchDraw(dk){
         }).catch(function(){ tryNext(); });
         return;
       }
-      // 普�?Web：fetch + 超时
+      // 普通 Web：fetch + 超时
       var ctrl=null, timer=null;
       try{ ctrl=new AbortController(); timer=setTimeout(function(){try{ctrl.abort();}catch(e){}},8000); }catch(e){}
       fetch(u, {mode:'cors', cache:'no-store', signal:ctrl?ctrl.signal:undefined}).then(function(r){
@@ -863,7 +863,7 @@ function fetchDraw(dk){
 var APP_VERSION='1.0.24';
 function applyHotPatch(code){
   try{
-    // �?Function 避免污染局部作用域，直接覆盖全局函数
+    // 用 Function 避免污染局部作用域，直接覆盖全局函数
     var fn=new Function(code+ '\n;return true;');
     // 先备份关键数据，防止被覆盖时丢失
     var _bak={G:G.slice(), customers:customers.slice(), hkDraw:hkDraw.slice(), amDraw:amDraw.slice(), hkSp:hkSp, amSp:amSp, hkHist:hkHist.slice(), amHist:amHist.slice()};
@@ -871,19 +871,19 @@ function applyHotPatch(code){
     // 热更后尝试恢复数据并重绘
     try{ G=_bak.G; customers=_bak.customers; hkDraw=_bak.hkDraw; amDraw=_bak.amDraw; hkSp=_bak.hkSp; amSp=_bak.amSp; hkHist=_bak.hkHist; amHist=_bak.amHist; save(); saveC(); }catch(e){}
     try{ renderRecords(); renderSettlementList(); renderRisk(); renderTrend(); }catch(e){}
-    console.log('热更新应用成�?, APP_VERSION);
+    console.log('热更新应用成功', APP_VERSION);
     return true;
-  }catch(e){ console.error('热更新失�?,e); return false; }
+  }catch(e){ console.error('热更新失败',e); return false; }
 }
 function checkHotUpdate(manual){
   var cfg={url:''};
   try{ var saved=JSON.parse(localStorage.getItem('otaConfig')||'{}'); if(saved&&saved.url) cfg.url=saved.url; }catch(e){}
   var GITHUB_HOT='https://yix309672-netizen.github.io/zhuangjia-hot/version.json';
-  // 默认更新源：已为你配置好 GitHub 免费热更，无需手动�?
+  // 默认更新源：已为你配置好 GitHub 免费热更，无需手动填
   var defaultUrl=cfg.url || localStorage.getItem('hotUpdateUrl') || GITHUB_HOT;
   if(!defaultUrl){
     if(manual){
-      var u=prompt('输入热更新地址（version.json 的完整URL）\n例如 https://你的域名/version.json\n留空则使用内置更�?, cfg.url||GITHUB_HOT);
+      var u=prompt('输入热更新地址（version.json 的完整URL）\n例如 https://你的域名/version.json\n留空则使用内置更新', cfg.url||GITHUB_HOT);
       if(u===null) return;
       u=u.trim();
       if(!u){ toast('未配置更新地址'); return; }
@@ -893,7 +893,7 @@ function checkHotUpdate(manual){
       defaultUrl=GITHUB_HOT;
     }
   }
-  // 若用户从未配置过，自动写入默�?GitHub 地址，方便下次静默更�?
+  // 若用户从未配置过，自动写入默认 GitHub 地址，方便下次静默更新
   if(!cfg.url && !localStorage.getItem('hotUpdateUrl')){
     try{ localStorage.setItem('otaConfig', JSON.stringify({url:GITHUB_HOT})); localStorage.setItem('hotUpdateUrl', GITHUB_HOT); }catch(e){}
   }
@@ -902,24 +902,24 @@ function checkHotUpdate(manual){
     if(!ver || !ver.version) throw new Error('版本文件格式错误');
     var cur=localStorage.getItem('__hot_app_ver')||APP_VERSION;
     if(ver.version===cur && !manual){
-      console.log('已是最�?, cur); return;
+      console.log('已是最新', cur); return;
     }
-    if(ver.version===cur && manual){ toast('已是最新版�?'+cur); return; }
+    if(ver.version===cur && manual){ toast('已是最新版本 '+cur); return; }
     var appUrl=ver.appUrl || ver.url || defaultUrl.replace('version.json','app.js');
-    toast('发现新版�?'+ver.version+'，正在下�?..');
+    toast('发现新版本 '+ver.version+'，正在下载...');
     return fetch(appUrl, {cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); }).then(function(code){
       if(!code || code.length<1000) throw new Error('app.js 内容异常');
       localStorage.setItem('__hot_app_js', code);
       localStorage.setItem('__hot_app_ver', ver.version);
-      if(confirm('发现新版�?'+ver.version+'\n'+(ver.desc||'')+'\n是否立即应用？（无需重装�?)){
+      if(confirm('发现新版本 '+ver.version+'\n'+(ver.desc||'')+'\n是否立即应用？（无需重装）')){
         if(applyHotPatch(code)){
-          toast('热更新成�?'+ver.version);
+          toast('热更新成功 '+ver.version);
           setTimeout(function(){ location.reload(); },800);
-        } else alert('热更新应用失败，请重启重�?);
-      } else toast('已下�?'+ver.version+'，下次启动自动应�?);
+        } else alert('热更新应用失败，请重启重试');
+      } else toast('已下载 '+ver.version+'，下次启动自动应用');
     });
   }).catch(function(e){
-    console.log('热更新检查失�?,e);
+    console.log('热更新检查失败',e);
     if(manual) toast('检查失败：'+(e.message||'网络错误')+'\n可手动导入app.js');
   });
 }
@@ -928,8 +928,8 @@ function checkHotUpdate(manual){
     var hot=localStorage.getItem('__hot_app_js');
     var ver=localStorage.getItem('__hot_app_ver');
     if(hot && hot.length>1000){
-      console.log('检测到热更新缓�?, ver);
-      // 延迟应用，确保基础脚本已加�?
+      console.log('检测到热更新缓存', ver);
+      // 延迟应用，确保基础脚本已加载
       setTimeout(function(){
         try{ applyHotPatch(hot); console.log('热缓存已应用', ver); }catch(e){ console.error(e); }
       }, 300);
@@ -946,7 +946,7 @@ function importHotUpdateFile(input){
       localStorage.setItem('__hot_app_js', code);
       localStorage.setItem('__hot_app_ver', 'manual-'+Date.now());
       if(confirm('已导入热更新文件，是否立即应用？')){ applyHotPatch(code); setTimeout(function(){ location.reload(); },500); }
-      else toast('已缓存，重启后生�?);
+      else toast('已缓存，重启后生效');
     }catch(err){ alert('导入失败:'+err.message); }
   };
   r.readAsText(f);
@@ -985,12 +985,12 @@ function speak(txt){
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   }catch(e){}
 }
-function toggleVoice(){ voiceOn=!voiceOn; localStorage.setItem('voiceOn', JSON.stringify(voiceOn)); var el=document.getElementById('voice-toggle'); if(el) el.textContent=voiceOn?'🔊 语音开':'🔇 语音�?; if(voiceOn) speak('语音已开�?); else speechSynthesis.cancel(); }
+function toggleVoice(){ voiceOn=!voiceOn; localStorage.setItem('voiceOn', JSON.stringify(voiceOn)); var el=document.getElementById('voice-toggle'); if(el) el.textContent=voiceOn?'🔊 语音开':'🔇 语音关'; if(voiceOn) speak('语音已开启'); else speechSynthesis.cancel(); }
 function renderTrend(){
   var hist=hkHist.length?hkHist:amHist;
   var el=document.getElementById('trend-grid');
   if(!el) return;
-  if(!hist.length){ el.innerHTML='<div style="color:#666">暂无历史开奖，请先获取开�?/div>'; return; }
+  if(!hist.length){ el.innerHTML='<div style="color:#666">暂无历史开奖，请先获取开奖</div>'; return; }
   var freq=new Array(50).fill(0);
   var last=new Array(50).fill(-1);
   hist.slice(0,50).forEach(function(rec, idx){
@@ -1000,20 +1000,20 @@ function renderTrend(){
     freq[rec.sp]++;
   });
   var sorted=[];
-  for(var i=1;i<=49;i++) sorted.push({n:i, f:freq[i], l:last[i]===-1? '�? : last[i]});
+  for(var i=1;i<=49;i++) sorted.push({n:i, f:freq[i], l:last[i]===-1? '—' : last[i]});
   sorted.sort(function(a,b){return b.f-a.f;});
   var html='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
   for(var k=0;k<14;k++){
     var o=sorted[k];
     var hot=o.f>=5? '#ff5252' : o.f>=3? '#ffab00' : '#666';
-    html+='<div style="padding:4px;text-align:center;border:1px solid #2a2a4a;border-radius:6px;background:#0f0f1a"><div style="font-weight:700;color:'+hot+'">'+(o.n<10?'0'+o.n:o.n)+'</div><div style="font-size:9px;color:#888">'+o.f+'�?'+o.l+'</div></div>';
+    html+='<div style="padding:4px;text-align:center;border:1px solid #2a2a4a;border-radius:6px;background:#0f0f1a"><div style="font-weight:700;color:'+hot+'">'+(o.n<10?'0'+o.n:o.n)+'</div><div style="font-size:9px;color:#888">'+o.f+'次/'+o.l+'</div></div>';
   }
   html+='</div>';
-  html+='<div style="font-size:10px;color:#888;margin-top:6px">热号(�?) / 冷号(�?)：按�?0期频�?/div>';
+  html+='<div style="font-size:10px;color:#888;margin-top:6px">热号(前7) / 冷号(后7)：按近50期频率</div>';
   var cold=sorted.slice(-7).reverse();
   html+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:4px">';
   cold.forEach(function(o){
-    html+='<div style="padding:4px;text-align:center;border:1px solid #2a2a4a;border-radius:6px;background:#16213e;color:#8c9eff"><div>'+(o.n<10?'0'+o.n:o.n)+'</div><div style="font-size:9px">'+o.f+'�?/div></div>';
+    html+='<div style="padding:4px;text-align:center;border:1px solid #2a2a4a;border-radius:6px;background:#16213e;color:#8c9eff"><div>'+(o.n<10?'0'+o.n:o.n)+'</div><div style="font-size:9px">'+o.f+'次</div></div>';
   });
   html+='</div>';
   el.innerHTML=html;
@@ -1037,7 +1037,7 @@ function renderRisk(){
       var d=document.createElement('div');
       d.style.cssText='padding:6px 0;text-align:center;border-radius:6px;font-size:10px;border:1px solid #2a2a4a;background:'+bg+';color:'+col;
       d.innerHTML='<div style="font-weight:700">'+(i<10?'0'+i:i)+'</div><div style="font-size:8px">'+(v>0? (v>1000? (v/1000).toFixed(1)+'k' : Math.round(v)) : '-')+'</div>';
-      if(v>0) d.title=cnt[i]+'�?风险'+Math.round(v);
+      if(v>0) d.title=cnt[i]+'笔 风险'+Math.round(v);
       grid.appendChild(d);
     }
   }
@@ -1048,16 +1048,16 @@ function renderRisk(){
     arr.sort(function(a,b){return b.v-a.v;});
     var html='<div style="color:#ffab00">Top5 风险号：</div>';
     arr.slice(0,5).forEach(function(o,i){
-      html+='<div>'+(i+1)+'. '+(o.n<10?'0'+o.n:o.n)+' �?'+Math.round(o.v)+'�?('+o.c+'�?</div>';
+      html+='<div>'+(i+1)+'. '+(o.n<10?'0'+o.n:o.n)+' — '+Math.round(o.v)+'元 ('+o.c+'笔)</div>';
     });
-    if(arr.length===0) html+='<div style="color:#666">暂无未结算投�?/div>';
+    if(arr.length===0) html+='<div style="color:#666">暂无未结算投注</div>';
     top.innerHTML=html;
   }
   var adv=document.getElementById('risk-adv');
   if(adv){
     var total=G.filter(function(g){return !g.settled;}).reduce(function(a,b){return a+b.tb;},0);
-    var advHtml='未结总额: <b style="color:#ffab00">'+total+'�?/b><br>';
-    if(typeof arr!=="undefined" && arr.length) advHtml+='建议：重点关�?<b>'+arr.slice(0,3).map(function(o){return (o.n<10?'0'+o.n:o.n)}).join(', ')+'</b> 的吃�?上报；可按风险比例分流�?;
+    var advHtml='未结总额: <b style="color:#ffab00">'+total+'元</b><br>';
+    if(typeof arr!=="undefined" && arr.length) advHtml+='建议：重点关注 <b>'+arr.slice(0,3).map(function(o){return (o.n<10?'0'+o.n:o.n)}).join(', ')+'</b> 的吃码/上报；可按风险比例分流。';
     else advHtml+='暂无建议';
     adv.innerHTML=advHtml;
   }
@@ -1069,9 +1069,9 @@ function renderRisk(){
       var html='<div>未结 '+list.length+' 笔：</div>';
       list.slice(0,50).forEach(function(g){
         var tp=TN[g.type]||g.type;
-        html+='<div style="padding:3px 0;border-bottom:1px solid #1a1a2e">'+tp+' ['+g.nums.join(',')+'] x'+g.multi+' @'+g.odds+' �?'+g.tb+'�?/div>';
+        html+='<div style="padding:3px 0;border-bottom:1px solid #1a1a2e">'+tp+' ['+g.nums.join(',')+'] x'+g.multi+' @'+g.odds+' → '+g.tb+'元</div>';
       });
-      if(list.length>50) html+='<div style="color:#666">…还�?'+(list.length-50)+' �?/div>';
+      if(list.length>50) html+='<div style="color:#666">…还有 '+(list.length-50)+' 笔</div>';
       bets.innerHTML=html;
     }
   }
@@ -1083,7 +1083,7 @@ function handleImportFile(input){
 function checkImport(){
   var txt=document.getElementById('import-input').value.trim();
   if(!txt) return alert('请粘贴或选择TXT');
-  if(!hkDraw.length && !amDraw.length) return alert('请先获取开�?);
+  if(!hkDraw.length && !amDraw.length) return alert('请先获取开奖');
   // 临时解析不入G，按当前开奖核对（不保存）
   var tmp=[]; var oldG=G.slice(); var oldSave=save; save=function(){}; G=tmp;
   var oldCount=0;
@@ -1092,8 +1092,8 @@ function checkImport(){
   var res=[];
   lines.forEach(function(line){
     line=line.trim(); if(!line) return;
-    // 简化：尝试按现有parse逻辑解析单行（复用G的push逻辑需隔离�?
-    // 为简化，直接�?G �?checkWin 对已解析的临时G
+    // 简化：尝试按现有parse逻辑解析单行（复用G的push逻辑需隔离）
+    // 为简化，直接按 G 的 checkWin 对已解析的临时G
   });
   // 更直接：先解析到tmp，再核对
   parseBatchText(txt);
@@ -1101,7 +1101,7 @@ function checkImport(){
   // 回退并恢复存储，不入正式G
   G=oldG; save=oldSave; localStorage.setItem('hg', JSON.stringify(G));
   var hkD=getDraw('hk'), amD=getDraw('am');
-  // 按日期→盘口→客户分组，方便每天结算后对�?
+  // 按日期→盘口→客户分组，方便每天结算后对奖
   var byDate={};
   added.forEach(function(g){
     var dk=g.draw==='am'?'am':'hk';
@@ -1113,7 +1113,7 @@ function checkImport(){
     var dobj=dk==='am'?amD:hkD;
     var win=checkWin(g,dobj.nums,dobj.sp);
     var payout=win? g.bet*(g.comboSize? combinationCount(countMatch(g.nums||[],dobj.nums.concat([dobj.sp])),g.comboSize) : 1)*g.odds : 0;
-    // 兼容复式 comboSize 的奖金计�?
+    // 兼容复式 comboSize 的奖金计算
     if(g.comboSize) payout=win? g.bet*combinationCount(countMatch(g.nums||[],dobj.nums.concat([dobj.sp])),g.comboSize)*g.odds : 0;
     else payout=win? g.tb*g.odds : 0;
     g._win=win; g._payout=payout; g._draw=dk;
@@ -1125,35 +1125,35 @@ function checkImport(){
   });
   var html='';
   var datesSorted=Object.keys(byDate).sort().reverse();
-  if(!added.length) html+='<div style="color:#ffab00;padding:8px">未解析出有效投注，请检查格�?/div>';
+  if(!added.length) html+='<div style="color:#ffab00;padding:8px">未解析出有效投注，请检查格式</div>';
   else {
-    html+='<div style="padding:6px 8px;background:#16213e;border-radius:8px;margin-bottom:8px;font-size:11px;color:#888">核对 '+added.length+'�?· 分盘分客统计</div>';
+    html+='<div style="padding:6px 8px;background:#16213e;border-radius:8px;margin-bottom:8px;font-size:11px;color:#888">核对 '+added.length+'笔 · 分盘分客统计</div>';
     datesSorted.forEach(function(dkey){
       var bd=byDate[dkey];
       var dayTotal=bd.hkList.length+bd.amList.length;
       var hkTotalBet=bd.hkList.reduce(function(a,b){return a+b.tb;},0);
       var amTotalBet=bd.amList.reduce(function(a,b){return a+b.tb;},0);
       html+='<div style="margin-bottom:10px;border:1px solid #2a2a4a;border-radius:10px;overflow:hidden">';
-      html+='<div style="padding:8px 10px;background:#0f0f1a;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#ffab00">'+dkey+'</span><span style="font-size:11px;color:#888">'+dayTotal+'�?香港'+hkTotalBet+' 澳门'+amTotalBet+'</span></div>';
+      html+='<div style="padding:8px 10px;background:#0f0f1a;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#ffab00">'+dkey+'</span><span style="font-size:11px;color:#888">'+dayTotal+'笔 香港'+hkTotalBet+' 澳门'+amTotalBet+'</span></div>';
       html+='<div style="display:flex;gap:8px;padding:8px;flex-wrap:wrap;background:#16213e">';
       function importBlock(label, bucket, list){
         var isHK=label==='香港';
         var borderColor=isHK?'#ffab00':'#00b894';
         var h='<div style="flex:1;min-width:260px;background:#0f0f1a;border:1.5px solid '+borderColor+';border-radius:10px;padding:8px">';
-        h+='<div style="font-weight:700;color:'+borderColor+';font-size:12px;padding:4px 6px;background:'+(isHK?'#2a1a0a':'#0a2a1a')+';border-radius:6px;margin-bottom:6px">'+label+' <span style="font-weight:400;color:#888;font-size:10px">'+list.length+'�?/span></div>';
-        if(!list.length){ h+='<div style="text-align:center;color:#555;padding:12px;font-size:11px">�?+label+'投注</div>'; h+='</div>'; return h; }
+        h+='<div style="font-weight:700;color:'+borderColor+';font-size:12px;padding:4px 6px;background:'+(isHK?'#2a1a0a':'#0a2a1a')+';border-radius:6px;margin-bottom:6px">'+label+' <span style="font-weight:400;color:#888;font-size:10px">'+list.length+'笔</span></div>';
+        if(!list.length){ h+='<div style="text-align:center;color:#555;padding:12px;font-size:11px">无'+label+'投注</div>'; h+='</div>'; return h; }
         var names=Object.keys(bucket).sort(function(a,b){return bucket[b].totalBet-bucket[a].totalBet;});
         names.forEach(function(name){
           var n=bucket[name];
           var profit=n.totalBet-n.totalPayout;
           h+='<div style="border:1px solid #2a2a4a;border-radius:8px;padding:6px;margin-bottom:6px;background:#1a1a2e">';
           h+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#e94560;font-size:12px">'+name+'</span><span style="font-size:11px;padding:2px 6px;border-radius:10px;background:'+(profit>=0?'#1a3a2a':'#3a1a1a')+';color:'+(profit>=0?'#4caf50':'#ff5252')+'">'+(profit>=0?'庄赢':'庄亏')+' '+Math.abs(profit).toFixed(0)+'</span></div>';
-          h+='<div style="font-size:10px;color:#888;margin-top:2px">�?+n.bets.length+'�?'+n.totalBet+'�?· �?+n.winCount+'�?· �?+n.totalPayout.toFixed(0)+' · 反水'+n.bets.reduce(function(a,b){return a+b.cb;},0).toFixed(0)+'</div>';
+          h+='<div style="font-size:10px;color:#888;margin-top:2px">投'+n.bets.length+'笔 '+n.totalBet+'元 · 中'+n.winCount+'笔 · 赔'+n.totalPayout.toFixed(0)+' · 反水'+n.bets.reduce(function(a,b){return a+b.cb;},0).toFixed(0)+'</div>';
           h+='<div style="margin-top:4px;border-top:1px dashed #2a2a4a;padding-top:4px">';
           n.bets.forEach(function(g){
             var col=g._win?'#4caf50':'#666';
-            var st=g._win?'✓中 +'+g._payout.toFixed(0):'✗不�?;
-            h+='<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;color:'+col+'"><span>'+(TN[g.type]||g.type)+' ['+g.nums.join(',')+'] '+g.tb+'�?/span><span>'+st+'</span></div>';
+            var st=g._win?'✓中 +'+g._payout.toFixed(0):'✗不中';
+            h+='<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;color:'+col+'"><span>'+(TN[g.type]||g.type)+' ['+g.nums.join(',')+'] '+g.tb+'元</span><span>'+st+'</span></div>';
           });
           h+='</div></div>';
         });
@@ -1167,7 +1167,7 @@ function checkImport(){
   document.getElementById('import-result').innerHTML=html;
   // 同步刷新已结算对奖单
   try{renderImportSettled();}catch(e){}
-  // 不自动入G，需手动确认可另加按�?
+  // 不自动入G，需手动确认可另加按钮
 }
 function renderImportSettled(){
   var el=document.getElementById('import-settled');
@@ -1198,25 +1198,25 @@ function renderImportSettled(){
     var hkPay=bd.hkList.reduce(function(a,b){return a+(b.result?b.result.payout:0);},0);
     var amPay=bd.amList.reduce(function(a,b){return a+(b.result?b.result.payout:0);},0);
     html+='<div style="margin-bottom:10px;border:1px solid #2a2a4a;border-radius:10px;overflow:hidden">';
-    html+='<div style="padding:8px 10px;background:#0f0f1a;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#ffab00">'+dkey+'</span><span style="font-size:11px;color:#888">'+dayTotal+'�?香港'+hkBet+'→赔'+hkPay.toFixed(0)+' 澳门'+amBet+'→赔'+amPay.toFixed(0)+'</span></div>';
+    html+='<div style="padding:8px 10px;background:#0f0f1a;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#ffab00">'+dkey+'</span><span style="font-size:11px;color:#888">'+dayTotal+'笔 香港'+hkBet+'→赔'+hkPay.toFixed(0)+' 澳门'+amBet+'→赔'+amPay.toFixed(0)+'</span></div>';
     html+='<div style="display:flex;gap:8px;padding:8px;flex-wrap:wrap;background:#16213e">';
     function settledBlock(label, bucket, list){
       var isHK=label==='香港';
       var borderColor=isHK?'#ffab00':'#00b894';
       var h='<div style="flex:1;min-width:260px;background:#0f0f1a;border:1.5px solid '+borderColor+';border-radius:10px;padding:8px">';
-      h+='<div style="font-weight:700;color:'+borderColor+';font-size:12px;padding:4px 6px;background:'+(isHK?'#2a1a0a':'#0a2a1a')+';border-radius:6px;margin-bottom:6px">'+label+' <span style="font-weight:400;color:#888;font-size:10px">'+list.length+'�?/span></div>';
-      if(!list.length){ h+='<div style="text-align:center;color:#555;padding:12px;font-size:11px">�?+label+'结算</div>'; h+='</div>'; return h; }
+      h+='<div style="font-weight:700;color:'+borderColor+';font-size:12px;padding:4px 6px;background:'+(isHK?'#2a1a0a':'#0a2a1a')+';border-radius:6px;margin-bottom:6px">'+label+' <span style="font-weight:400;color:#888;font-size:10px">'+list.length+'笔</span></div>';
+      if(!list.length){ h+='<div style="text-align:center;color:#555;padding:12px;font-size:11px">无'+label+'结算</div>'; h+='</div>'; return h; }
       var names=Object.keys(bucket).sort(function(a,b){return bucket[b].totalBet-bucket[a].totalBet;});
       names.forEach(function(name){
         var n=bucket[name];
         var profit=n.totalBet-n.totalPayout;
         h+='<div style="border:1px solid #2a2a4a;border-radius:8px;padding:6px;margin-bottom:6px;background:#1a1a2e">';
         h+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#e94560;font-size:12px">'+name+'</span><span style="font-size:11px;padding:2px 6px;border-radius:10px;background:'+(profit>=0?'#1a3a2a':'#3a1a1a')+';color:'+(profit>=0?'#4caf50':'#ff5252')+'">'+(profit>=0?'庄赢':'庄亏')+' '+Math.abs(profit).toFixed(0)+'</span></div>';
-        h+='<div style="font-size:10px;color:#888;margin-top:2px">�?+n.bets.length+'�?'+n.totalBet+'�?· �?+n.winCount+'�?· �?+n.totalPayout.toFixed(0)+' · 盈亏 '+(profit>=0?'+':'-')+Math.abs(profit).toFixed(0)+'</div>';
+        h+='<div style="font-size:10px;color:#888;margin-top:2px">投'+n.bets.length+'笔 '+n.totalBet+'元 · 中'+n.winCount+'笔 · 赔'+n.totalPayout.toFixed(0)+' · 盈亏 '+(profit>=0?'+':'-')+Math.abs(profit).toFixed(0)+'</div>';
         h+='<div style="margin-top:4px;border-top:1px dashed #2a2a4a;padding-top:4px">';
         n.bets.forEach(function(g){
-          var st=g.result&&g.result.win?'<span style="color:#4caf50">✓中 +'+g.result.payout.toFixed(0)+'</span>':'<span style="color:#666">✗不�?/span>';
-          h+='<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;color:#aaa"><span>'+(TN[g.type]||g.type)+' ['+formatNums(g)+'] '+g.tb+'�?/span><span>'+st+'</span></div>';
+          var st=g.result&&g.result.win?'<span style="color:#4caf50">✓中 +'+g.result.payout.toFixed(0)+'</span>':'<span style="color:#666">✗不中</span>';
+          h+='<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;color:#aaa"><span>'+(TN[g.type]||g.type)+' ['+formatNums(g)+'] '+g.tb+'元</span><span>'+st+'</span></div>';
         });
         h+='</div></div>';
       });
@@ -1235,7 +1235,7 @@ function calcUpper(){
   var upTb=total*ratio/100;
   var keepTb=total-upTb;
   var upCb=upTb*upRate/100;
-  var html='未结总额 '+total+'�?br>上报 '+upTb.toFixed(0)+'�?('+ratio+'%)，上庄反�?'+upCb.toFixed(0)+'�?br>自留 '+keepTb.toFixed(0)+'�?;
+  var html='未结总额 '+total+'元<br>上报 '+upTb.toFixed(0)+'元 ('+ratio+'%)，上庄反水 '+upCb.toFixed(0)+'元<br>自留 '+keepTb.toFixed(0)+'元';
   document.getElementById('up-result').innerHTML=html;
   speak('上报'+upTb.toFixed(0)+' 自留'+keepTb.toFixed(0));
 }
@@ -1248,7 +1248,7 @@ function pickColdHot(){
   arr.sort(function(a,b){return a.f-b.f;});
   var cold=arr.slice(0,6).map(function(o){return o.n;});
   var hot=arr.slice(-6).map(function(o){return o.n;});
-  document.getElementById('pick-result').innerHTML='�?: '+cold.join(',')+'<br>�?: '+hot.join(',')+'<br>建议: 冷热�?平衡';
+  document.getElementById('pick-result').innerHTML='冷6: '+cold.join(',')+'<br>热6: '+hot.join(',')+'<br>建议: 冷热各3平衡';
 }
 function pickFib(){
   var fib=[1,1,2,3,5,8,13,21,34];
@@ -1281,13 +1281,13 @@ function runMC(){
   var win=0; for(var i=0;i<n;i++){ var r=Math.floor(Math.random()*49)+1; if(G.some(function(g){return g.nums.indexOf(r)>=0;})) win++; }
   var p=(win/n*100).toFixed(2);
   var ev=(win/n*10 -1).toFixed(3);
-  document.getElementById('mc-result').innerHTML='模拟 '+n+' �?命中 '+win+' ('+p+'%) EV '+ev;
+  document.getElementById('mc-result').innerHTML='模拟 '+n+' 次 命中 '+win+' ('+p+'%) EV '+ev;
 }
 function exportCloud(){
   var data={G:G, customers:customers, hkHist:hkHist, amHist:amHist};
   localStorage.setItem('cloudBackup', JSON.stringify(data));
   try{ navigator.clipboard.writeText(JSON.stringify(data)); }catch(e){}
-  document.getElementById('cloud-status').innerHTML='已导出到本地云备份及剪贴�?;
+  document.getElementById('cloud-status').innerHTML='已导出到本地云备份及剪贴板';
 }
 function importCloud(){
   var txt=prompt('粘贴云端JSON');
@@ -1298,7 +1298,7 @@ function importCloud(){
     if(d.customers) { customers=d.customers; saveC(); }
     if(d.hkHist) { hkHist=d.hkHist; localStorage.setItem('hkHist', JSON.stringify(hkHist)); }
     if(d.amHist) { amHist=d.amHist; localStorage.setItem('amHist', JSON.stringify(amHist)); }
-    document.getElementById('cloud-status').innerHTML='已导�?;
+    document.getElementById('cloud-status').innerHTML='已导入';
     renderRecords(); renderRisk();
   }catch(e){ alert('导入失败'); }
 }
@@ -1310,7 +1310,7 @@ function exportFile(){
 function editAmount(id){
   var g=G.find(function(x){return x.id===id;});
   if(!g) return;
-  var nv=prompt('修改金额（当�?'+g.bet+' * '+g.multi+' = '+g.tb+'元）', g.bet);
+  var nv=prompt('修改金额（当前 '+g.bet+' * '+g.multi+' = '+g.tb+'元）', g.bet);
   if(nv===null) return;
   var v=parseFloat(nv);
   if(isNaN(v)||v<=0) return alert('金额无效');
@@ -1318,23 +1318,23 @@ function editAmount(id){
   g.tb=v*(g.multi||1);
   g.cb=g.tb*g.rate/100;
   save(); renderRecords(); if(typeof renderRisk==='function') renderRisk();
-  toast('已改 '+g.bet+' ('+g.tb+'�?');
+  toast('已改 '+g.bet+' ('+g.tb+'元)');
 }
 function addCustomer(){
   var name=document.getElementById('new-cust-name').value.trim();
   var rate=parseFloat(document.getElementById('new-cust-rate').value)||0.5;
-  if(!name)return alert('请输入客户名�?);
-  for(var i=0;i<customers.length;i++){if(customers[i].name===name)return alert('客户已存�?);}
+  if(!name)return alert('请输入客户名称');
+  for(var i=0;i<customers.length;i++){if(customers[i].name===name)return alert('客户已存在');}
   var odds={};
   Object.keys(O).forEach(function(k){odds[k]=O[k];});
   customers.push({name:name,rate:rate,odds:odds});
   saveC();
   document.getElementById('new-cust-name').value='';
   renderCustomerList();
-  alert('客户 '+name+' 已添�?);
+  alert('客户 '+name+' 已添加');
 }
 function deleteCustomer(name){
-  if(!confirm('确定删除客户 '+name+'�?))return;
+  if(!confirm('确定删除客户 '+name+'？'))return;
   customers=customers.filter(function(c){return c.name!==name;});
   saveC();
   renderCustomerList();
@@ -1345,8 +1345,8 @@ function renderCustomerList(){
   var html='';
   customers.forEach(function(c){
     var betCount=G.filter(function(g){return g.name===c.name;}).length;
-    html+='<div class="li"><div class="lh"><span class="ln">'+c.name+'</span><div><button class="btn bd" onclick="editCustomerOdds(\''+c.name+'\')">赔率</button> <button class="btn bd" onclick="deleteCustomer(\''+c.name+'\')">�?/button></div></div>';
-    html+='<div class="ld">反水�?+c.rate+'% | 投注�?+betCount+'�?/div></div>';
+    html+='<div class="li"><div class="lh"><span class="ln">'+c.name+'</span><div><button class="btn bd" onclick="editCustomerOdds(\''+c.name+'\')">赔率</button> <button class="btn bd" onclick="deleteCustomer(\''+c.name+'\')">删</button></div></div>';
+    html+='<div class="ld">反水：'+c.rate+'% | 投注：'+betCount+'笔</div></div>';
   });
   el.innerHTML=html;
 }
@@ -1379,7 +1379,7 @@ function saveCustomerOdds(name){
   saveC();
   document.getElementById('odds-modal').remove();
   renderCustomerList();
-  alert(name+' 赔率已更�?);
+  alert(name+' 赔率已更新');
 }
 function onCustChange(){
   var name=document.getElementById('c-name-sel').value;
@@ -1389,82 +1389,82 @@ function onCustChange(){
   uo();
 }
 var TYPE_MAP={
-  '香港�?:'tema','新奥�?:'tema','澳特':'tema','澳门�?:'tema','门特�?:'tema','�?:'tema','新奥':'tema','门特':'tema','香特�?:'tema','香特':'tema','香港':'tema',
-  '特马':'tema','特码':'tema','�?:'tema','tm':'tema',
-  '猪平�?:'zx','猴平�?:'zx','羊平�?:'zx','鸡平�?:'zx','虎平�?:'zx','龙平�?:'zx','兔平�?:'zx','蛇平�?:'zx','狗平�?:'zx','鼠平�?:'zx','牛平�?:'zx','马平�?:'zx',
-  '平特一�?:'zx','平特':'zx','平肖':'zx','中肖':'zx','中生�?:'zx','1号中�?:'zx1',
-  '特肖':'tx','特生�?:'tx','1号特�?:'tx1',
-  '2�?:'eryou','二有':'eryou','2�?:'eryou','二友':'eryou','3�?:'sanyou','三有':'sanyou','3�?:'sanyou','三友':'sanyou','4�?:'siyou','四有':'siyou','4�?:'siyou','四友':'siyou','5�?:'wuyou','五有':'wuyou','5�?:'wuyou','五友':'wuyou','特托':'tetuo',
-  '二中�?:'e2','2�?':'e2','三中�?:'s2','3�?':'s2','三中�?:'s3','3�?':'s3','四中�?:'s4','4�?':'s4',
-  '三肖中特':'s3x','3肖中�?:'s3x','四肖中特':'s4x','4肖中�?:'s4x','五肖中特':'s5x','5肖中�?:'s5x','六肖中特':'s6x','6肖中�?:'s6x',
-  '红波':'hong','�?:'hong','红波�?:'hong','绿波':'lv','�?:'lv','绿波�?:'lv','蓝波':'lan','�?:'lan','蓝波�?:'lan',
-  '包大�?:'bdx','大小':'bdx','�?:'bdx','包单�?:'bds','单双':'bds','�?:'bds','�?:'bds',
-  '0�?:'w0','尾数':'w1','2尾碰':'w2p','二尾�?:'w2p','3尾碰':'w3p','三尾�?:'w3p','四尾�?:'w4p',
-  '五不�?:'b5','5不中':'b5','六不�?:'b6','6不中':'b6','七不�?:'b7','7不中':'b7','八不�?:'b8','8不中':'b8','九不�?:'b9','9不中':'b9','十不�?:'b10','10不中':'b10','十一不中':'b11','十二不中':'b12','十三不中':'b13','十四不中':'b14','十五不中':'b15','十六不中':'b16',
+  '香港特':'tema','新奥特':'tema','澳特':'tema','澳门特':'tema','门特码':'tema','澳':'tema','新奥':'tema','门特':'tema','香特码':'tema','香特':'tema','香港':'tema',
+  '特马':'tema','特码':'tema','特':'tema','tm':'tema',
+  '猪平特':'zx','猴平特':'zx','羊平特':'zx','鸡平特':'zx','虎平特':'zx','龙平特':'zx','兔平特':'zx','蛇平特':'zx','狗平特':'zx','鼠平特':'zx','牛平特':'zx','马平特':'zx',
+  '平特一肖':'zx','平特':'zx','平肖':'zx','中肖':'zx','中生肖':'zx','1号中肖':'zx1',
+  '特肖':'tx','特生肖':'tx','1号特肖':'tx1',
+  '2有':'eryou','二有':'eryou','2友':'eryou','二友':'eryou','3有':'sanyou','三有':'sanyou','3友':'sanyou','三友':'sanyou','4有':'siyou','四有':'siyou','4友':'siyou','四友':'siyou','5有':'wuyou','五有':'wuyou','5友':'wuyou','五友':'wuyou','特托':'tetuo',
+  '二中二':'e2','2中2':'e2','三中二':'s2','3中2':'s2','三中三':'s3','3中3':'s3','四中四':'s4','4中4':'s4',
+  '三肖中特':'s3x','3肖中特':'s3x','四肖中特':'s4x','4肖中特':'s4x','五肖中特':'s5x','5肖中特':'s5x','六肖中特':'s6x','6肖中特':'s6x',
+  '红波':'hong','红':'hong','红波色':'hong','绿波':'lv','绿':'lv','绿波色':'lv','蓝波':'lan','蓝':'lan','蓝波色':'lan',
+  '包大小':'bdx','大小':'bdx','大':'bdx','包单双':'bds','单双':'bds','单':'bds','双':'bds',
+  '0尾':'w0','尾数':'w1','2尾碰':'w2p','二尾碰':'w2p','3尾碰':'w3p','三尾碰':'w3p','四尾碰':'w4p',
+  '五不中':'b5','5不中':'b5','六不中':'b6','6不中':'b6','七不中':'b7','7不中':'b7','八不中':'b8','8不中':'b8','九不中':'b9','9不中':'b9','十不中':'b10','10不中':'b10','十一不中':'b11','十二不中':'b12','十三不中':'b13','十四不中':'b14','十五不中':'b15','十六不中':'b16',
   '波色大小单双':'bsdx',
-  '特妈':'tema','特碼':'tema','生宵':'zx','生霄':'zx','平恃':'zx','中恃':'zx','特牽':'tx','肖复�?:'s3x','肖复�?:'s3x'
+  '特妈':'tema','特碼':'tema','生宵':'zx','生霄':'zx','平恃':'zx','中恃':'zx','特牽':'tx','肖复试':'s3x','肖复式':'s3x'
 };
-var ZODIAC_MAP={'�?:0,'�?:1,'�?:2,'�?:3,'�?:4,'�?:5,'�?:6,'�?:7,'�?:8,'�?:9,'�?:10,'�?:11};
+var ZODIAC_MAP={'鼠':0,'牛':1,'虎':2,'兔':3,'龙':4,'蛇':5,'马':6,'羊':7,'猴':8,'鸡':9,'狗':10,'猪':11};
 function parseBatchText(text,options){
   options=options||{};
   if(__batchPendingPreviewId!==null)discardBatchPreview(true);
   var curBatch=__batchSeed++;
   var parseSource=options.source||'manual';
-  var mDate=text.match(/(\d{4})�?\d{1,2})�?\d{1,2})�?);
+  var mDate=text.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
   var useDate=today;
   if(mDate){ useDate=mDate[1]+'-'+String(mDate[2]).padStart(2,'0')+'-'+String(mDate[3]).padStart(2,'0'); }
   var name=document.getElementById('c-name-sel').value||document.getElementById('c-name-input').value.trim();
   if(!name){
-    if(customers.some(function(c){return c.name==='�?;})) name='�?;
+    if(customers.some(function(c){return c.name==='琴';})) name='琴';
     else if(customers.length) name=customers[0].name;
     else return alert('请先选择客户');
   }
   var rate=parseFloat(document.getElementById('c-rate').value)||0;
-  // === 全角→半角及符号归一�?===
-  text=text.replace(/[�?９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);});
-  text=text.replace(/[�?Ｚ]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);});
-  text=text.replace(/[�?ｚ]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);});
-  text=text.replace(/�?g,',').replace(/�?g,',').replace(/�?g,';').replace(/�?g,':').replace(/�?g,'!').replace(/�?g,'?');
-  text=text.replace(/�?g,'(').replace(/�?g,')').replace(/�?g,'[').replace(/�?g,']').replace(/�?g,'<').replace(/�?g,'>').replace(/�?g,'"').replace(/�?g,'"').replace(/�?g,"'").replace(/�?g,"'");
-  text=text.replace(/�?g,'~').replace(/�?g,'-').replace(/�?g,'-').replace(/�?g,'/').replace(/�?g,'\\').replace(/�?g,'=').replace(/�?g,'+').replace(/�?g,'*').replace(/�?g,'#').replace(/�?g,'%').replace(/�?g,'&').replace(/�?g,'|').replace(/　/g,' ');
-  text=text.replace(/块钱/g,'�?).replace(/米米/g,'�?);
-  // 常见 OCR 误读与省略金额格式归一化�?
-  text=text.replace(/[危韦]/g,'�?).replace(/特肖一�?g,'特肖').replace(/平特一�?g,'平特一�?);
-  text=text.replace(/([0-9]{1,2})尾\s*([0-9]+)(?=[澳门香港�?。\s]|$)/g,function(match,tail,amount,offset,source){
-    // “平�?�?00”是平特单注；只有明确写“各”才逐号下注�?
+  // === 全角→半角及符号归一化 ===
+  text=text.replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);});
+  text=text.replace(/[Ａ-Ｚ]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);});
+  text=text.replace(/[ａ-ｚ]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);});
+  text=text.replace(/，/g,',').replace(/、/g,',').replace(/；/g,';').replace(/：/g,':').replace(/！/g,'!').replace(/？/g,'?');
+  text=text.replace(/（/g,'(').replace(/）/g,')').replace(/【/g,'[').replace(/】/g,']').replace(/《/g,'<').replace(/》/g,'>').replace(/“/g,'"').replace(/”/g,'"').replace(/‘/g,"'").replace(/’/g,"'");
+  text=text.replace(/～/g,'~').replace(/—/g,'-').replace(/－/g,'-').replace(/／/g,'/').replace(/＼/g,'\\').replace(/＝/g,'=').replace(/＋/g,'+').replace(/＊/g,'*').replace(/＃/g,'#').replace(/％/g,'%').replace(/＆/g,'&').replace(/｜/g,'|').replace(/　/g,' ');
+  text=text.replace(/块钱/g,'块').replace(/米米/g,'米');
+  // 常见 OCR 误读与省略金额格式归一化。
+  text=text.replace(/[危韦]/g,'兔').replace(/特肖一肖/g,'特肖').replace(/平特一肖/g,'平特一肖');
+  text=text.replace(/([0-9]{1,2})尾\s*([0-9]+)(?=[澳门香港，,。\s]|$)/g,function(match,tail,amount,offset,source){
+    // “平特0尾100”是平特单注；只有明确写“各”才逐号下注。
     var prefix=source.slice(Math.max(0,offset-4),offset);
     return /平特$/.test(prefix) ? match : tail+'尾各'+amount;
   });
-  text=text.replace(/澳彩(?:六合�??特码/g,'澳门特码').replace(/澳彩�??!�?/g,'澳门特码');
+  text=text.replace(/澳彩(?:六合彩)?特码/g,'澳门特码').replace(/澳彩特(?!肖)/g,'澳门特码');
   text=text.replace(/奥特/g,'澳门特码');
-  text=text.replace(/�??=(?:二中二|三中二|三中三|四中四|五不中|六不�?)/g,'�?);
+  text=text.replace(/奥(?=(?:二中二|三中二|三中三|四中四|五不中|六不中))/g,'澳');
   text=text.replace(/奥门/g,'澳门');
-  text=text.replace(/�??=[各每\d])/g,'�?);
-  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪])�??=\d|各|�?/g,'中肖$1');
-  text=text.replace(/�??=[鼠牛虎兔龙蛇马羊猴鸡狗猪])/g,'奥特');
-  // 玩法与生肖之间的点号只是排版，不是分隔订单�?
-  text=text.replace(/(特肖|特生肖|平特一肖|平特|中肖|中生�?[\s,.、，]+(?=[鼠牛虎兔龙蛇马羊猴鸡狗猪])/g,'$1');
-  text=text.replace(/((?:特肖|特生肖|平特一肖|平特|中肖|中生�?[鼠牛虎兔龙蛇马羊猴鸡狗猪])\s*[,，]\s*(\d+(?:元|块|�??)/g,'$1$2');
-  // 同一行连续写多个特肖/平特生肖时，给后续生肖补回玩法�?
-  text=text.replace(/(特肖|特生肖|平特一肖|平特|中肖|中生�?([鼠牛虎兔龙蛇马羊猴鸡狗猪])(\d+)[,.、，]+([鼠牛虎兔龙蛇马羊猴鸡狗猪])(\d+)/g,'$1$2$3,$1$4$5');
-  text=text.replace(/(特肖|特生肖|平特一肖|平特|中肖|中生�?([鼠牛虎兔龙蛇马羊猴鸡狗猪])(\d+)[,.、，]+([鼠牛虎兔龙蛇马羊猴鸡狗猪])(?=\D|$)/g,'$1$2$3,$1$4');
-  // “各买五块钱一个号码”是聊天中常见的逐号金额写法�?
-  var cnDigitAmount={'�?:'0','�?:'0','一':'1','�?:'2','�?:'2','�?:'3','�?:'4','�?:'5','�?:'6','�?:'7','�?:'8','�?:'9','�?:'10','二十':'20','三十':'30','四十':'40','五十':'50','六十':'60','七十':'70','八十':'80','九十':'90','一�?:'100','二百':'200','三百':'300'};
-  text=text.replace(/各\s*买\s*([零〇一二两三四五六七八九十\d]+)\s*(?:块|元|�?\s*�?\s*一�??:号码)?/g,function(m,n){return '�?+(cnDigitAmount[n]||n);});
-  text=text.replace(/各\s*买\s*([零〇一二两三四五六七八九十\d]+)(?=[\s,，。；;]|$)/g,function(m,n){return '�?+(cnDigitAmount[n]||n);});
-  // �?0号特�?0元”表�?0号的特码单注，不是两个普通数字�?
-  text=text.replace(/(\d{1,2})\s*号\s*特码\s*(\d+(?:\.\d+)?)\s*(?:元|块|�??/g,'$1�?2�?);
-  text=text.replace(/买\s*([零〇一二两三四五六七八九十\d]+)\s*(?:块|元|�?\s*�?\s*一�??:号码)?/g,function(m,n){return '�?+(cnDigitAmount[n]||n);});
-  text=text.replace(/各\s*([零〇一二两三四五六七八九十\d]+)\s*(?:块|元|�?\s*一�??:号码)?/g,function(m,n){return '�?+(cnDigitAmount[n]||n);});
-  text=text.replace(/各\s*十\s*(?:块|元|�?(?=[澳门香港�?。\s]|$)/g,'�?0');
-  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)\s*各[号码]\s*([零〇一二两三四五六七八九十百千\d]+)/g,function(m,z,a){return z+'�?+(cnDigitAmount[a]||a);});
-  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)\s*各\s*([零〇一二两三四五六七八九十百千\d]+)\s*(?=元|块|米|$)/g,function(m,z,a){return z+'�?+(cnDigitAmount[a]||a);});
-  text=text.replace(/(三有|3有|三友|3�?([^�?\n]+?)[�?]\s*羊\s*五十(?=澳门|香港|$)/g,'$1$2,羊各50');
-  text=text.replace(/·/g,'.').replace(/�?g,'.').replace(/�?g,'.');
-  text=text.replace(/→|⇒|�?g,'=');
-  // OCR 常把“拖/组”识别成扡、拽等字，作为分组边界保留�?
+  text=text.replace(/免(?=[各每\d])/g,'兔');
+  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪])中(?=\d|各|每)/g,'中肖$1');
+  text=text.replace(/奥(?=[鼠牛虎兔龙蛇马羊猴鸡狗猪])/g,'奥特');
+  // 玩法与生肖之间的点号只是排版，不是分隔订单。
+  text=text.replace(/(特肖|特生肖|平特一肖|平特|中肖|中生肖)[\s,.、，]+(?=[鼠牛虎兔龙蛇马羊猴鸡狗猪])/g,'$1');
+  text=text.replace(/((?:特肖|特生肖|平特一肖|平特|中肖|中生肖)[鼠牛虎兔龙蛇马羊猴鸡狗猪])\s*[,，]\s*(\d+(?:元|块|米)?)/g,'$1$2');
+  // 同一行连续写多个特肖/平特生肖时，给后续生肖补回玩法。
+  text=text.replace(/(特肖|特生肖|平特一肖|平特|中肖|中生肖)([鼠牛虎兔龙蛇马羊猴鸡狗猪])(\d+)[,.、，]+([鼠牛虎兔龙蛇马羊猴鸡狗猪])(\d+)/g,'$1$2$3,$1$4$5');
+  text=text.replace(/(特肖|特生肖|平特一肖|平特|中肖|中生肖)([鼠牛虎兔龙蛇马羊猴鸡狗猪])(\d+)[,.、，]+([鼠牛虎兔龙蛇马羊猴鸡狗猪])(?=\D|$)/g,'$1$2$3,$1$4');
+  // “各买五块钱一个号码”是聊天中常见的逐号金额写法。
+  var cnDigitAmount={'零':'0','〇':'0','一':'1','二':'2','两':'2','三':'3','四':'4','五':'5','六':'6','七':'7','八':'8','九':'9','十':'10','二十':'20','三十':'30','四十':'40','五十':'50','六十':'60','七十':'70','八十':'80','九十':'90','一百':'100','二百':'200','三百':'300'};
+  text=text.replace(/各\s*买\s*([零〇一二两三四五六七八九十\d]+)\s*(?:块|元|米)\s*钱?\s*一个(?:号码)?/g,function(m,n){return '各'+(cnDigitAmount[n]||n);});
+  text=text.replace(/各\s*买\s*([零〇一二两三四五六七八九十\d]+)(?=[\s,，。；;]|$)/g,function(m,n){return '各'+(cnDigitAmount[n]||n);});
+  // “10号特码10元”表示10号的特码单注，不是两个普通数字。
+  text=text.replace(/(\d{1,2})\s*号\s*特码\s*(\d+(?:\.\d+)?)\s*(?:元|块|米)?/g,'$1号$2元');
+  text=text.replace(/买\s*([零〇一二两三四五六七八九十\d]+)\s*(?:块|元|米)\s*钱?\s*一个(?:号码)?/g,function(m,n){return '各'+(cnDigitAmount[n]||n);});
+  text=text.replace(/各\s*([零〇一二两三四五六七八九十\d]+)\s*(?:块|元|米)\s*一个(?:号码)?/g,function(m,n){return '各'+(cnDigitAmount[n]||n);});
+  text=text.replace(/各\s*十\s*(?:块|元|米)(?=[澳门香港，,。\s]|$)/g,'各10');
+  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)\s*各[号码]\s*([零〇一二两三四五六七八九十百千\d]+)/g,function(m,z,a){return z+'各'+(cnDigitAmount[a]||a);});
+  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)\s*各\s*([零〇一二两三四五六七八九十百千\d]+)\s*(?=元|块|米|$)/g,function(m,z,a){return z+'各'+(cnDigitAmount[a]||a);});
+  text=text.replace(/(三有|3有|三友|3友)([^；;\n]+?)[，,]\s*羊\s*五十(?=澳门|香港|$)/g,'$1$2,羊各50');
+  text=text.replace(/·/g,'.').replace(/•/g,'.').replace(/…/g,'.');
+  text=text.replace(/→|⇒|→/g,'=');
+  // OCR 常把“拖/组”识别成扡、拽等字，作为分组边界保留。
   text=text.replace(/[扡拽拦]/g,'§');
-  text=text.replace(/🐭|🐹/g,'�?).replace(/🐮|🐂|🐃/g,'�?).replace(/🐯|🐅/g,'�?).replace(/🐰|🐇/g,'�?).replace(/🐲|🐉/g,'�?).replace(/🐍/g,'�?).replace(/🐴|🐎/g,'�?).replace(/🐑|🐐|🐏/g,'�?).replace(/🐒|🐵/g,'�?).replace(/🐔|🐓|🐤|🐥/g,'�?).replace(/🐶|🐕/g,'�?).replace(/🐷|🐖|🐽/g,'�?);
+  text=text.replace(/🐭|🐹/g,'鼠').replace(/🐮|🐂|🐃/g,'牛').replace(/🐯|🐅/g,'虎').replace(/🐰|🐇/g,'兔').replace(/🐲|🐉/g,'龙').replace(/🐍/g,'蛇').replace(/🐴|🐎/g,'马').replace(/🐑|🐐|🐏/g,'羊').replace(/🐒|🐵/g,'猴').replace(/🐔|🐓|🐤|🐥/g,'鸡').replace(/🐶|🐕/g,'狗').replace(/🐷|🐖|🐽/g,'猪');
   text=text.replace(/\s*老板|帮我下|麻烦|辛苦|谢谢|在吗|收到|确认|核对|合计|总计|共计|老板\s*/g,' ');
   text=text.replace(/[★☆●○■□◆◇♯♮]/g,'\n');
   text=text.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g,' ');
@@ -1472,39 +1472,39 @@ function parseBatchText(text,options){
   text=text.replace(/^\s*\[\d{1,2}[:：]\d{1,2}\]\s*[^\n]*[:：]\s*/gm,'');
   text=text.replace(/^\s*\d{4}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}[:：]\d{1,2}[^\n]*\n/gm,'');
   // === 157088式预处理 ===
-  text=expandRange(text);       // 13++24+40 => 13,14,...,24�?0
-  text=expandStarTotal(text);   // �?000* => 各号码均�?
-  // 空格号：=号后金额被空格拆开�? 0 0=>100）——先处理，避免被下面的号码合并抢�?
+  text=expandRange(text);       // 13++24+40 => 13,14,...,24各40
+  text=expandStarTotal(text);   // 单2000* => 各号码均分
+  // 空格号：=号后金额被空格拆开（1 0 0=>100）——先处理，避免被下面的号码合并抢先
   text=text.replace(/=\s*([0-9]) ([0-9]) ([0-9])/g,function(x,a,b,c){return '='+a+b+c;});
   text=text.replace(/=\s*([0-9]) ([0-9])/g,function(x,a,b){return '='+a+b;});
-  // 空格号：号码被空格拆开�?个位 个位"�? 5=>05�? 5=>45�? 0=>10�? 6=>26），前后非数�?
+  // 空格号：号码被空格拆开的"个位 个位"（0 5=>05、4 5=>45、1 0=>10、2 6=>26），前后非数字
   text=text.replace(/(?<![0-9])([0-9]) ([0-9])(?![0-9])/g,function(x,a,b){var v=parseInt(a+b);return (v>=1&&v<=49)?String(v):x;});
-  // 行尾逗号+换行 => 合并成逗号（如 "1 6，\n1 0�? 同属一条消息）
-  text=text.replace(/，\s*\n/g,'�?);
-  // 数字间多余空�?点号清理（如 "01  .17" => "01.17"�?
+  // 行尾逗号+换行 => 合并成逗号（如 "1 6，\n1 0，" 同属一条消息）
+  text=text.replace(/，\s*\n/g,'，');
+  // 数字间多余空格+点号清理（如 "01  .17" => "01.17"）
   text=text.replace(/(\d)\s+\.(?=\d)/g,'$1.');
   text=text.replace(/(\d)\.(?=\s+\d)/g,'$1.');
   text=text.replace(/(\d)\s*\.\s*\n\s*(?=\d)/g,'$1.');
   text=text.replace(/\.\s*\n\s*(?=\d)/g,'.');
-  // 生肖间的双空格归并为单空格（避免"�?�? �?被拆成两段，龙丢失）
+  // 生肖间的双空格归并为单空格（避免"特 龙  蛇"被拆成两段，龙丢失）
   text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪特香澳新门])\s{2,}([鼠牛虎兔龙蛇马羊猴鸡狗猪特香澳新门])/g,'$1 $2');
   text=text.replace(/(\d)\s{2,}(?=\d)/g,'$1 ');
   text=text.replace(/\s{2,}/g,'\n');
-  text=text.replace(/(新奥门|澳门|香港|澳特|门特|香特码|新奥|澳|�?([�?])/g,'$1');
-  text=text.replace(/�?g,',');
+  text=text.replace(/(新奥门|澳门|香港|澳特|门特|香特码|新奥|澳|门)([，,])/g,'$1');
+  text=text.replace(/。/g,',');
   // 157088式：// 分隔多组
   text=text.replace(/\/{2}/g,'\n');
-  text=text.replace(/�?g,'\n');
-  text=text.replace(/\/\s*(?=各|�?/g,' ');
-  // 批量分组展开：单200 => 1,3,5,...,49�?00
+  text=text.replace(/井/g,'\n');
+  text=text.replace(/\/\s*(?=各|每)/g,' ');
+  // 批量分组展开：单200 => 1,3,5,...,49各200
   text=expandBatchGroups(text);
   // 更多乱码格式兼容
-  text=text.replace(/[�?�?�?。]/g,function(c){return c==='�?||c==='!'?',':c==='�?||c==='?'?',':c==='�?||c===';'?',':c==='�??'\n':c;});
-  // �?每个前的逗号合并�?蛇，兔各500" => "蛇兔�?00"，一笔而非两笔�?
-  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪])\s*[�?]\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪])/g,'$1$2');
-  text=text.replace(/(\d)\s*\+\s*(\d{2,})\s*(?:元|块|�??/g,'$1=$2');
+  text=text.replace(/[！!？?；;。]/g,function(c){return c==='！'||c==='!'?',':c==='？'||c==='?'?',':c==='；'||c===';'?',':c==='。'?'\n':c;});
+  // 各/每个前的逗号合并（"蛇，兔各500" => "蛇兔各500"，一笔而非两笔）
+  text=text.replace(/([鼠牛虎兔龙蛇马羊猴鸡狗猪])\s*[，,]\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪])/g,'$1$2');
+  text=text.replace(/(\d)\s*\+\s*(\d{2,})\s*(?:元|块|米)?/g,'$1=$2');
   text=text.replace(/(?<!\d)(\d{1,2})\s*\+\s*(\d{1,4})(?!\s*\+)/g,'$1=$2');
-  text=text.replace(/[;；|�?�?★☆●○■□◆◇~～]+/g,'\n');
+  text=text.replace(/[;；|｜#＃*★☆●○■□◆◇~～]+/g,'\n');
   var rawSegs=text.split(/[\n;#]+/);
   var mergedSegs=[];
   rawSegs.forEach(function(seg){
@@ -1514,24 +1514,24 @@ function parseBatchText(text,options){
       var prev=mergedSegs[mergedSegs.length-1];
       var lastC=prev.charAt(prev.length-1);
       var firstC=seg.charAt(0);
-      var zodRe=/鼠|牛|虎|兔|龙|蛇|马|羊|猴|鸡|狗|猪|特|香|澳|新|�?;
-      var amountOnly=/^(?:\d+(?:\.\d+)?\s*(?:元|块|�??|[零〇一二两三四五六七八九十百千]+(?:元|块|�??)$/;
+      var zodRe=/鼠|牛|虎|兔|龙|蛇|马|羊|猴|鸡|狗|猪|特|香|澳|新|门/;
+      var amountOnly=/^(?:\d+(?:\.\d+)?\s*(?:元|块|米)?|[零〇一二两三四五六七八九十百千]+(?:元|块|米)?)$/;
       if(zodRe.test(lastC) && zodRe.test(firstC) && !/[\d=各每买元块米十百千澳门香港特]/.test(prev) && /\d/.test(seg)){
         mergedSegs[mergedSegs.length-1]=prev+' '+seg;
         return;
       }
-      if(amountOnly.test(seg) && /(?:特肖|特生肖|平特一肖|平特|中肖|中生肖|特码|特|鸡|牛|蛇|马|兔|龙|鼠|猴|狗|�?$/.test(prev)){
+      if(amountOnly.test(seg) && /(?:特肖|特生肖|平特一肖|平特|中肖|中生肖|特码|特|鸡|牛|蛇|马|兔|龙|鼠|猴|狗|猪)$/.test(prev)){
         mergedSegs[mergedSegs.length-1]=prev+' '+seg;
         return;
       }
-      // 微信里“号�?生肖”和“各10、各�?5”经常被换行拆开，必须回接到上一段�?
-      if(/^(?:各|每个|每号|每码|各数|各号)\s*\d+(?:元|块|�??$/.test(seg)
-        && /(?:\d|鼠|牛|虎|兔|龙|蛇|马|羊|猴|鸡|狗|�?$/.test(prev)
-        && !/(?:各|每个|每号|每码|各数|各号)\s*\d+(?:元|块|�??$/.test(prev)){
-        mergedSegs[mergedSegs.length-1]=prev+' '+seg.replace(/^各数|^各号/,'�?);
+      // 微信里“号码/生肖”和“各10、各数25”经常被换行拆开，必须回接到上一段。
+      if(/^(?:各|每个|每号|每码|各数|各号)\s*\d+(?:元|块|米)?$/.test(seg)
+        && /(?:\d|鼠|牛|虎|兔|龙|蛇|马|羊|猴|鸡|狗|猪)$/.test(prev)
+        && !/(?:各|每个|每号|每码|各数|各号)\s*\d+(?:元|块|米)?$/.test(prev)){
+        mergedSegs[mergedSegs.length-1]=prev+' '+seg.replace(/^各数|^各号/,'各');
         return;
       }
-      if(/^(?:奥|澳|澳门|香港)?(?:二中二|三中二|三中三|四中四|4�?|3�?|2�?)(?:包特)?$/.test(prev)
+      if(/^(?:奥|澳|澳门|香港)?(?:二中二|三中二|三中三|四中四|4中4|3中3|2中2)(?:包特)?$/.test(prev)
         && /\d/.test(seg)){
         mergedSegs[mergedSegs.length-1]=prev+seg;
         return;
@@ -1546,22 +1546,22 @@ function parseBatchText(text,options){
   var curDraw='hk';
   mergedSegs.forEach(function(seg){
     var _dbgBefore=G.length;
-    if(seg.indexOf('�?)>=0 || seg.indexOf('�?)>=0 || seg.indexOf('�?)>=0) return;
-    if(seg.trim()==='�? || seg.trim()==='�? || seg.trim().length<=1) return;
+    if(seg.indexOf('年')>=0 || seg.indexOf('月')>=0 || seg.indexOf('日')>=0) return;
+    if(seg.trim()==='琴' || seg.trim()==='特' || seg.trim().length<=1) return;
     seg=seg.trim();
     if(!seg) return;
     if(/^\d{1,2}$/.test(seg) || /^(今晚澳门特码|今晚前码|特码|澳门|澳|香港|新奥门|门特|澳特|奥二中二包特)$/.test(seg)){
-      if(seg.indexOf('澳门')>=0||seg.indexOf('新奥')>=0||seg.indexOf('澳特')>=0||seg.indexOf('门特')>=0||seg.indexOf('新奥�?)>=0) curDraw='am';
+      if(seg.indexOf('澳门')>=0||seg.indexOf('新奥')>=0||seg.indexOf('澳特')>=0||seg.indexOf('门特')>=0||seg.indexOf('新奥门')>=0) curDraw='am';
       else if(seg.indexOf('香港')>=0) curDraw='hk';
-      else if(seg.indexOf('�?)>=0) curDraw='am';
+      else if(seg.indexOf('澳')>=0) curDraw='am';
       return;
     }
-    if(!/\d/.test(seg) && /^(�??:就是|�??特码?|澳彩(?:六合�??特码(?:就是.*)?|澳门特码(?:就是.*)?|澳门平特一�?$/.test(seg)) return;
-    if(!/\d/.test(seg) && /^(?:四有|三有|二有|五有|各数|各号|�?0|各\d+|奥特|香港特|特码|特肖|特肖和特码赔率不一�?.*(?:就是|表示|指|买|每个|号码|赔率|算中)/.test(seg)) return;
-    if(/^(?:\[图片\]|图片[_�?\s]|.*\.(?:dat|jpg|jpeg|png))/.test(seg.trim())) return;
-    if(/^(?:\d+(?:\.\d+)?\s*(?:元|块|�?|(?:合计|总计|共计|�?\s*\d+|图片|粘贴的图像|[\[\]()._\-\s]+)$/.test(seg)) return;
+    if(!/\d/.test(seg) && /^(特(?:就是|是)?特码?|澳彩(?:六合彩)?特码(?:就是.*)?|澳门特码(?:就是.*)?|澳门平特一肖)$/.test(seg)) return;
+    if(!/\d/.test(seg) && /^(?:四有|三有|二有|五有|各数|各号|各10|各\d+|奥特|香港特|特码|特肖|特肖和特码赔率不一样).*(?:就是|表示|指|买|每个|号码|赔率|算中)/.test(seg)) return;
+    if(/^(?:\[图片\]|图片[_：:\s]|.*\.(?:dat|jpg|jpeg|png))/.test(seg.trim())) return;
+    if(/^(?:\d+(?:\.\d+)?\s*(?:元|块|米)|(?:合计|总计|共计|共)\s*\d+|图片|粘贴的图像|[\[\]()._\-\s]+)$/.test(seg)) return;
     var segDraw;
-    var hasAm = seg.indexOf('澳门')>=0||seg.indexOf('新奥')>=0||seg.indexOf('新奥�?)>=0||seg.indexOf('澳特')>=0||seg.indexOf('门特')>=0||(seg.indexOf('�?)>=0&&seg.indexOf('香港')<0);
+    var hasAm = seg.indexOf('澳门')>=0||seg.indexOf('新奥')>=0||seg.indexOf('新奥门')>=0||seg.indexOf('澳特')>=0||seg.indexOf('门特')>=0||(seg.indexOf('澳')>=0&&seg.indexOf('香港')<0);
     var hasHk = seg.indexOf('香港')>=0;
     if(hasAm && !hasHk){ segDraw='am'; curDraw='am'; }
     else if(hasHk && !hasAm){ segDraw='hk'; curDraw='hk'; }
@@ -1569,10 +1569,10 @@ function parseBatchText(text,options){
     else { segDraw=curDraw; }
     var segCore = seg.replace(/^(?:澳门|新澳门|新奥门|香港|澳特|门特|澳|新奥)\s*/,'').trim();
     if(!segCore) segCore=seg;
-    // “复3�?复式二中二每�?0”：同一号码池同时下注两种复式玩法�?
-    var mixedM=seg.match(/�??:3|�?�??:3|�?.*?复式(?:二中二|2�?).*?(?:各|每组)\s*(\d+)/);
+    // “复3中3复式二中二每组10”：同一号码池同时下注两种复式玩法。
+    var mixedM=seg.match(/复(?:3|三)中(?:3|三).*?复式(?:二中二|2中2).*?(?:各|每组)\s*(\d+)/);
     if(mixedM){
-      var mixedSource=seg.replace(/�??:3|�?�??:3|�?.*?复式(?:二中二|2�?)/,'').replace(/(?:各|每组)\s*\d+.*$/,'');
+      var mixedSource=seg.replace(/复(?:3|三)中(?:3|三).*?复式(?:二中二|2中2)/,'').replace(/(?:各|每组)\s*\d+.*$/,'');
       var mixedNums=(mixedSource.match(/\d{1,2}/g)||[]).filter(function(n){return parseInt(n,10)>=1&&parseInt(n,10)<=49;}).map(Number);
       mixedNums=mixedNums.filter(function(n,i,a){return a.indexOf(n)===i;});
       var mixedAmt=parseInt(mixedM[1],10),mixedTypes=[{type:'s3',size:3},{type:'e2',size:2}];
@@ -1587,34 +1587,34 @@ function parseBatchText(text,options){
       if(mixedNew>0)_dbgSegs.push({text:seg.replace(/\n/g,' ').substring(0,60),cnt:mixedNew,tot:mixedNew*mixedAmt,start:_dbgBefore});
       return;
     }
-    if(seg.indexOf('二中�?)>=0 || seg.indexOf('2�?')>=0){
-      // Skip 复试二中�?�?groups like 复试二中�?龙拖蛇蛇拖虎�?0 �?handled by fushiZDragM
+    if(seg.indexOf('二中二')>=0 || seg.indexOf('2中2')>=0){
+      // Skip 复试二中二+拖 groups like 复试二中二 龙拖蛇蛇拖虎各50 → handled by fushiZDragM
       var _isE2DragGroup=seg.indexOf('复试')>=0 && /[鼠牛虎兔龙蛇马羊猴鸡狗猪]拖[鼠牛虎兔龙蛇马羊猴鸡狗猪]/.test(seg) && /[鼠牛虎兔龙蛇马羊猴鸡狗猪][鼠牛虎兔龙蛇马羊猴鸡狗猪]/.test(seg);
       if(!_isE2DragGroup){
-      var cnAmt=function(cn){var map={'�?:0,'一':1,'�?:2,'�?:2,'�?:3,'�?:4,'�?:5,'�?:6,'�?:7,'�?:8,'�?:9,'�?:10,'�?:100,'�?:1000};var r=0,t=0;for(var ci=0;ci<cn.length;ci++){var ch=cn[ci];if(ch==='�?){t=t||1;r+=t*10;t=0;}else if(ch==='�?){t=t||1;r+=t*100;t=0;}else if(ch==='�?){t=t||1;r+=t*1000;t=0;}else{t=map[ch]||0;}}r+=t;return r;};
-      var e2m=seg.match(/各\s*(\d+)/)||seg.match(/各\s*([零一二三四五六七八九十百千]+)\s*�?/)||seg.match(/每组\s*([零一二三四五六七八九十百千]+)\s*(?:元|块|�??/)||seg.match(/([零一二三四五六七八九十百千]+)\s*元\s*一�?)||seg.match(/(\d+)\s*元\s*一�?)||seg.match(/=\s*(\d+)/);
+      var cnAmt=function(cn){var map={'零':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'百':100,'千':1000};var r=0,t=0;for(var ci=0;ci<cn.length;ci++){var ch=cn[ci];if(ch==='十'){t=t||1;r+=t*10;t=0;}else if(ch==='百'){t=t||1;r+=t*100;t=0;}else if(ch==='千'){t=t||1;r+=t*1000;t=0;}else{t=map[ch]||0;}}r+=t;return r;};
+      var e2m=seg.match(/各\s*(\d+)/)||seg.match(/各\s*([零一二三四五六七八九十百千]+)\s*元?/)||seg.match(/每组\s*([零一二三四五六七八九十百千]+)\s*(?:元|块|米)?/)||seg.match(/([零一二三四五六七八九十百千]+)\s*元\s*一组/)||seg.match(/(\d+)\s*元\s*一组/)||seg.match(/=\s*(\d+)/);
       if(e2m){
         var e2amt=/^\d+$/.test(e2m[1])?parseInt(e2m[1]):cnAmt(e2m[1]);
-        // 先把�?8，一19」这种数�?逗号+一�?数字 规范�?28-19，避免被 . 拆分
-        seg=seg.replace(/(\d{1,2})\s*[�?、。\s]+\s*[一]\s*(\d{1,2})/g,'$1-$2');
+        // 先把「28，一19」这种数字+逗号+一字+数字 规范成 28-19，避免被 . 拆分
+        seg=seg.replace(/(\d{1,2})\s*[，,、。\s]+\s*[一]\s*(\d{1,2})/g,'$1-$2');
         var e2text=seg.replace(/一/g,'-');
         var zodiacGroups={
-          poultry:['�?,'�?,'�?,'�?,'�?,'�?],
-          beast:['�?,'�?,'�?,'�?,'�?,'�?],
-          front:['�?,'�?,'�?,'�?,'�?,'�?],
-          back:['�?,'�?,'�?,'�?,'�?,'�?]
+          poultry:['牛','马','羊','鸡','狗','猪'],
+          beast:['鼠','虎','兔','龙','蛇','猴'],
+          front:['鼠','牛','虎','兔','龙','蛇'],
+          back:['马','羊','猴','鸡','狗','猪']
         };
-        var tripleGroups=[['�?,'�?,'�?],['�?,'�?,'�?],['�?,'�?,'�?],['�?,'�?,'�?]];
-        var sixPairs=[['�?,'�?],['�?,'�?],['�?,'�?],['�?,'�?],['�?,'�?],['�?,'�?]];
+        var tripleGroups=[['猴','鼠','龙'],['蛇','鸡','牛'],['虎','马','狗'],['猪','兔','羊']];
+        var sixPairs=[['鼠','牛'],['虎','猪'],['兔','狗'],['龙','鸡'],['蛇','猴'],['马','羊']];
         var classM=e2text.match(/([鼠牛虎兔龙蛇马羊猴鸡狗猪])\s*拖\s*(全盘|全部|11肖|家禽|野兽|前肖|前六肖|后肖|后六肖|三合|六合)/);
         if(classM){
           var anchor=classM[1], targets=[];
-          if(classM[2]==='全盘'||classM[2]==='全部'||classM[2]==='11�?){
-            targets=['�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?,'�?];
+          if(classM[2]==='全盘'||classM[2]==='全部'||classM[2]==='11肖'){
+            targets=['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
           }else if(classM[2]==='家禽') targets=zodiacGroups.poultry;
           else if(classM[2]==='野兽') targets=zodiacGroups.beast;
-          else if(classM[2]==='前肖'||classM[2]==='前六�?) targets=zodiacGroups.front;
-          else if(classM[2]==='后肖'||classM[2]==='后六�?) targets=zodiacGroups.back;
+          else if(classM[2]==='前肖'||classM[2]==='前六肖') targets=zodiacGroups.front;
+          else if(classM[2]==='后肖'||classM[2]==='后六肖') targets=zodiacGroups.back;
           else if(classM[2]==='三合'){
             tripleGroups.forEach(function(group){
               if(group.indexOf(anchor)>=0) targets=group;
@@ -1638,7 +1638,7 @@ function parseBatchText(text,options){
         while((dragM=dragRe.exec(e2text))!==null){
           hasDrag=true;
           var z1=ZODIAC_MAP[dragM[1]], z2=ZODIAC_MAP[dragM[2]];
-          // 两个生肖各展开为号码，两两组合成二中二�?×4=16组）
+          // 两个生肖各展开为号码，两两组合成二中二（4×4=16组）
           var a1=SX[z1], a2=SX[z2];
           a1.forEach(function(n1){ a2.forEach(function(n2){
             G.push({id:nid(),batchId:curBatch,name:name,type:'e2',nums:[n1,n2],bet:e2amt,multi:1,odds:O.e2,rate:rate,tb:e2amt,cb:e2amt*rate/100,date:(typeof useDate!=="undefined"?useDate:today),draw:segDraw,settled:false,result:null});
@@ -1646,11 +1646,11 @@ function parseBatchText(text,options){
           });});
         }
         if(hasDrag) return;
-        var e2pairs=(e2text.match(/(\d+)\s*[�?]?\s*[-]\s*(\d+)/g)||[]);
+        var e2pairs=(e2text.match(/(\d+)\s*[，,]?\s*[-]\s*(\d+)/g)||[]);
         if(e2pairs.length>0){
-          var _rep=1;var _rm2=seg.match(/([二三四五六七八九十])�?);if(_rm2){"二三四五六七八九�?.indexOf(_rm2[1])>=0&&(_rep="二三四五六七八九�?.indexOf(_rm2[1])+2);}
+          var _rep=1;var _rm2=seg.match(/([二三四五六七八九十])组/);if(_rm2){"二三四五六七八九十".indexOf(_rm2[1])>=0&&(_rep="二三四五六七八九十".indexOf(_rm2[1])+2);}
           e2pairs.forEach(function(pair){
-            var pm=pair.match(/(\d+)\s*[�?]?\s*[-]\s*(\d+)/);
+            var pm=pair.match(/(\d+)\s*[，,]?\s*[-]\s*(\d+)/);
             if(pm){
               var n1=parseInt(pm[1]),n2=parseInt(pm[2]);
               if(n1>=1&&n1<=49&&n2>=1&&n2<=49){
@@ -1663,19 +1663,19 @@ function parseBatchText(text,options){
       }
       } // end !_isE2DragGroup
     }
-    // 复试三中�?四中�?多组逗号拖拽: 复试三中�?牛拖�?蛇拖虎各100 �?每组独立C(N,3)
+    // 复试三中三/四中四 多组逗号拖拽: 复试三中三 牛拖蛇,蛇拖虎各100 → 每组独立C(N,3)
     // Also handles half-width comma case after L1190 removes commas: 牛拖蛇蛇拖虎
     // Must run BEFORE zDragM to intercept merged drag groups
-    var fushiZDragM=segCore.match(/^(?:复试|复式)?(二中二|2�?|三中三|3�?|四中四|4�?)[�?]?\s*(.+?)(?:各|每组|每个)\s*(\d+)/);
+    var fushiZDragM=segCore.match(/^(?:复试|复式)?(二中二|2中2|三中三|3中3|四中四|4中4)[：:]?\s*(.+?)(?:各|每组|每个)\s*(\d+)/);
     if(fushiZDragM && /[鼠牛虎兔龙蛇马羊猴鸡狗猪]拖[鼠牛虎兔龙蛇马羊猴鸡狗猪]/.test(fushiZDragM[2])
       && /[鼠牛虎兔龙蛇马羊猴鸡狗猪][鼠牛虎兔龙蛇马羊猴鸡狗猪]/.test(fushiZDragM[2])){
-      var _fzPairs=[];var _dragRe=/([鼠牛虎兔龙蛇马羊猴鸡狗猪])�?[鼠牛虎兔龙蛇马羊猴鸡狗猪])/g;var _dm;
+      var _fzPairs=[];var _dragRe=/([鼠牛虎兔龙蛇马羊猴鸡狗猪])拖([鼠牛虎兔龙蛇马羊猴鸡狗猪])/g;var _dm;
       while((_dm=_dragRe.exec(fushiZDragM[2]))!==null){_fzPairs.push([_dm[1],_dm[2]]);}
       if(_fzPairs.length>=2){
         var _fzRaw=fushiZDragM[1];
         var _fzCode;
-        if(_fzRaw.indexOf('二中�?)>=0||_fzRaw.indexOf('2�?')>=0) _fzCode='e2';
-        else if(_fzRaw.indexOf('四中�?)>=0||_fzRaw.indexOf('4�?')>=0) _fzCode='s4';
+        if(_fzRaw.indexOf('二中二')>=0||_fzRaw.indexOf('2中2')>=0) _fzCode='e2';
+        else if(_fzRaw.indexOf('四中四')>=0||_fzRaw.indexOf('4中4')>=0) _fzCode='s4';
         else _fzCode='s3';
         var _fzNeed=_fzCode==='s4'?4:_fzCode==='s3'?3:2;
         var _fzAmt=parseInt(fushiZDragM[3]);
@@ -1692,7 +1692,7 @@ function parseBatchText(text,options){
         return;
       }
     }
-    // 「连肖�?「X连」：�?5�?30、五连肖虎兔猴马�?00、猪羊蛇鸡龙5�?
+    // 「连肖」/「X连」：如 5连130、五连肖虎兔猴马牛100、猪羊蛇鸡龙5连
     var lianM=seg.match(/((?:[\u4e00-\u9fa5]+?))(?:[\d一二三四五六七八九十百]+)?连肖[^\d]*(\d+)|([\u4e00-\u9fa5]+?)\s*\d+连[^\d]*(\d+)/);
     if(lianM){
       var lianSrc=lianM[1]||lianM[3];
@@ -1706,11 +1706,11 @@ function parseBatchText(text,options){
         return;
       }
     }
-    // 三中�?四中�?生肖拖拽: 三中�?蛇拖虎拖牛各10 �?4x4x4=64�?
-    var zDragM=segCore.match(/^(?:复试|复式)?(?:三中三|3�?|四中四|4�?|二中二|2�?)[�?]?\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪](?:[拖\s]*[鼠牛虎兔龙蛇马羊猴鸡狗猪])+)[各每]\s*(\d+)/);
+    // 三中三/四中四 生肖拖拽: 三中三 蛇拖虎拖牛各10 → 4x4x4=64组
+    var zDragM=segCore.match(/^(?:复试|复式)?(?:三中三|3中3|四中四|4中4|二中二|2中2)[：:]?\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪](?:[拖\s]*[鼠牛虎兔龙蛇马羊猴鸡狗猪])+)[各每]\s*(\d+)/);
     if(zDragM){
-      var _zdType=zDragM[0].replace(/[�?][\s\S]*$/,'');
-      var _zdTypeCode=(_zdType.indexOf('四中�?)>=0||_zdType.indexOf('4�?')>=0)?'s4':(_zdType.indexOf('三中�?)>=0||_zdType.indexOf('3�?')>=0)?'s3':'e2';
+      var _zdType=zDragM[0].replace(/[：:][\s\S]*$/,'');
+      var _zdTypeCode=(_zdType.indexOf('四中四')>=0||_zdType.indexOf('4中4')>=0)?'s4':(_zdType.indexOf('三中三')>=0||_zdType.indexOf('3中3')>=0)?'s3':'e2';
       var _zdZods=[...zDragM[1]].filter(function(c){return ZODIAC_MAP[c]!==undefined;}).map(function(c){return SX[ZODIAC_MAP[c]];});
       var _zdAmt=parseInt(zDragM[2]);
       var _zdCombos=[[]];
@@ -1729,28 +1729,28 @@ function parseBatchText(text,options){
       _dbgSegs.push({text:seg.replace(/\n/g,' ').substring(0,40),cnt:_zdCombos.length,tot:_zdAmt*_zdCombos.length,start:G.length-_zdCombos.length});
       return;
     }
-    // 「有/友」型组注：三�?3�?等，按、分隔的每组算一注（组内生肖不拆�?
-    // 预处理：生肖-生肖-生肖复试X�?各N �?X�?生肖生肖生肖 各N
+    // 「有/友」型组注：三友/3友 等，按、分隔的每组算一注（组内生肖不拆）
+    // 预处理：生肖-生肖-生肖复试X友 各N → X友 生肖生肖生肖 各N
     var _hasFushi=segCore.indexOf('复试')>=0;
-    var frontZodM=segCore.match(/^([鼠牛虎兔龙蛇马羊猴鸡狗猪\-\s，、]+?)复试\s*(\d*[友有中肖])\s*(?:各|每个|／|�?\s*(\d+)/);
+    var frontZodM=segCore.match(/^([鼠牛虎兔龙蛇马羊猴鸡狗猪\-\s，、]+?)复试\s*(\d*[友有中肖])\s*(?:各|每个|／|每)\s*(\d+)/);
     if(frontZodM){
       var fzZods=frontZodM[1].replace(/[\-\s，、]/g,'');
-      seg=frontZodM[2]+fzZods+'�?+frontZodM[3]; segCore=seg;
+      seg=frontZodM[2]+fzZods+'各'+frontZodM[3]; segCore=seg;
     }
-    // 预处�?：生肖X友各N（无复试）→ X友生肖各N
-    var frontZodM2=segCore.match(/^([鼠牛虎兔龙蛇马羊猴鸡狗猪\-\s，、]+?)(\d*[友有中肖])\s*(?:各|每个|／|�?\s*(\d+)/);
+    // 预处理2：生肖X友各N（无复试）→ X友生肖各N
+    var frontZodM2=segCore.match(/^([鼠牛虎兔龙蛇马羊猴鸡狗猪\-\s，、]+?)(\d*[友有中肖])\s*(?:各|每个|／|每)\s*(\d+)/);
     if(!frontZodM && frontZodM2){
       var fzZods2=frontZodM2[1].replace(/[\-\s，、]/g,'');
-      seg=frontZodM2[2]+fzZods2+'�?+frontZodM2[3]; segCore=seg;
+      seg=frontZodM2[2]+fzZods2+'各'+frontZodM2[3]; segCore=seg;
     }
-    var grpM=segCore.match(/^(?:三友|3友|三有|3有|三肖中特|3肖中特|二友|2友|四友|4友|五友|5�?[�?]?\s*([\u4e00-\u9fa5、，,／\/\s]+?)(?:各|每个|／|�?\s*(\d+)/);
+    var grpM=segCore.match(/^(?:三友|3友|三有|3有|三肖中特|3肖中特|二友|2友|四友|4友|五友|5友)[：:]?\s*([\u4e00-\u9fa5、，,／\/\s]+?)(?:各|每个|／|每)\s*(\d+)/);
     if(grpM){
       var grpAmt=parseInt(grpM[2]);
       var _isFushi=_hasFushi;
       grpM[1].split(/[、，,／\/\s]+/).forEach(function(grp){
         var gz=[...grp].filter(function(c){return ZODIAC_MAP[c]!==undefined;}).map(function(c){return ZODIAC_MAP[c];});
         if(gz.length>0){
-          var gt=(TYPE_MAP[grpM[0].replace(/[�?]|[0-9]/g,'')]||'sanyou');
+          var gt=(TYPE_MAP[grpM[0].replace(/[：:]|[0-9]/g,'')]||'sanyou');
           var _multi=_isFushi?gz.length:1;
           var co=getCustomerOdds(name,gt);
           G.push({id:nid(),batchId:curBatch,name:name,type:gt,nums:gz,bet:grpAmt,multi:_multi,odds:co,rate:rate,tb:grpAmt*_multi,cb:grpAmt*_multi*rate/100,date:(typeof useDate!=="undefined"?useDate:today),draw:segDraw,settled:false,result:null});
@@ -1760,8 +1760,8 @@ function parseBatchText(text,options){
       var _dbgNew=G.length-_dbgBefore; if(_dbgNew>0){var _dbgTot=0;for(var _di=G.length-_dbgNew;_di<G.length;_di++)_dbgTot+=G[_di].tb;_dbgSegs.push({text:seg.replace(/\n/g,' ').substring(0,40),cnt:_dbgNew,tot:_dbgTot,start:G.length-_dbgNew});}
       return;
     }
-    // “香港特�?�?00”表示香港盘9尾，不是特码9号�?
-    var tailM=seg.match(/(?:香港|澳门|澳彩)?(?:特码)?\s*([0-9])尾\s*(?:各\s*)?(\d+)(?:元|块|�??/);
+    // “香港特码9尾100”表示香港盘9尾，不是特码9号。
+    var tailM=seg.match(/(?:香港|澳门|澳彩)?(?:特码)?\s*([0-9])尾\s*(?:各\s*)?(\d+)(?:元|块|米)?/);
     if(tailM){
       var tailOdds=getCustomerOdds(name,'w1'),tailAmt=parseInt(tailM[2],10);
       G.push({id:nid(),batchId:curBatch,name:name,type:'w1',nums:[parseInt(tailM[1],10)],bet:tailAmt,multi:1,odds:tailOdds,rate:rate,tb:tailAmt,cb:tailAmt*rate/100,date:(typeof useDate!=="undefined"?useDate:today),draw:segDraw,settled:false,result:null});
@@ -1769,8 +1769,8 @@ function parseBatchText(text,options){
       _dbgSegs.push({text:seg.replace(/\n/g,' ').substring(0,40),cnt:1,tot:tailAmt,start:G.length-1});
       return;
     }
-    // 特肖按生肖下注：牛、蛇�?0 是两注各50，不展开为特码号码�?
-    var txEachM=seg.match(/(?:澳门|香港)?特肖\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪][鼠牛虎兔龙蛇马羊猴鸡狗猪\s,，�?\/]*)\s*各\s*(\d+)/);
+    // 特肖按生肖下注：牛、蛇各50 是两注各50，不展开为特码号码。
+    var txEachM=seg.match(/(?:澳门|香港)?特肖\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪][鼠牛虎兔龙蛇马羊猴鸡狗猪\s,，、.\/]*)\s*各\s*(\d+)/);
     if(txEachM){
       var txAmt=parseInt(txEachM[2],10);
       var txZods=[].slice.call(txEachM[1]).filter(function(c){return ZODIAC_MAP[c]!==undefined;});
@@ -1788,31 +1788,31 @@ function parseBatchText(text,options){
       }
     }
     // ============ 胆拖投注 ============
-    // 格式: �?8�?5,22,30二连 / 08�?5,22,30拖三全中 / 胆码08拖码15,22,30,35,37四全�?
-    var danTuoM=segCore.match(/(?:胆码|�?\s*(\d+(?:[,，、\s]+\d+)*)\s*(?:拖码|�?\s*(\d+(?:[,，、\s]+\d+)*)\s*(二连|三连|四连|五连|2连|3连|4连|5连|二全中|三全中|四全中|二中二|2�?|三中三|3�?|四中四|4�?)/);
-    if(!danTuoM) danTuoM=segCore.match(/(\d+(?:[,，、\s]+\d+)*)\s*(?:胆码|�?\s*(\d+(?:[,，、\s]+\d+)*)\s*(?:拖码|�?\s*(二连|三连|四连|五连|2连|3连|4连|5连|二全中|三全中|四全中|二中二|2�?|三中三|3�?|四中四|4�?)/);
+    // 格式: 胆08拖15,22,30二连 / 08胆15,22,30拖三全中 / 胆码08拖码15,22,30,35,37四全中
+    var danTuoM=segCore.match(/(?:胆码|胆)\s*(\d+(?:[,，、\s]+\d+)*)\s*(?:拖码|拖)\s*(\d+(?:[,，、\s]+\d+)*)\s*(二连|三连|四连|五连|2连|3连|4连|5连|二全中|三全中|四全中|二中二|2中2|三中三|3中3|四中四|4中4)/);
+    if(!danTuoM) danTuoM=segCore.match(/(\d+(?:[,，、\s]+\d+)*)\s*(?:胆码|胆)\s*(\d+(?:[,，、\s]+\d+)*)\s*(?:拖码|拖)\s*(二连|三连|四连|五连|2连|3连|4连|5连|二全中|三全中|四全中|二中二|2中2|三中三|3中3|四中四|4中4)/);
     if(danTuoM){
       var _danRaw=danTuoM[1], _tuoRaw=danTuoM[2], _dtTypeRaw=danTuoM[3];
-      // 如果第二组格式匹�?号码胆拖)，调整变�?
+      // 如果第二组格式匹配(号码胆拖)，调整变量
       if(!danTuoM[2] || /\d/.test(danTuoM[2])===false){
         // 第一种格式：胆X拖Y类型
       } else {
-        // 第二种格式：X胆Y拖类�?�?已正�?
+        // 第二种格式：X胆Y拖类型 — 已正确
       }
       var _danNums=(_danRaw.match(/\d+/g)||[]).map(Number).filter(function(n){return n>=1&&n<=49;});
       var _tuoNums=(_tuoRaw.match(/\d+/g)||[]).map(Number).filter(function(n){return n>=1&&n<=49;});
       var _dtK=0;
-      if(_dtTypeRaw==='二中�?||_dtTypeRaw==='2�?'||_dtTypeRaw==='二连'||_dtTypeRaw==='2�?||_dtTypeRaw==='二全�?) _dtK=2;
-      else if(_dtTypeRaw==='三中�?||_dtTypeRaw==='3�?'||_dtTypeRaw==='三连'||_dtTypeRaw==='3�?||_dtTypeRaw==='三全�?) _dtK=3;
-      else if(_dtTypeRaw==='四中�?||_dtTypeRaw==='4�?'||_dtTypeRaw==='四连'||_dtTypeRaw==='4�?||_dtTypeRaw==='四全�?) _dtK=4;
-      else if(_dtTypeRaw==='五连'||_dtTypeRaw==='5�?) _dtK=5;
+      if(_dtTypeRaw==='二中二'||_dtTypeRaw==='2中2'||_dtTypeRaw==='二连'||_dtTypeRaw==='2连'||_dtTypeRaw==='二全中') _dtK=2;
+      else if(_dtTypeRaw==='三中三'||_dtTypeRaw==='3中3'||_dtTypeRaw==='三连'||_dtTypeRaw==='3连'||_dtTypeRaw==='三全中') _dtK=3;
+      else if(_dtTypeRaw==='四中四'||_dtTypeRaw==='4中4'||_dtTypeRaw==='四连'||_dtTypeRaw==='4连'||_dtTypeRaw==='四全中') _dtK=4;
+      else if(_dtTypeRaw==='五连'||_dtTypeRaw==='5连') _dtK=5;
       var _dtAmt=0; var _dtAm=segCore.match(/(?:各|每注|每个)\s*(\d+)/); if(_dtAm) _dtAmt=parseInt(_dtAm[1]);
-      if(!_dtAmt){ var _dtAm2=segCore.match(/(\d+)\s*(?:元|块|�?\s*(?:一注|一组|一�??$/); if(_dtAm2) _dtAmt=parseInt(_dtAm2[1]); }
+      if(!_dtAmt){ var _dtAm2=segCore.match(/(\d+)\s*(?:元|块|米)\s*(?:一注|一组|一个)?$/); if(_dtAm2) _dtAmt=parseInt(_dtAm2[1]); }
       if(_danNums.length>0 && _tuoNums.length>0 && _dtK>0 && _dtAmt>0){
         var _dtNeed=_dtK-_danNums.length;
         var _dtCode='e2'; if(_dtK===3) _dtCode='s3'; else if(_dtK===4) _dtCode='s4'; else if(_dtK===5) _dtCode='l5';
         var _dtOdds=getCustomerOdds(name,_dtCode);
-        if(_dtNeed<=0){ /* 胆码已够，每个拖码配胆码生成一�?*/ _tuoNums.forEach(function(tn){var _combo=_danNums.concat([tn]).sort(function(a,b){return a-b;}); G.push({id:nid(),batchId:curBatch,name:name,type:_dtCode,nums:_combo,bet:_dtAmt,multi:1,odds:_dtOdds,rate:rate,tb:_dtAmt,cb:_dtAmt*rate/100,date:(typeof useDate!=="undefined"?useDate:today),draw:segDraw,settled:false,result:null}); count++; }); }
+        if(_dtNeed<=0){ /* 胆码已够，每个拖码配胆码生成一注 */ _tuoNums.forEach(function(tn){var _combo=_danNums.concat([tn]).sort(function(a,b){return a-b;}); G.push({id:nid(),batchId:curBatch,name:name,type:_dtCode,nums:_combo,bet:_dtAmt,multi:1,odds:_dtOdds,rate:rate,tb:_dtAmt,cb:_dtAmt*rate/100,date:(typeof useDate!=="undefined"?useDate:today),draw:segDraw,settled:false,result:null}); count++; }); }
         else if(_dtNeed>0 && _tuoNums.length>=_dtNeed){
           var _dtPicks=combinations(_tuoNums,_dtNeed);
           _dtPicks.forEach(function(pick){var _combo=_danNums.concat(pick).sort(function(a,b){return a-b;}); G.push({id:nid(),batchId:curBatch,name:name,type:_dtCode,nums:_combo,bet:_dtAmt,multi:1,odds:_dtOdds,rate:rate,tb:_dtAmt,cb:_dtAmt*rate/100,date:(typeof useDate!=="undefined"?useDate:today),draw:segDraw,settled:false,result:null}); count++; });
@@ -1821,18 +1821,18 @@ function parseBatchText(text,options){
         return;
       }
     }
-    // ============ 胆拖投注(号码+�? ============
-    // 格式: �?8�?5,22,30,35�?0 �?每组�?0
-    // 这种格式的各紧跟拖码后面，已在上面处�?
-    // ============ 生肖�?============
-    // 格式: 二肖�?�?�?�?羊各100 / 三肖�?鼠牛虎兔�?0
-    var xiaoLianM=segCore.match(/(二肖连|三肖连|四肖连|五肖连|2肖连|3肖连|4肖连|5肖连)[�?]?\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪，�?\s]+?)(?:各|每个|�?\s*(\d+)/);
+    // ============ 胆拖投注(号码+各) ============
+    // 格式: 胆08拖15,22,30,35各10 → 每组各10
+    // 这种格式的各紧跟拖码后面，已在上面处理
+    // ============ 生肖连 ============
+    // 格式: 二肖连 龙,蛇,马,羊各100 / 三肖连 鼠牛虎兔各50
+    var xiaoLianM=segCore.match(/(二肖连|三肖连|四肖连|五肖连|2肖连|3肖连|4肖连|5肖连)[：:]?\s*([鼠牛虎兔龙蛇马羊猴鸡狗猪，、,\s]+?)(?:各|每个|每)\s*(\d+)/);
     if(xiaoLianM){
       var _xlK=0;var _xlRaw=xiaoLianM[1];
-      if(_xlRaw==='二肖�?||_xlRaw==='2肖连') _xlK=2;
-      else if(_xlRaw==='三肖�?||_xlRaw==='3肖连') _xlK=3;
-      else if(_xlRaw==='四肖�?||_xlRaw==='4肖连') _xlK=4;
-      else if(_xlRaw==='五肖�?||_xlRaw==='5肖连') _xlK=5;
+      if(_xlRaw==='二肖连'||_xlRaw==='2肖连') _xlK=2;
+      else if(_xlRaw==='三肖连'||_xlRaw==='3肖连') _xlK=3;
+      else if(_xlRaw==='四肖连'||_xlRaw==='4肖连') _xlK=4;
+      else if(_xlRaw==='五肖连'||_xlRaw==='5肖连') _xlK=5;
       var _xlAmt=parseInt(xiaoLianM[3]);
       var _xlZods=[...xiaoLianM[2]].filter(function(c){return ZODIAC_MAP[c]!==undefined;}).map(function(c){return ZODIAC_MAP[c];});
       if(_xlZods.length>=_xlK && _xlAmt>0){
@@ -1844,15 +1844,15 @@ function parseBatchText(text,options){
         return;
       }
     }
-    // ============ 尾数�?============
-    // 格式: 二尾�?1,2,3,4�?00 / 三尾�?5,6,7�?0
-    var weiLianM=segCore.match(/(二尾连|三尾连|四尾连|五尾连|2尾连|3尾连|4尾连|5尾连)[�?]?\s*([\d，�?\s]+?)(?:各|每个|�?\s*(\d+)/);
+    // ============ 尾数连 ============
+    // 格式: 二尾连 1,2,3,4各100 / 三尾连 5,6,7各50
+    var weiLianM=segCore.match(/(二尾连|三尾连|四尾连|五尾连|2尾连|3尾连|4尾连|5尾连)[：:]?\s*([\d，、,\s]+?)(?:各|每个|每)\s*(\d+)/);
     if(weiLianM){
       var _wlK=0;var _wlRaw=weiLianM[1];
-      if(_wlRaw==='二尾�?||_wlRaw==='2尾连') _wlK=2;
-      else if(_wlRaw==='三尾�?||_wlRaw==='3尾连') _wlK=3;
-      else if(_wlRaw==='四尾�?||_wlRaw==='4尾连') _wlK=4;
-      else if(_wlRaw==='五尾�?||_wlRaw==='5尾连') _wlK=5;
+      if(_wlRaw==='二尾连'||_wlRaw==='2尾连') _wlK=2;
+      else if(_wlRaw==='三尾连'||_wlRaw==='3尾连') _wlK=3;
+      else if(_wlRaw==='四尾连'||_wlRaw==='4尾连') _wlK=4;
+      else if(_wlRaw==='五尾连'||_wlRaw==='5尾连') _wlK=5;
       var _wlAmt=parseInt(weiLianM[3]);
       var _wlTails=(weiLianM[2].match(/\d+/g)||[]).map(Number).filter(function(n){return n>=0&&n<=9;});
       if(_wlTails.length>=_wlK && _wlAmt>0){
@@ -1864,24 +1864,24 @@ function parseBatchText(text,options){
         return;
       }
     }
-    // "号码，金�?（如 �?8�?00�?/ 38,100�?/ 特码38,100）合并为 N号M 后再拆分
-    // 仅当后跟�?+位数字不像有效号�?>49)或有玩法前缀时才合并
-    seg=seg.replace(/(\d{1,2})\s*[�?]\s*(\d{2,})\s*(?:米|元|�?/g,'$1�?2�?);
-    // 特码/澳特/香港�?+ 号码,金额 格式（无单位也合并，但仅当后面没有更多数�?各时�?
-    seg=seg.replace(/((?:特码|特|澳特|澳门特|香港特|澳彩特码|门特码|香特�?\s*\d{1,2})\s*[�?]\s*(\d{2,})(?!\d|[�?、各每])/g,'$1�?2�?);
-    // 英文点后跟中�?�?300.�?00) �?视为分隔符逗号
-    seg=seg.replace(/\.(?=[\u4e00-\u9fa5])/g,'�?);
-    // 空格号：=号两�?个位 个位"合并�? 6 = 1 0 0 => 26=100�?
+    // "号码，金额"（如 特38，100米 / 38,100元 / 特码38,100）合并为 N号M 后再拆分
+    // 仅当后跟的2+位数字不像有效号码(>49)或有玩法前缀时才合并
+    seg=seg.replace(/(\d{1,2})\s*[，,]\s*(\d{2,})\s*(?:米|元|块)/g,'$1号$2元');
+    // 特码/澳特/香港特 + 号码,金额 格式（无单位也合并，但仅当后面没有更多数字/各时）
+    seg=seg.replace(/((?:特码|特|澳特|澳门特|香港特|澳彩特码|门特码|香特码)\s*\d{1,2})\s*[，,]\s*(\d{2,})(?!\d|[，,、各每])/g,'$1号$2元');
+    // 英文点后跟中文(如 300.兔200) → 视为分隔符逗号
+    seg=seg.replace(/\.(?=[\u4e00-\u9fa5])/g,'，');
+    // 空格号：=号两侧"个位 个位"合并（2 6 = 1 0 0 => 26=100）
     seg=seg.replace(/^(\d)\s(\d)\s*=\s*([\d\s]+)$/,function(m,a,b,rest){var v=parseInt(a+b);var rv=parseInt(rest.replace(/\s+/g,''));return v+'='+rv;});
-    // 空格号：仅当"每个�?每码/每号"前的串全是单个数字时才两两合并（0 5�? 5=>05,45�?
-    seg=seg.replace(/([\d�?\s]+)(每个数|每码|每号)/g,function(m,p,kw){var tk=p.trim().split(/[�?\s]+/);var ok=tk.length>=4&&tk.every(function(t){return /^\d$/.test(t);});if(!ok)return m;var mg=[];for(var i=0;i<tk.length;i+=2){if(tk[i+1]===undefined)return m;var v=parseInt(tk[i]+tk[i+1]);if(v<1||v>49)return m;mg.push(v);}if(mg.length!==tk.length/2)return m;return mg.join(',')+kw;});
-    // 中文逗号在数字间是分组，不是拆注（如 "38-32-01�?7-44-38"）仅对三中三/二中二生�?
-    if(seg.indexOf('四中�?)>=0 || seg.indexOf('4�?')>=0 || seg.indexOf('三中�?)>=0 || seg.indexOf('3�?')>=0 || seg.indexOf('三中�?)>=0 || seg.indexOf('3�?')>=0 || seg.indexOf('二中�?)>=0 || seg.indexOf('2�?')>=0){
-      seg=seg.replace(/(\d)\s*[�?]\s*(\d)/g,'$1.$2');
+    // 空格号：仅当"每个数/每码/每号"前的串全是单个数字时才两两合并（0 5，4 5=>05,45）
+    seg=seg.replace(/([\d，,\s]+)(每个数|每码|每号)/g,function(m,p,kw){var tk=p.trim().split(/[，,\s]+/);var ok=tk.length>=4&&tk.every(function(t){return /^\d$/.test(t);});if(!ok)return m;var mg=[];for(var i=0;i<tk.length;i+=2){if(tk[i+1]===undefined)return m;var v=parseInt(tk[i]+tk[i+1]);if(v<1||v>49)return m;mg.push(v);}if(mg.length!==tk.length/2)return m;return mg.join(',')+kw;});
+    // 中文逗号在数字间是分组，不是拆注（如 "38-32-01，17-44-38"）仅对三中三/二中二生效
+    if(seg.indexOf('四中四')>=0 || seg.indexOf('4中4')>=0 || seg.indexOf('三中三')>=0 || seg.indexOf('3中3')>=0 || seg.indexOf('三中二')>=0 || seg.indexOf('3中2')>=0 || seg.indexOf('二中二')>=0 || seg.indexOf('2中2')>=0){
+      seg=seg.replace(/(\d)\s*[，,]\s*(\d)/g,'$1.$2');
     }
-    // 三中�?二中二等：按点号分组，每组独立注
-    if(seg.indexOf('四中�?)>=0 || seg.indexOf('4�?')>=0 || seg.indexOf('三中�?)>=0 || seg.indexOf('3�?')>=0 || seg.indexOf('三中�?)>=0 || seg.indexOf('3�?')>=0 || seg.indexOf('二中�?)>=0 || seg.indexOf('2�?')>=0){      var _grpAmt=0;var _grpAm=seg.match(/(?:各|毎组|每组)\s*(\d+)/);if(_grpAm)_grpAmt=parseInt(_grpAm[1]);      if(_grpAmt>0){
-        var _grpType='e2';if(seg.indexOf('四中�?)>=0||seg.indexOf('4�?')>=0)_grpType='s4';else if(seg.indexOf('三中�?)>=0||seg.indexOf('3�?')>=0)_grpType='s3';        if(seg.indexOf('三中�?)>=0||seg.indexOf('3�?')>=0)_grpType='s2';
+    // 三中三/二中二等：按点号分组，每组独立注
+    if(seg.indexOf('四中四')>=0 || seg.indexOf('4中4')>=0 || seg.indexOf('三中三')>=0 || seg.indexOf('3中3')>=0 || seg.indexOf('三中二')>=0 || seg.indexOf('3中2')>=0 || seg.indexOf('二中二')>=0 || seg.indexOf('2中2')>=0){      var _grpAmt=0;var _grpAm=seg.match(/(?:各|毎组|每组)\s*(\d+)/);if(_grpAm)_grpAmt=parseInt(_grpAm[1]);      if(_grpAmt>0){
+        var _grpType='e2';if(seg.indexOf('四中四')>=0||seg.indexOf('4中4')>=0)_grpType='s4';else if(seg.indexOf('三中三')>=0||seg.indexOf('3中3')>=0)_grpType='s3';        if(seg.indexOf('三中二')>=0||seg.indexOf('3中2')>=0)_grpType='s2';
         // 按点号分组：38-32-01.17-44-38 => [38,32,01] [17,44,38]
         var _grpText=seg.replace(/(?:各|毎组|每组).*/,'').replace(/二组|两组|三组|四组|五组|每组|毎组/g,'').trim();        var _rawGroups=_grpText.indexOf('§')>=0?_grpText.split(/§+/):_grpText.split(/\.(?=\d)/g);        var _need=_grpType==='s4'?4:_grpType==='s3'?3:2;        var _validGroups=_rawGroups.filter(function(g){return (g.match(/\d+/g)||[]).length>=_need;});        if(_grpText.indexOf('§')>=0){
           var _dragNums=[],_dragSeen={};
@@ -1899,8 +1899,8 @@ function parseBatchText(text,options){
           var _dbgNew=G.length-_dbgBefore; if(_dbgNew>0){var _dbgTot=0;for(var _di=G.length-_dbgNew;_di<G.length;_di++)_dbgTot+=G[_di].tb;_dbgSegs.push({text:seg.replace(/\n/g,' ').substring(0,40),cnt:_dbgNew,tot:_dbgTot,start:G.length-_dbgNew});}
       return;
         }else if(_rawGroups.length===1 || (_validGroups.length===0 && _rawGroups.length>1)){          var _ns=(_rawGroups.length===1?_rawGroups[0]:_rawGroups.join(',')).match(/\d+/g)||[];
-          // 二组=重复2�?
-          var _repeat=1;var _rm=seg.match(/([二三四五六])�?);if(_rm){"二三四五�?.indexOf(_rm[1])+2||2;_repeat="二三四五�?.indexOf(_rm[1])+2;}
+          // 二组=重复2次
+          var _repeat=1;var _rm=seg.match(/([二三四五六])组/);if(_rm){"二三四五六".indexOf(_rm[1])+2||2;_repeat="二三四五六".indexOf(_rm[1])+2;}
           if(_ns.length>=_need){
             var _hasFushi2=seg.indexOf('复试')>=0||seg.indexOf('复式')>=0||(_validGroups.length===0&&_rawGroups.length>1);
             if(_hasFushi2){
@@ -1921,15 +1921,15 @@ function parseBatchText(text,options){
       if(!p) return;
       var orig=p;
       if(!/\d/.test(orig) && /^(特|澳门特码|澳彩特码|门特|澳特|香港|澳门|特码)$/.test(orig)) return;
-      // 阿拉伯数�?�?�?�?1�?1000, 5�?500) �?数字
-      p=p.replace(/(\d+)\s*�?g,function(m,n){return parseInt(n)+'000';});
+      // 阿拉伯数字+千/百(如 1千=1000, 5百=500) → 数字
+      p=p.replace(/(\d+)\s*千/g,function(m,n){return parseInt(n)+'000';});
       p=p.replace(/(\d+)\s*百\s*(?=[^\d]|$)/g,function(m,n){return parseInt(n)+'00';});
-      // 玩法说明中常省略“各”：中肖羊三百、三有蛇马羊50�?
-      p=p.replace(/(中肖|中生肖|平特|平特一肖|特肖|特生�?([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)([零〇一二两三四五六七八九十百千\d]+)(?=澳门|香港|$)/g,function(m,t,z,a){return t+z+'�?+(cnDigitAmount[a]||a);});
-      p=p.replace(/((?:二|三|四|五|2|3|4|5)[有友])([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)([零〇一二两三四五六七八九十百千\d]+)(?=澳门|香港|$)/g,function(m,t,z,a){return t+z+'�?+(cnDigitAmount[a]||a);});
-      var s=p.replace(/今晚澳门特码�?/g,'').replace(/今晚前码�?/g,'').replace(/\\/g,' ').replace(/\.\./g,'.').replace(/�?g,' ').replace(/\*/g,'').replace(/O(\d)/gi,'$1').replace(/�?g,'�?).replace(/每码�?g,'�?).replace(/每个�?g,'�?).replace(/各数/g,'�?).replace(/每号/g,'�?).replace(/每个�?g,'�?).replace(/数字.*?�?g,'�?).replace(/�?g,' ').replace(/�?g,' ').replace(/:/g,' ').replace(/(\d{1,2})-(\d{2,})(?=[^\d]|$)/g,'$1�?2�?).replace(/\.(?=[\u4e00-\u9fa5])/g,'�?);
-      // N号M(�?�?�?：号码N、金额M，单独成注（�?34�?0�?= 34�?0元）；注意要先于"�?转空格处�?
-      var haoM=p.match(/(\d+)号\s*(?:特码\s*)?(\d+)\s*(?:米|元|�??/);
+      // 玩法说明中常省略“各”：中肖羊三百、三有蛇马羊50。
+      p=p.replace(/(中肖|中生肖|平特|平特一肖|特肖|特生肖)([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)([零〇一二两三四五六七八九十百千\d]+)(?=澳门|香港|$)/g,function(m,t,z,a){return t+z+'各'+(cnDigitAmount[a]||a);});
+      p=p.replace(/((?:二|三|四|五|2|3|4|5)[有友])([鼠牛虎兔龙蛇马羊猴鸡狗猪]+)([零〇一二两三四五六七八九十百千\d]+)(?=澳门|香港|$)/g,function(m,t,z,a){return t+z+'各'+(cnDigitAmount[a]||a);});
+      var s=p.replace(/今晚澳门特码，?/g,'').replace(/今晚前码，?/g,'').replace(/\\/g,' ').replace(/\.\./g,'.').replace(/米/g,' ').replace(/\*/g,'').replace(/O(\d)/gi,'$1').replace(/斤/g,'元').replace(/每码各/g,'各').replace(/每个数/g,'各').replace(/各数/g,'各').replace(/每号/g,'各').replace(/每个号/g,'各').replace(/数字.*?个/g,'各').replace(/拖/g,' ').replace(/：/g,' ').replace(/:/g,' ').replace(/(\d{1,2})-(\d{2,})(?=[^\d]|$)/g,'$1号$2元').replace(/\.(?=[\u4e00-\u9fa5])/g,'，');
+      // N号M(米/元/块)：号码N、金额M，单独成注（如 34号10米 = 34号10元）；注意要先于"号"转空格处理
+      var haoM=p.match(/(\d+)号\s*(?:特码\s*)?(\d+)\s*(?:米|元|块)?/);
       if(!haoM) haoM=p.match(/(\d+)买\s*(\d+)/);
       if(haoM){
         var hN=parseInt(haoM[1]),hM=parseInt(haoM[2]);
@@ -1937,29 +1937,29 @@ function parseBatchText(text,options){
           var hCo=getCustomerOdds(name,'tema');var hTb=hM;
           G.push({id:nid(),batchId:curBatch,name:name,type:'tema',nums:[hN],bet:hM,multi:1,odds:hCo,rate:rate,tb:hTb,cb:hM*rate/100,date:(typeof useDate!=="undefined"?useDate:today),draw:segDraw,settled:false,result:null});
           count++;
-          // 从原文本整体摘除"N号M"，再重建s，避免数字残�?
+          // 从原文本整体摘除"N号M"，再重建s，避免数字残留
           p=p.replace(haoM[0],' ');
-          s=p.replace(/今晚澳门特码�?/g,'').replace(/今晚前码�?/g,'').replace(/\\/g,' ').replace(/\.\./g,'.').replace(/�?g,' ').replace(/\*/g,'').replace(/O(\d)/gi,'$1').replace(/�?g,'�?).replace(/每码�?g,'�?).replace(/每个�?g,'�?).replace(/各数/g,'�?).replace(/每号/g,'�?).replace(/每个�?g,'�?).replace(/数字.*?�?g,'�?).replace(/�?g,' ').replace(/�?g,' ').replace(/:/g,' ');
+          s=p.replace(/今晚澳门特码，?/g,'').replace(/今晚前码，?/g,'').replace(/\\/g,' ').replace(/\.\./g,'.').replace(/米/g,' ').replace(/\*/g,'').replace(/O(\d)/gi,'$1').replace(/斤/g,'元').replace(/每码各/g,'各').replace(/每个数/g,'各').replace(/各数/g,'各').replace(/每号/g,'各').replace(/每个号/g,'各').replace(/数字.*?个/g,'各').replace(/拖/g,' ').replace(/：/g,' ').replace(/:/g,' ');
         }
       }
       if(!p.trim()) return;
       if(!/\d/.test(p) && /^(特|澳门特码|澳彩特码|门特|澳特|香港|澳门|特码|.*就是.*)$/.test(p.trim())) return;
       if(/就是/.test(p) && !/\d+号\s*(?:特码\s*)?\d+/.test(p) && !/[鼠牛虎兔龙蛇马羊猴鸡狗猪]\s*(?:各|每|\d)/.test(p)) return;
-      s=s.replace(/�?g,' ');
+      s=s.replace(/号/g,' ');
       var type=null;
       var keys=Object.keys(TYPE_MAP).sort(function(a,b){return b.length-a.length;});
       var matchedKey='';
       for(var i=0;i<keys.length;i++){var k=keys[i];if(k.length<=1)continue;if(s.indexOf(k)>=0){type=TYPE_MAP[k];matchedKey=k;break;}}
       if(matchedKey&&/^\d[有中友]$/.test(matchedKey)){s=s.replace(matchedKey,' ');}
       if(matchedKey&&/^\d中\d$/.test(matchedKey)){s=s.replace(/^\d中\d/,'');}
-      // "特肖/中肖/平特"字样优先�?澳门�?澳特"等前缀，强制为特肖/中肖类型(不拆)
-      if(s.indexOf('特肖')>=0||s.indexOf('特生�?)>=0){type='tx';lastType='tx';}
-      else if(s.indexOf('中肖')>=0||s.indexOf('中生�?)>=0||s.indexOf('平特一�?)>=0||s.indexOf('平特')>=0){type='zx';lastType='zx';}
+      // "特肖/中肖/平特"字样优先于"澳门特/澳特"等前缀，强制为特肖/中肖类型(不拆)
+      if(s.indexOf('特肖')>=0||s.indexOf('特生肖')>=0){type='tx';lastType='tx';}
+      else if(s.indexOf('中肖')>=0||s.indexOf('中生肖')>=0||s.indexOf('平特一肖')>=0||s.indexOf('平特')>=0){type='zx';lastType='zx';}
       var hasZod=[...s].some(function(c){return ZODIAC_MAP[c]!==undefined;});
       var draw=segDraw;
-      if(s.indexOf('澳门')>=0 || s.indexOf('新奥')>=0 || s.indexOf('新奥�?)>=0) draw='am';
+      if(s.indexOf('澳门')>=0 || s.indexOf('新奥')>=0 || s.indexOf('新奥门')>=0) draw='am';
       else if(s.indexOf('澳特')>=0 || s.indexOf('门特')>=0) draw='am';
-      else if(s.indexOf('�?)>=0 && s.indexOf('香港')<0) draw='am';
+      else if(s.indexOf('澳')>=0 && s.indexOf('香港')<0) draw='am';
       else if(s.indexOf('香港')>=0) draw='hk';
       if(!type){
         if(hasZod && lastType) type=lastType;
@@ -1967,32 +1967,32 @@ function parseBatchText(text,options){
       } else {
         lastType=type;
       }
-      // 整段明确�?特肖/中肖/平特"则整段不拆；否则"�?每X"且在特码语境时拆号码
-      var segIsZodWhole=/特肖|中肖|中生肖|平特|特生肖|1号特肖|1号中�?.test(seg);
+      // 整段明确是"特肖/中肖/平特"则整段不拆；否则"各/每X"且在特码语境时拆号码
+      var segIsZodWhole=/特肖|中肖|中生肖|平特|特生肖|1号特肖|1号中肖/.test(seg);
       if(!segIsZodWhole && /每个|每号|每码|每肖|每数|每只|各号|各数/.test(orig) && hasZod){
         type='tema'; lastType='tema';
       }
       var isEach=/各|每个|每组/.test(s);
-      // 中文金额 -> 数字 (general: any Chinese number before �?�?�?
+      // 中文金额 -> 数字 (general: any Chinese number before 元/块/米)
       var cnFn=function(m,cn){
-        var map={'�?:0,'一':1,'�?:2,'�?:2,'�?:3,'�?:4,'�?:5,'�?:6,'�?:7,'�?:8,'�?:9,'�?:10,'�?:100,'�?:1000,'�?:10000};
+        var map={'零':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'百':100,'千':1000,'万':10000};
         var r=0,t=0;
-        for(var ci=0;ci<cn.length;ci++){var ch=cn[ci];if(ch==='�?){t=t||1;r+=t*10;t=0;}else if(ch==='�?){t=t||1;r+=t*100;t=0;}else if(ch==='�?){t=t||1;r+=t*1000;t=0;}else if(ch==='�?){t=t||1;r+=t*10000;t=0;}else{t=map[ch]||0;}}
+        for(var ci=0;ci<cn.length;ci++){var ch=cn[ci];if(ch==='十'){t=t||1;r+=t*10;t=0;}else if(ch==='百'){t=t||1;r+=t*100;t=0;}else if(ch==='千'){t=t||1;r+=t*1000;t=0;}else if(ch==='万'){t=t||1;r+=t*10000;t=0;}else{t=map[ch]||0;}}
         r+=t;return r;
       };
-      s=s.replace(/([零一二三四五六七八九十百千]+)\s*�?g,function(m,cn){return cnFn(m,cn)+'�?;});
-      s=s.replace(/([零一二三四五六七八九十百千]+)\s*�?g,function(m,cn){return cnFn(m,cn)+'�?;});
-      s=s.replace(/([零一二三四五六七八九十百千]+)\s*�?g,function(m,cn){return cnFn(m,cn)+'�?;});
-      s=s.replace(/([0-9]*\.?[0-9]+)\s*万\s*(?=元|块|米|$)/g,function(m,n){return Math.round(parseFloat(n)*10000)+'�?;});
-  s=s.replace(/([0-9]*\.?[0-9]+)\s*千\s*(?=元|块|米|$)/g,function(m,n){return Math.round(parseFloat(n)*1000)+'�?;});
-  s=s.replace(/各\s*([0-9]*\.?[0-9]+)\s*千\s*(?=元|块|米|$)/g,function(m,n){return '�?+Math.round(parseFloat(n)*1000);});
-  s=s.replace(/各\s*([0-9]*\.?[0-9]+)\s*万\s*(?=元|块|米|$)/g,function(m,n){return '�?+Math.round(parseFloat(n)*10000);});
-  s=s.replace(/各\s*([零一二三四五六七八九十百千]+)\s*(?=元|块|米|$)/g,function(m,cn){return '�?+cnFn(m,cn);});
+      s=s.replace(/([零一二三四五六七八九十百千]+)\s*元/g,function(m,cn){return cnFn(m,cn)+'元';});
+      s=s.replace(/([零一二三四五六七八九十百千]+)\s*块/g,function(m,cn){return cnFn(m,cn)+'块';});
+      s=s.replace(/([零一二三四五六七八九十百千]+)\s*米/g,function(m,cn){return cnFn(m,cn)+'米';});
+      s=s.replace(/([0-9]*\.?[0-9]+)\s*万\s*(?=元|块|米|$)/g,function(m,n){return Math.round(parseFloat(n)*10000)+'元';});
+  s=s.replace(/([0-9]*\.?[0-9]+)\s*千\s*(?=元|块|米|$)/g,function(m,n){return Math.round(parseFloat(n)*1000)+'元';});
+  s=s.replace(/各\s*([0-9]*\.?[0-9]+)\s*千\s*(?=元|块|米|$)/g,function(m,n){return '各'+Math.round(parseFloat(n)*1000);});
+  s=s.replace(/各\s*([0-9]*\.?[0-9]+)\s*万\s*(?=元|块|米|$)/g,function(m,n){return '各'+Math.round(parseFloat(n)*10000);});
+  s=s.replace(/各\s*([零一二三四五六七八九十百千]+)\s*(?=元|块|米|$)/g,function(m,cn){return '各'+cnFn(m,cn);});
       s=s.replace(/每个\s*([零一二三四五六七八九十百千]+)\s*(?=元|块|米|$)/g,function(m,cn){return '每个'+cnFn(m,cn);});
-      s=s.replace(/元|�?g,' ');
-      // Handle multiple �?in one part: split by �?and process each group
-      var eachMatches=[]; var eachRe=/各\s*(\d+)\s*(?:百|元|块|�??/g; var eachM;
-      while((eachM=eachRe.exec(s))!==null) eachMatches.push({pos:eachM.index,len:eachM[0].length,amt:parseInt(eachM[1])*(eachM[0].indexOf('�?)>=0?100:1)});
+      s=s.replace(/元|块/g,' ');
+      // Handle multiple 各 in one part: split by 各 and process each group
+      var eachMatches=[]; var eachRe=/各\s*(\d+)\s*(?:百|元|块|米)?/g; var eachM;
+      while((eachM=eachRe.exec(s))!==null) eachMatches.push({pos:eachM.index,len:eachM[0].length,amt:parseInt(eachM[1])*(eachM[0].indexOf('百')>=0?100:1)});
       if(isEach && eachMatches.length>1){
         var prevEnd=0;
         eachMatches.forEach(function(em,gi){
@@ -2020,23 +2020,23 @@ function parseBatchText(text,options){
       }
       var amount=null; var m;
       var sClean=s.replace(/包特/g,'');
-      // X-Y 为两个独立号码（不是区间），�?- 变为空格以便分别提取
-      if(m=sClean.match(/各\s*([0-9]*\.?[0-9]+)\s*�?)) amount=Math.round(parseFloat(m[1])*100);
+      // X-Y 为两个独立号码（不是区间），把 - 变为空格以便分别提取
+      if(m=sClean.match(/各\s*([0-9]*\.?[0-9]+)\s*百/)) amount=Math.round(parseFloat(m[1])*100);
       else if(m=sClean.match(/各\s*([0-9]*\.?[0-9]+)/)) amount=parseFloat(m[1]);
       else if(m=sClean.match(/每个\s*([0-9]*\.?[0-9]+)/)) amount=parseFloat(m[1]);
       else if(m=sClean.match(/([0-9]*\.?[0-9]+)\s*百\s*$/)) amount=Math.round(parseFloat(m[1])*100);
       if(!amount){
         var mm=sClean.match(/(?:=|\/\/|:)\s*(\d+)\s*$/);
         if(!mm && sClean.indexOf('/')>=0 && !isEach){
-          // 处理 05/30 �?�?100 这种单斜杠金�?
+          // 处理 05/30 或 猴/100 这种单斜杠金额
           var slashNums=(sClean.match(/\d+/g)||[]).map(function(x){return parseInt(x,10);});
           var slashZods=[...sClean].filter(function(c){return ZODIAC_MAP[c]!==undefined;});
           if(slashZods.length===1 && slashNums.length===1){
-            mm=['',''+slashNums[0]]; // �?100
+            mm=['',''+slashNums[0]]; // 猴/100
           } else if(slashNums.length===2 && sClean.split('/').length===2){
             // 05/30 -> 视为 [05] 金额30
             amount=slashNums[1];
-            // 下面会清�?allNums，这里先占位
+            // 下面会清理 allNums，这里先占位
             mm=['',''+amount];
       }
     }
@@ -2045,21 +2045,21 @@ function parseBatchText(text,options){
       var allNums=(sClean.match(/\d+/g)||[]).map(function(x){return parseInt(x,10);});
       var allZods=[...sClean].filter(function(c){return ZODIAC_MAP[c]!==undefined;});
       if(amount!==null){
-        if(sClean.indexOf('�?)>=0 && allNums.length && allNums[allNums.length-1]*100===amount){
+        if(sClean.indexOf('百')>=0 && allNums.length && allNums[allNums.length-1]*100===amount){
           allNums=allNums.slice(0,-1);
         } else if(allNums.length && allNums[allNums.length-1]===amount){
           allNums=allNums.slice(0,-1);
-        } else if(sClean.indexOf('�?)>=0){
+        } else if(sClean.indexOf('百')>=0){
           var v=amount/100; var idx=allNums.indexOf(v); if(idx>=0) allNums.splice(idx,1);
         }
       }
       if(amount===null){
         if(allZods.length>=1 && allNums.length===1){ amount=allNums[0]; allNums=[]; }
-        else if(orig.indexOf('�?)>=0 || orig.indexOf('=')>=0 || sClean.indexOf('//')>=0){
+        else if(orig.indexOf('号')>=0 || orig.indexOf('=')>=0 || sClean.indexOf('//')>=0){
           if(allNums.length>=1){ amount=allNums[allNums.length-1]; allNums=allNums.slice(0,-1); }
         }
         else if(allNums.length>=2 && sClean.indexOf(' ')>=0){
-          // 处理 平特38 100 这种空格分隔的金�?
+          // 处理 平特38 100 这种空格分隔的金额
           amount=allNums[allNums.length-1]; allNums=allNums.slice(0,-1);
         }
       }
@@ -2069,11 +2069,11 @@ function parseBatchText(text,options){
       if((type==='zx'||type==='zx1'||type==='tx'||type==='tx1') && betNums.length>0 && zodNums.length===0){
         type='tema';lastType='tema';
       }
-      // 生肖+每个/每号/每码/每数/各：展开为该生肖�?个号码，每个买金�?
-      // 特肖/中肖(押生肖整�?不拆；特�?特马�?押号�?带各/每则�?
-      var wantZodExpand=/每个|每号|每码|每肖|每数|每只|每注|�?.test(orig);
+      // 生肖+每个/每号/每码/每数/各：展开为该生肖的4个号码，每个买金额
+      // 特肖/中肖(押生肖整体)不拆；特码/特马类(押号码)带各/每则拆
+      var wantZodExpand=/每个|每号|每码|每肖|每数|每只|每注|各/.test(orig);
       var zodiacWhole=(type==='tx'||type==='tx1'||type==='zx'||type==='zx1');
-      var forceEach=/每个|每号|每码|每肖|每数|每码各|每个�?.test(orig); // 明确"每码/每号"必拆号码，不受特肖影�?
+      var forceEach=/每个|每号|每码|每肖|每数|每码各|每个数/.test(orig); // 明确"每码/每号"必拆号码，不受特肖影响
       if(wantZodExpand && (!zodiacWhole||forceEach) && (zodNums.length>0 || pendingZods.length>0)){
         var allZod=zodNums.concat(pendingZods);
         var expNums=[];
@@ -2083,9 +2083,9 @@ function parseBatchText(text,options){
         if(betNums.length>0) type='tema';
         lastType='tema';
       }
-      // 特码+纯生�?=> 特肖(tx)，非特马(tema)
+      // 特码+纯生肖 => 特肖(tx)，非特马(tema)
       if(type==='tema' && betNums.length===0 && zodNums.length>0){type='tx';lastType='tx';}
-      // 处理 31�?3，各350 这种分散�?各：暂存
+      // 处理 31，43，各350 这种分散的 各：暂存
       if((!amount || amount<=0) && (betNums.length>0 || zodNums.length>0)){
         pendingNums = pendingNums.concat(betNums);
         pendingZods = pendingZods.concat(zodNums);
@@ -2098,7 +2098,7 @@ function parseBatchText(text,options){
         if(pendingType) type=pendingType;
         pendingNums=[]; pendingZods=[]; pendingType=null;
       } else {
-        // 有号码则暂不�?pending，若当前�?�?则合�?
+        // 有号码则暂不清 pending，若当前是 各 则合并
         if(isEach && (pendingNums.length>0 || pendingZods.length>0)){
           betNums = pendingNums.concat(betNums);
           zodNums = pendingZods.concat(zodNums);
@@ -2107,7 +2107,7 @@ function parseBatchText(text,options){
       }
       if(betNums.length===0 && zodNums.length===0){ fail.push(orig+'=>无法识别号码/生肖'); return; }
       var customerOdds;
-      // �?每个 �?合并为一笔（多号×单价�?
+      // 各/每个 → 合并为一笔（多号×单价）
       var allBetNums=betNums.concat(zodNums);
       var isGroupType=['eryou','sanyou','siyou','wuyou'].indexOf(type)>=0;
       var isComboType=['e2','s3','s4'].indexOf(type)>=0;
@@ -2150,7 +2150,7 @@ function parseBatchText(text,options){
       if(!_covered[ui]){
         var _ug=G[ui];
         var _ud=_ug.draw==='am'?'澳门':_ug.draw==='hk'?'香港':'';
-        _dbgSegs.push({text:_ud+(TN[_ug.type]||'投注')+' '+formatNums(_ug)+' '+(_ug.multi>1?'�?:'')+_ug.bet+'�?,cnt:1,tot:_ug.tb,start:ui});
+        _dbgSegs.push({text:_ud+(TN[_ug.type]||'投注')+' '+formatNums(_ug)+' '+(_ug.multi>1?'各':'')+_ug.bet+'元',cnt:1,tot:_ug.tb,start:ui});
       }
     }
     if(_dbgSegs.length===0)_dbgSegs.push({text:'识别结果',cnt:count,tot:_dbgTotal,start:_previewStart});
@@ -2160,31 +2160,31 @@ function parseBatchText(text,options){
     let realFail=fail.filter(function(s){
       var base=(s.split('=>')[0]||'').trim();
       return !/^(今晚澳门特码|今晚前码|香港二中二包特|特码|新奥门|澳|澳门|香港|门特|澳特|特肖|中肖|平特|平特一肖|平特一肖|二友|三友|四友|五友)$/.test(base)
-        && !/^(?:四有|三有|二有|五有|�??:数|�??\d+|奥特|香港�?$/.test(base)
-        && !/^(?:\d+(?:\.\d+)?\s*(?:元|块|�??|(?:合计|总计|共计|�?\s*\d+|图片|粘贴的图�?$/.test(base);
+        && !/^(?:四有|三有|二有|五有|各(?:数|号)?\d+|奥特|香港特)$/.test(base)
+        && !/^(?:\d+(?:\.\d+)?\s*(?:元|块|米)?|(?:合计|总计|共计|共)\s*\d+|图片|粘贴的图像)$/.test(base);
     });
-    toast('批量添加 '+count+' 笔投�?+(realFail.length?'�?+realFail.length+'条未识别�?:''));
-    speak('批量添加 '+count+' �?�?+_dbgTotal+'�?);
+    toast('批量添加 '+count+' 笔投注'+(realFail.length?'（'+realFail.length+'条未识别）':''));
+    speak('批量添加 '+count+' 笔 共'+_dbgTotal+'元');
     document.getElementById('batch-input').value='';
-    if(fail.length) console.log('未识�?',fail);
+    if(fail.length) console.log('未识别:',fail);
     // 调试面板
     var _sourceLabel=parseSource==='ocr'?'🔶 OCR截图识别（自动推断，请确认）':'聊天文字解析（自动推断，请确认）';
     var _dhtml='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.94);border:3px solid #ffab00;z-index:999;overflow-y:auto;padding:10px;font-size:11px;color:#ccc;font-family:monospace" id="debug-panel">';
     _dhtml+='<div style="color:#ffab00;font-size:14px;font-weight:700;margin-bottom:6px">'+_sourceLabel+'</div>';
-    _dhtml+='<div style="color:#ffab00;font-size:13px;margin-bottom:6px">解析明细 ('+count+'�?�?+_dbgTotal+'�?</div>';
-    _dhtml+='<div style="color:#666;font-size:10px;margin-bottom:8px">可改金额后点确认；点空白处关闭不�?/div>';
+    _dhtml+='<div style="color:#ffab00;font-size:13px;margin-bottom:6px">解析明细 ('+count+'笔 共'+_dbgTotal+'元)</div>';
+    _dhtml+='<div style="color:#666;font-size:10px;margin-bottom:8px">可改金额后点确认；点空白处关闭不改</div>';
     _dbgSegs.forEach(function(s,i){_dhtml+='<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;display:flex;gap:6px;align-items:center"><span style="color:#666;min-width:18px">'+(i+1)+'</span><input id="dbg-amt-'+i+'" value="'+s.tot+'" style="width:70px;padding:4px;background:#0f0f1a;border:1px solid #2a2a4a;border-radius:6px;color:#ffab00;font-size:11px" inputmode="decimal"><span style="color:#888;flex:1">'+escapeBatchHtml(s.text)+'</span></div>';});
     if(realFail.length){
-      _dhtml+='<div style="color:#ff5252;font-size:12px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px solid #ff5252">未识�?'+realFail.length+' 条：</div>';
+      _dhtml+='<div style="color:#ff5252;font-size:12px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px solid #ff5252">未识别 '+realFail.length+' 条：</div>';
       realFail.forEach(function(s,i){_dhtml+='<div style="padding:2px 0;color:#ff8a80">'+(i+1)+'. '+escapeBatchHtml(s)+'</div>';});
     }
     _dhtml+='<div style="display:flex;gap:8px;margin-top:10px"><button class="btn ba" onclick="confirmDbg()" style="flex:1">确认入账</button><button class="btn bt" onclick="cancelDbg()" style="flex:1">取消</button></div>';
-    _dhtml+='<div style="color:#ffab00;font-weight:700;margin-top:8px;padding-top:8px;border-top:2px solid #ffab00;font-size:13px">总计: <span id="dbg-total">'+_dbgTotal+'</span>�?/div>';
+    _dhtml+='<div style="color:#ffab00;font-weight:700;margin-top:8px;padding-top:8px;border-top:2px solid #ffab00;font-size:13px">总计: <span id="dbg-total">'+_dbgTotal+'</span>元</div>';
     _dhtml+='<div style="display:none" id="dbg-count">'+count+'</div>';
     _dhtml+='</div>';
     var _op=document.getElementById('debug-panel');if(_op&&_op.remove)_op.remove();
     document.body.insertAdjacentHTML('beforeend',_dhtml);
-    // 绑定确认与输入事件（替代�?script>内联�?
+    // 绑定确认与输入事件（替代原<script>内联）
     __batchPendingPreviewId=curBatch;
     (function(){
       var cnt=count;
@@ -2207,7 +2207,7 @@ function parseBatchText(text,options){
         save(); renderRecords(); if(typeof renderRisk==='function') renderRisk();
         var p=document.getElementById('debug-panel'); if(p) p.remove();
         __batchPendingPreviewId=null;
-        toast('已确�?'+tot+'�?);
+        toast('已确认 '+tot+'元');
       };
       var panel=document.getElementById('debug-panel');
       if(panel) panel.addEventListener('click', function(e){ if(e.target.id==='debug-panel') cancelDbg(); });
@@ -2220,22 +2220,22 @@ function parseBatchText(text,options){
       });
     })();
   }else{
-    // 增强：即�?笔也展示未识别明细，便于一分不差核�?
+    // 增强：即使0笔也展示未识别明细，便于一分不差核对
     var _failHtml='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:999;overflow-y:auto;padding:10px;font-size:11px;color:#ccc;font-family:monospace" id="debug-panel" onclick="this.remove()">';
-    _failHtml+='<div style="color:#ff5252;font-size:14px;font-weight:700;margin-bottom:6px">未识�?'+fail.length+' �?/div>';
-    _failHtml+='<div style="color:#666;font-size:10px;margin-bottom:8px">点击任意处关闭；请检查是否为笔误或特殊符�?/div>';
+    _failHtml+='<div style="color:#ff5252;font-size:14px;font-weight:700;margin-bottom:6px">未识别 '+fail.length+' 条</div>';
+    _failHtml+='<div style="color:#666;font-size:10px;margin-bottom:8px">点击任意处关闭；请检查是否为笔误或特殊符号</div>';
     fail.forEach(function(s,i){_failHtml+='<div style="padding:3px 0;border-bottom:1px solid #1a1a2e"><span style="color:#666">'+(i+1)+'</span> <span style="color:#ff5252">'+escapeBatchHtml(s)+'</span></div>';});
     _failHtml+='</div>';
     var _op2=document.getElementById('debug-panel');if(_op2&&_op2.remove)_op2.remove();
     document.body.insertAdjacentHTML('beforeend',_failHtml);
-    alert('未识别有效投注\n'+fail.slice(0,3).join('\n')+'\n\n格式示例：\n香港特：16-28-40�?0\n05�?00\n特肖�?00\n平特一肖猴=500');
+    alert('未识别有效投注\n'+fail.slice(0,3).join('\n')+'\n\n格式示例：\n香港特：16-28-40各50\n05号400\n特肖虎300\n平特一肖猴=500');
   }
 }
 
 
 
 document.addEventListener('DOMContentLoaded',function(){
-  if(!customers.some(function(c){return c.name==="�?;})){var odds={};Object.keys(O).forEach(function(k){odds[k]=O[k];});customers.push({name:"�?,rate:0.5,odds:odds});saveC();}initSel();renderRecords();loadDraw();
+  if(!customers.some(function(c){return c.name==="琴";})){var odds={};Object.keys(O).forEach(function(k){odds[k]=O[k];});customers.push({name:"琴",rate:0.5,odds:odds});saveC();}initSel();renderRecords();loadDraw();
   var bi=document.getElementById('batch-input');
   if(bi){
     // 拖拽视觉反馈（不自动提交，需点按钮）
