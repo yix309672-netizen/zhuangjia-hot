@@ -36,11 +36,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 .bd{background:#2a2a4a;color:#e94560;padding:5px 8px;font-size:10px;border-radius:6px;border:1px solid #3a3a5a}
 .bt{background:#2a2a4a;color:#fff;width:100%;margin-top:8px}
 .lt{max-height:600px;overflow-y:auto}
-.li{background:#0f0f1a;border:1px solid #2a2a4a;border-radius:10px;padding:10px;margin-bottom:6px;font-size:11px;transition:all 0.3s}
+.li{background:#0f0f1a;border:1px solid #2a2a4a;border-radius:10px;padding:14px;margin-bottom:8px;font-size:14px;transition:all 0.3s}
 .li:active{background:#1a1a2e}
 .lh{display:flex;justify-content:space-between;align-items:center}
-.ln{font-weight:600;color:#e94560;font-size:13px}
-.ld{color:#888;margin-top:4px;line-height:1.5}
+.ln{font-weight:700;color:#ff6b6b;font-size:16px;letter-spacing:0.5px}
+.ld{color:#ccc;margin-top:6px;line-height:1.6;font-size:14px;font-weight:500}
 .lr{margin-top:6px;padding-top:6px;border-top:1px solid #2a2a4a;display:flex;justify-content:space-between}
 .w{color:#00b894;font-weight:600}
 .l{color:#e94560;font-weight:600}
@@ -185,40 +185,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 </div>
 </div>
 <div id="pg-rs" class="pg">
-<div style="display:flex;gap:8px;margin-bottom:10px">
-<button class="btn ba" onclick="fetchDraw('hk')" style="flex:1;background:linear-gradient(135deg,#ffab00,#ff8f00);color:#000">获取香港开奖</button>
-<button class="btn ba" onclick="fetchDraw('am')" style="flex:1;background:linear-gradient(135deg,#00b894,#00897b)">获取澳门开奖</button>
-<button class="btn ba" onclick="fetchDraw()" style="flex:1;background:linear-gradient(135deg,#9c27b0,#7b1fa2)">一键获取两盘</button>
+<div class="cd" style="padding:12px">
+<div class="ct">香港开奖</div>
+<div class="draw-num" id="draw-display-hk" style="font-size:14px;word-break:break-all;min-height:18px;color:#ffab00">-</div>
+<div class="draw-info" id="draw-info-hk" style="font-size:11px">6正码+1特码</div>
+<input type="text" id="dn-hk" placeholder="12,9,34,25,40,7,29" style="width:100%;margin-top:8px;padding:14px;background:#0f0f1a;border:1.5px solid #ffab00;border-radius:10px;color:#fff;font-size:18px;letter-spacing:1px;text-align:center">
+<button class="btn bc" onclick="manualInput('hk')" style="margin-top:10px;padding:14px;font-size:16px;letter-spacing:2px">确认香港开奖</button>
 </div>
-<div class="cd">
-<div class="ct">香港开奖号码</div>
-<div class="draw-num" id="draw-display-hk" style="font-size:20px;word-break:break-all">?</div>
-<div class="draw-info" id="draw-info-hk">输入7个号码（6正码+1特码）</div>
-<div style="margin-top:8px">
-<div class="fg" style="margin-bottom:8px">
-<label>香港 正码6个+特码1个</label>
-<input type="text" id="dn-hk" placeholder="12,9,34,25,40,7,29" style="font-size:15px;padding:12px">
+<div class="cd" style="padding:12px">
+<div class="ct">澳门开奖</div>
+<div class="draw-num" id="draw-display-am" style="font-size:14px;word-break:break-all;min-height:18px;color:#00b894">-</div>
+<div class="draw-info" id="draw-info-am" style="font-size:11px">6正码+1特码</div>
+<input type="text" id="dn-am" placeholder="25,30,37,19,7,17,39" style="width:100%;margin-top:8px;padding:14px;background:#0f0f1a;border:1.5px solid #00b894;border-radius:10px;color:#fff;font-size:18px;letter-spacing:1px;text-align:center">
+<button class="btn bc" onclick="manualInput('am')" style="margin-top:10px;padding:14px;font-size:16px;letter-spacing:2px;background:linear-gradient(135deg,#00b894,#00a381)">确认澳门开奖</button>
 </div>
-</div>
-<button class="btn bc" onclick="manualInput('hk')">确认香港开奖</button>
-<button class="btn ba" onclick="saveDraw('hk')" style="margin-top:8px">保存香港</button>
-<button class="btn ba" onclick="settleAll('hk')" style="margin-top:8px;background:linear-gradient(135deg,#ff9800,#f57c00)">结算香港今天</button>
-</div>
-<div class="cd">
-<div class="ct">澳门开奖号码</div>
-<div class="draw-num" id="draw-display-am" style="font-size:20px;word-break:break-all">?</div>
-<div class="draw-info" id="draw-info-am">输入7个号码（6正码+1特码）</div>
-<div style="margin-top:8px">
-<div class="fg" style="margin-bottom:8px">
-<label>澳门 正码6个+特码1个</label>
-<input type="text" id="dn-am" placeholder="25,30,37,19,7,17,39" style="font-size:15px;padding:12px">
-</div>
-</div>
-<button class="btn bc" onclick="manualInput('am')">确认澳门开奖</button>
-<button class="btn ba" onclick="saveDraw('am')" style="margin-top:8px">保存澳门</button>
-<button class="btn ba" onclick="settleAll('am')" style="margin-top:8px;background:linear-gradient(135deg,#00b894,#00a381)">结算澳门今天</button>
-</div>
-<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn ba" onclick="settleAll('hk');settleAll('am')" style="background:linear-gradient(135deg,#e94560,#c23152)">一键结算两盘</button><button class="btn bt" onclick="undoSettle()">撤销结算</button></div>
+<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn ba" onclick="settleAll('hk');settleAll('am')" style="flex:1;padding:12px;background:linear-gradient(135deg,#e94560,#c23152);font-size:14px">一键结算两盘</button><button class="btn bt" onclick="undoSettle()" style="flex:0 0 90px;padding:12px">撤销</button></div>
 <div style="display:flex;gap:6px;margin-bottom:8px" id="settle-filter">
 <button class="btn bd" onclick="setSettleFilter('all')" id="sf-all" style="flex:1;background:#e94560;color:#fff">全部</button>
 <button class="btn bd" onclick="setSettleFilter('hk')" id="sf-hk" style="flex:1">香港</button>
