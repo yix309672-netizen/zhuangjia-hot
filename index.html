@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="思念的人在远方">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="description" content="思念的人在远方">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<title>思念的人在远方</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;background:#0f0f1a;color:#e0e0e0;min-height:100vh;-webkit-tap-highlight-color:transparent;user-select:none}
+.hd{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:14px;text-align:center;position:sticky;top:0;z-index:100;border-bottom:1px solid #2a2a4a}
+.hd h1{font-size:17px;font-weight:700;background:linear-gradient(90deg,#e94560,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px}
+.mn{padding:10px;max-width:500px;margin:0 auto;padding-bottom:80px}
+.tabs{display:flex;gap:4px;background:#1a1a2e;padding:4px;border-radius:12px;margin-bottom:10px;border:1px solid #2a2a4a;flex-wrap:wrap}
+.tab{flex:1;min-width:56px;padding:8px 2px;background:transparent;border-radius:8px;text-align:center;font-size:12px;cursor:pointer;color:#888;transition:all 0.3s}
+.tab.on{background:linear-gradient(135deg,#e94560,#c23152);color:#fff;font-weight:600;box-shadow:0 4px 15px rgba(233,69,96,0.3)}
+.cd{background:#1a1a2e;border:1px solid #2a2a4a;border-radius:16px;padding:14px;margin-bottom:10px}
+.ct{font-size:13px;font-weight:600;color:#e94560;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ct::before{content:'';width:3px;height:14px;background:linear-gradient(180deg,#e94560,#ff6b6b);border-radius:2px}
+.fr{display:flex;gap:8px;margin-bottom:8px}
+.fg{flex:1}
+.fg label{display:block;font-size:10px;color:#666;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px}
+.fg input,.fg select{width:100%;padding:10px;background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;color:#fff;font-size:13px;-webkit-appearance:none;transition:all 0.3s}
+.fg input:focus,.fg select:focus{border-color:#e94560;outline:none;box-shadow:0 0 0 3px rgba(233,69,96,0.1)}
+.btn{padding:10px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.3s}
+.btn:active{transform:scale(0.98)}
+.ba{background:linear-gradient(135deg,#e94560,#c23152);color:#fff;width:100%;box-shadow:0 4px 15px rgba(233,69,96,0.3)}
+.bc{background:linear-gradient(135deg,#00b894,#00a381);color:#fff;width:100%;margin-top:8px;box-shadow:0 4px 15px rgba(0,184,148,0.3)}
+.bd{background:#2a2a4a;color:#e94560;padding:5px 8px;font-size:10px;border-radius:6px;border:1px solid #3a3a5a}
+.bt{background:#2a2a4a;color:#fff;width:100%;margin-top:8px}
+.lt{max-height:600px;overflow-y:auto}
+.li{background:#0f0f1a;border:1px solid #2a2a4a;border-radius:10px;padding:10px;margin-bottom:6px;font-size:11px;transition:all 0.3s}
+.li:active{background:#1a1a2e}
+.lh{display:flex;justify-content:space-between;align-items:center}
+.ln{font-weight:600;color:#e94560;font-size:13px}
+.ld{color:#888;margin-top:4px;line-height:1.5}
+.lr{margin-top:6px;padding-top:6px;border-top:1px solid #2a2a4a;display:flex;justify-content:space-between}
+.w{color:#00b894;font-weight:600}
+.l{color:#e94560;font-weight:600}
+.sm{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border-radius:16px;padding:14px;margin-top:10px;border:1px solid #2a2a4a}
+.st{font-size:13px;font-weight:600;margin-bottom:10px;color:#ffab00;display:flex;align-items:center;gap:6px}
+.st::before{content:'';width:3px;height:14px;background:linear-gradient(180deg,#ffab00,#ff8f00);border-radius:2px}
+.sr{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.stl{font-size:16px;margin-top:10px;padding-top:10px;border-top:2px solid #ffab00;font-weight:700}
+.pg{display:none}.pg.on{display:block}
+.empty{text-align:center;color:#444;padding:30px;font-size:12px}
+.ot{width:100%;font-size:10px;border-collapse:collapse}
+.ot th,.ot td{padding:6px;border:1px solid #2a2a4a;text-align:center}
+.ot th{background:#2a2a4a;color:#e94560;font-weight:600}
+.ot td{background:#0f0f1a}
+.st2{max-height:500px;overflow-y:auto}
+.draw-num{font-size:56px;font-weight:bold;text-align:center;padding:20px;color:#ffab00;text-shadow:0 0 30px rgba(255,171,0,0.3)}
+.draw-info{text-align:center;color:#888;font-size:11px;margin-bottom:10px;line-height:1.8}
+#num-grid div{transition:all 0.2s}
+#num-grid div:active{transform:scale(0.95)!important}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#0f0f1a}
+::-webkit-scrollbar-thumb{background:#2a2a4a;border-radius:2px}
+@keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(-10px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}85%{opacity:1}100%{opacity:0}}
+.ocr-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ocr-tools .btn{flex:1;min-width:92px}
+.ocr-status{font-size:11px;color:#ffab00;margin-top:8px;padding:7px 8px;background:#241f16;border:1px solid #5a4520;border-radius:7px}
+.ocr-preview{display:none;margin-top:8px;padding:8px;background:#0f0f1a;border:1px solid #5a4520;border-radius:8px}
+.ocr-preview.on{display:block}
+.ocr-preview img{display:block;max-width:100%;max-height:180px;margin:0 auto 8px;border-radius:5px}
+.ocr-preview textarea{width:100%;min-height:70px;padding:7px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:6px;color:#ddd;font-size:11px;resize:vertical}
+</style>
+</head>
+<body>
+<div class="hd"><h1>思念的人在远方</h1></div>
+<div class="mn">
+<div class="tabs">
+<div class="tab" onclick="sp2('cust')">客户</div>
+<div class="tab on" onclick="sp2('add')">投注</div>
+<div class="tab" onclick="sp2('list')">记录</div>
+<div class="tab" onclick="sp2('rs')">结算</div>
+<div class="tab" onclick="sp2('odds')">赔率</div>
+<div class="tab" onclick="sp2('risk')">风控</div>
+<div class="tab" onclick="sp2('import')">对奖</div>
+<div class="tab" onclick="sp2('pick')">选号</div>
+</div>
+<div id="pg-cust" class="pg">
+<div class="cd">
+<div class="ct">添加客户</div>
+<div class="fr"><div class="fg"><label>客户名称</label><input type="text" id="new-cust-name" placeholder="输入客户名称"></div></div>
+<div class="fr"><div class="fg"><label>默认反水%</label><input type="number" id="new-cust-rate" value="0.5" step="0.1"></div></div>
+<button class="btn bc" onclick="addCustomer()">添加客户</button>
+</div>
+<div class="cd">
+<div class="ct">客户列表</div>
+<div id="cust-list"><div class="empty">暂无客户</div></div>
+</div>
+</div>
+<div id="pg-add" class="pg on">
+<div class="cd">
+<div class="ct">选择客户</div>
+<div class="fr"><div class="fg"><label>从列表选择</label><select id="c-name-sel" onchange="onCustChange()"><option value="">-- 选择客户 --</option></select></div></div>
+<div class="fr" style="display:none"><div class="fg"><label>或手动输入</label><input type="text" id="c-name-input" placeholder="新客户名称"></div></div>
+</div>
+<div class="cd" style="display:none">
+<div class="ct">添加投注</div>
+<div class="fr"><div class="fg"><label>投注类型</label><select id="c-type" onchange="uo()"></select></div></div>
+<div id="num-sel" style="display:none !important" style="display:none">
+<div class="fg" style="margin-bottom:8px">
+<label>选择号码（点击选中，可多选）</label>
+<div id="num-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:6px"></div>
+<div style="margin-top:6px;font-size:10px;color:#666">已选：<span id="sel-nums" style="color:#e94560">无</span></div>
+</div>
+</div>
+<div class="fr"><div class="fg"><label>金额</label><input type="number" id="c-bet" placeholder="金额" inputmode="decimal"></div><div class="fg"><label>倍数</label><input type="number" id="c-multi" value="1" inputmode="numeric"></div></div>
+<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
+<button class="btn bd" onclick="setAmount(1)" style="flex:1;min-width:36px;padding:6px;font-size:11px">1</button>
+<button class="btn bd" onclick="setAmount(2)" style="flex:1;min-width:36px;padding:6px;font-size:11px">2</button>
+<button class="btn bd" onclick="setAmount(5)" style="flex:1;min-width:36px;padding:6px;font-size:11px">5</button>
+<button class="btn bd" onclick="setAmount(10)" style="flex:1;min-width:36px;padding:6px;font-size:11px">10</button>
+<button class="btn bd" onclick="setAmount(20)" style="flex:1;min-width:36px;padding:6px;font-size:11px">20</button>
+<button class="btn bd" onclick="setAmount(30)" style="flex:1;min-width:36px;padding:6px;font-size:11px">30</button>
+<button class="btn bd" onclick="setAmount(50)" style="flex:1;min-width:36px;padding:6px;font-size:11px">50</button>
+<button class="btn bd" onclick="setAmount(100)" style="flex:1;min-width:36px;padding:6px;font-size:11px">100</button>
+</div>
+<div class="fr"><div class="fg"><label>赔率</label><input type="number" id="c-odds" step="0.1" inputmode="decimal"></div><div class="fg"><label>反水%</label><input type="number" id="c-rate" value="0.5" step="0.1" inputmode="decimal"></div></div>
+<div id="oi" style="font-size:10px;color:#ffab00;margin:6px 0;padding:6px;background:#16213e;border-radius:6px"></div>
+<button class="btn bc" onclick="addToCart()">添加到投注单</button>
+</div>
+<div class="cd" id="cart-box" style="display:none">
+<div class="ct" style="justify-content:space-between">
+<span>投注单 (<span id="cart-count">0</span>笔)</span>
+<span id="cart-total" style="font-size:11px;color:#ffab00;font-weight:400">合计: 0元</span>
+</div>
+<div class="lt" id="cart-list"></div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button class="btn ba" style="flex:1" onclick="submitCart()">确认提交</button>
+<button class="btn bt" style="flex:1" onclick="clearCart()">清空</button>
+</div>
+</div>
+<div class="cd" style="background:linear-gradient(135deg,#16213e,#1a1a2e)">
+<div class="ct">批量录入（粘贴/拖拽微信消息）</div>
+<div class="fg"><label>支持格式</label>
+<textarea id="batch-input" rows="6" placeholder="粘贴微信聊天记录，自动识别格式：
+
+特：羊各数35
+12，24各150
+澳特05,45,46各30
+特肖虎300
+平特一肖蛇500
+虎拖蛇包特二中二各20
+单2000*（各号码均分）
+13++24+40（13到24各40）
+// 分隔多组" style="width:100%;padding:10px;background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;color:#fff;font-size:12px;resize:vertical;font-family:monospace"></textarea></div>
+<div style="font-size:10px;color:#666;margin:4px 0">
+支持：特马/特肖/中肖/平特/红波/2有~5有/拖/连肖/各号/各数 |
+<b>单2000*</b>均分 |
+<b>13++24</b>范围 |
+<b>//</b>分组 |
+<b>拖拽</b>微信消息到此处
+</div>
+<div class="ocr-tools">
+<input type="file" id="batch-image-input" accept="image/*" style="display:none" onchange="handleBatchImageFile(this.files&&this.files[0])">
+<button class="btn bd" type="button" onclick="document.getElementById('batch-image-input').click()">选择截图</button>
+<button class="btn bd" type="button" onclick="readBatchClipboardImage()">剪贴板截图</button>
+<button class="btn bd" type="button" onclick="configureBatchOcr()">OCR配置</button>
+</div>
+<div id="batch-ocr-status" class="ocr-status" aria-live="polite">离线OCR可用：首次识别会下载中文模型，无需密钥</div>
+<div id="batch-ocr-preview" class="ocr-preview">
+<img id="batch-image-preview" alt="待识别截图预览">
+<textarea id="batch-ocr-text-preview" placeholder="识别文字将在此处预览，可先修改再预览下单"></textarea>
+<div class="ocr-tools"><button class="btn ba" type="button" onclick="runBatchOcr()">离线识别截图</button><button class="btn bc" type="button" onclick="useOcrTextForBatch()">预览识别下单</button><button class="btn bd" type="button" onclick="cancelBatchImage()">取消截图</button></div>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px"><button class="btn ba" onclick="parseBatchText(document.getElementById('batch-input').value)" style="flex:1">批量添加</button><button class="btn bd" id="voice-toggle" onclick="toggleVoice()" style="flex:0 0 90px">🔇 语音关</button></div><script>try{var v=JSON.parse(localStorage.getItem('voiceOn')||'false'); document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('voice-toggle'); if(el) el.textContent=v?'🔇 语音关':'🔇 语音关';});}catch(e){}</script>
+</div>
+</div>
+</div>
+<div id="pg-list" class="pg">
+<div class="cd">
+<div class="ct" style="justify-content:space-between"><span>投注记录</span></div>
+<div class="lt" id="gl"><div class="empty">暂无数据</div></div>
+<button class="btn bt" onclick="cl2()">清空今天</button>
+</div>
+</div>
+<div id="pg-rs" class="pg">
+<div style="margin-bottom:10px"><button class="btn ba" onclick="fetchDraw()" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)">一键获取最新开奖号码</button></div>
+<div class="cd">
+<div class="ct">香港开奖号码</div>
+<div class="draw-num" id="draw-display-hk" style="font-size:20px;word-break:break-all">?</div>
+<div class="draw-info" id="draw-info-hk">输入7个号码（6正码+1特码）</div>
+<div style="margin-top:8px">
+<div class="fg" style="margin-bottom:8px">
+<label>香港 正码6个+特码1个</label>
+<input type="text" id="dn-hk" placeholder="12,9,34,25,40,7,29" style="font-size:15px;padding:12px">
+</div>
+</div>
+<button class="btn bc" onclick="manualInput('hk')">确认香港开奖</button>
+<button class="btn ba" onclick="saveDraw('hk')" style="margin-top:8px">保存香港</button>
+<button class="btn ba" onclick="settleAll('hk')" style="margin-top:8px;background:linear-gradient(135deg,#ff9800,#f57c00)">结算香港今天</button>
+</div>
+<div class="cd">
+<div class="ct">澳门开奖号码</div>
+<div class="draw-num" id="draw-display-am" style="font-size:20px;word-break:break-all">?</div>
+<div class="draw-info" id="draw-info-am">输入7个号码（6正码+1特码）</div>
+<div style="margin-top:8px">
+<div class="fg" style="margin-bottom:8px">
+<label>澳门 正码6个+特码1个</label>
+<input type="text" id="dn-am" placeholder="25,30,37,19,7,17,39" style="font-size:15px;padding:12px">
+</div>
+</div>
+<button class="btn bc" onclick="manualInput('am')">确认澳门开奖</button>
+<button class="btn ba" onclick="saveDraw('am')" style="margin-top:8px">保存澳门</button>
+<button class="btn ba" onclick="settleAll('am')" style="margin-top:8px;background:linear-gradient(135deg,#00b894,#00a381)">结算澳门今天</button>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn ba" onclick="settleAll('hk');settleAll('am')" style="background:linear-gradient(135deg,#e94560,#c23152)">一键结算两盘</button><button class="btn bt" onclick="undoSettle()">撤销结算</button></div>
+<div class="cd"><div class="ct">结算结果（分盘）</div><div class="lt" id="sl"><div class="empty">请先开奖再结算</div></div></div>
+</div>
+<div id="pg-risk" class="pg">
+<div class="cd"><div class="ct">风控看板（按号风险）</div>
+<div id="risk-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0"></div>
+<div id="risk-top" style="font-size:11px;color:#ffab00;margin-top:8px"></div>
+<div id="risk-adv" style="font-size:10px;color:#888;margin-top:6px;line-height:1.6"></div>
+<button class="btn bd" onclick="renderRisk()" style="margin-top:8px">刷新风控</button>
+</div>
+<div class="cd"><div class="ct">走势/冷热（近50期）</div>
+<div id="trend-grid"></div>
+<button class="btn bd" onclick="renderTrend()" style="margin-top:8px">刷新走势</button>
+</div>
+<div class="cd"><div class="ct">上/下庄分析</div>
+<div class="fr"><div class="fg"><label>上庄名称</label><input type="text" id="up-name" placeholder="如 大庄"></div><div class="fg"><label>上庄反水%</label><input type="number" id="up-rate" value="0.3" step="0.1"></div></div>
+<div class="fr"><div class="fg"><label>上报比例% (0-100)</label><input type="number" id="up-ratio" value="50" step="5"></div><div class="fg"><label></label><button class="btn ba" onclick="calcUpper()" style="margin-top:18px">计算上报</button></div></div>
+<div id="up-result" style="font-size:11px;color:#ccc;margin-top:8px"></div>
+</div>
+<div class="cd"><div class="ct">注数/成本明细</div>
+<div id="risk-bets" style="font-size:11px;color:#ccc"></div>
+</div>
+</div>
+<div id="pg-import" class="pg" style="display:none">
+<div class="cd"><div class="ct">对奖导入（TXT批量核对）</div>
+<textarea id="import-input" rows="6" placeholder="粘贴或拖拽TXT内容，如：
+特：16-28-40各50
+10=180，22=10" style="width:100%;padding:10px;background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;color:#fff;font-size:12px;resize:vertical;font-family:monospace"></textarea>
+<div style="display:flex;gap:8px;margin-top:8px">
+<input type="file" id="import-file" accept=".txt" style="flex:1;padding:6px;background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;color:#fff;font-size:11px" onchange="handleImportFile(this)">
+<button class="btn ba" onclick="checkImport()" style="flex:1">一键核对</button>
+</div>
+<div id="import-result" style="margin-top:10px;font-size:11px;color:#ccc"></div>
+</div>
+<div class="cd"><div class="ct">已结算对奖单（按天/盘/客） <button class="btn bd" onclick="renderImportSettled()" style="margin-left:auto;padding:4px 8px;font-size:10px">刷新</button></div>
+<div id="import-settled" style="font-size:11px;color:#ccc"><div class="empty">暂无已结算数据，请先在结算页结算</div></div>
+</div>
+</div>
+<div id="pg-pick" class="pg">
+<div class="cd"><div class="ct">选号方程式（18法·示例6）</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">
+<button class="btn bd" onclick="pickColdHot()">冷热回补</button>
+<button class="btn bd" onclick="pickFib()">斐波那契</button>
+<button class="btn bd" onclick="pickGann()">江恩螺旋</button>
+<button class="btn bd" onclick="pickMagic()">幻方矩阵</button>
+<button class="btn bd" onclick="pickLuo()">洛书九宫</button>
+<button class="btn bd" onclick="pickChaos()">混沌碎形</button>
+</div>
+<div id="pick-result" style="margin-top:10px;font-size:11px;color:#ccc"></div>
+</div>
+<div class="cd"><div class="ct">EV/蒙特卡洛</div>
+<div class="fr"><div class="fg"><label>模拟次数</label><input type="number" id="mc-n" value="10000" step="1000"></div><div class="fg"><label></label><button class="btn ba" onclick="runMC()" style="margin-top:18px">模拟</button></div></div>
+<div id="mc-result" style="font-size:11px;color:#ffab00;margin-top:6px"></div>
+</div>
+<div class="cd"><div class="ct">云端同步</div>
+<div style="display:flex;gap:8px">
+<button class="btn bd" onclick="exportCloud()">导出云端</button>
+<button class="btn bd" onclick="importCloud()">导入云端</button>
+<button class="btn bd" onclick="exportFile()">导出文件</button>
+</div>
+<div id="cloud-status" style="font-size:10px;color:#888;margin-top:6px"></div>
+</div>
+<div class="cd"><div class="ct">热更新（无需重装）</div>
+<div style="font-size:10px;color:#888;margin-bottom:8px">手机端一键获取开奖已加入代理+原生请求双重兼容；后续修复无需重装，发新 <b>app.js</b> 即可热更。首次需配置更新地址（你的服务器 version.json），之后一键更新。</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn ba" onclick="checkHotUpdate(true)" style="flex:1;background:linear-gradient(135deg,#00b894,#00a381)">检查热更新</button>
+<button class="btn bd" onclick="configureHotUpdate()" style="flex:1">配置更新地址</button>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+<input type="file" id="hot-file" accept=".js,.txt" style="display:none" onchange="importHotUpdateFile(this)">
+<button class="btn bd" onclick="document.getElementById('hot-file').click()" style="flex:1">导入本地 app.js 热更</button>
+<button class="btn bd" onclick="if(confirm('清除热更新缓存，恢复内置版本？')){localStorage.removeItem('__hot_app_js');localStorage.removeItem('__hot_app_ver');toast('已清除，重启后恢复内置版');}" style="flex:1">清除热更</button>
+</div>
+<div style="font-size:10px;color:#666;margin-top:6px">当前内置版本: <span id="app-ver"></span> <span id="hot-ver" style="color:#00b894"></span></div>
+<script>document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('app-ver');if(el)el.textContent=typeof APP_VERSION!=='undefined'?APP_VERSION:'-';var hv=localStorage.getItem('__hot_app_ver');var he=document.getElementById('hot-ver');if(he)he.textContent=hv?' | 热更:'+hv:'';});</script>
+</div>
+</div>
+<div id="pg-odds" class="pg">
+<div class="cd"><div class="ct">赔率表（退本）</div>
+<div class="st2"><table class="ot">
+<tr><th>类型</th><th>赔率</th></tr>
+<tr><td>特马</td><td>44</td></tr>
+<tr><td>2有</td><td>4</td></tr>
+<tr><td>3有</td><td>10</td></tr>
+<tr><td>4有</td><td>30</td></tr>
+<tr><td>5有</td><td>100</td></tr>
+<tr><td>特托</td><td>100</td></tr>
+<tr><td>带1的2有</td><td>3.8</td></tr>
+<tr><td>带1的3有</td><td>9</td></tr>
+<tr><td>带1的4有</td><td>29</td></tr>
+<tr><td>带1的5有</td><td>80</td></tr>
+<tr><td>二中二</td><td>60</td></tr>
+<tr><td>三中二</td><td>20</td></tr>
+<tr><td>三中三</td><td>500</td></tr>
+<tr><td>四中四</td><td>1000</td></tr>
+<tr><td>三肖中特</td><td>3.5</td></tr>
+<tr><td>四肖中特</td><td>2.6</td></tr>
+<tr><td>五肖中特</td><td>2</td></tr>
+<tr><td>六肖中特</td><td>1.8</td></tr>
+<tr><td>红/绿/蓝波</td><td>2.6</td></tr>
+<tr><td>包大小</td><td>1.8</td></tr>
+<tr><td>包单双</td><td>1.8</td></tr>
+<tr><td>0尾</td><td>2</td></tr>
+<tr><td>尾数</td><td>1.8</td></tr>
+<tr><td>2尾碰</td><td>3</td></tr>
+<tr><td>3尾碰</td><td>7</td></tr>
+<tr><td>四尾碰</td><td>15</td></tr>
+<tr><td>五不中~十六不中</td><td>2~15</td></tr>
+<tr><td>中肖</td><td>2</td></tr>
+<tr><td>1号中肖</td><td>1.8</td></tr>
+<tr><td>特肖</td><td>11</td></tr>
+<tr><td>1号特肖</td><td>9</td></tr>
+<tr><td>波色大小单双</td><td>5</td></tr>
+</table></div></div>
+</div>
+</div>
+<script src="app.js?v=21"></script>
+<script src="global-commands.js?v=1"></script>
+</body>
+</html>
