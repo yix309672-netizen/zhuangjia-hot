@@ -185,7 +185,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 </div>
 </div>
 <div id="pg-rs" class="pg">
-<div style="margin-bottom:10px"><button class="btn ba" onclick="fetchDraw()" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)">一键获取最新开奖号码</button></div>
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<button class="btn ba" onclick="fetchDraw('hk')" style="flex:1;background:linear-gradient(135deg,#ffab00,#ff8f00);color:#000">获取香港开奖</button>
+<button class="btn ba" onclick="fetchDraw('am')" style="flex:1;background:linear-gradient(135deg,#00b894,#00897b)">获取澳门开奖</button>
+<button class="btn ba" onclick="fetchDraw()" style="flex:1;background:linear-gradient(135deg,#9c27b0,#7b1fa2)">一键获取两盘</button>
+</div>
 <div class="cd">
 <div class="ct">香港开奖号码</div>
 <div class="draw-num" id="draw-display-hk" style="font-size:20px;word-break:break-all">?</div>
@@ -215,6 +219,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 <button class="btn ba" onclick="settleAll('am')" style="margin-top:8px;background:linear-gradient(135deg,#00b894,#00a381)">结算澳门今天</button>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn ba" onclick="settleAll('hk');settleAll('am')" style="background:linear-gradient(135deg,#e94560,#c23152)">一键结算两盘</button><button class="btn bt" onclick="undoSettle()">撤销结算</button></div>
+<div style="display:flex;gap:6px;margin-bottom:8px" id="settle-filter">
+<button class="btn bd" onclick="setSettleFilter('all')" id="sf-all" style="flex:1;background:#e94560;color:#fff">全部</button>
+<button class="btn bd" onclick="setSettleFilter('hk')" id="sf-hk" style="flex:1">香港</button>
+<button class="btn bd" onclick="setSettleFilter('am')" id="sf-am" style="flex:1">澳门</button>
+</div>
 <div class="cd"><div class="ct">结算结果（分盘）</div><div class="lt" id="sl"><div class="empty">请先开奖再结算</div></div></div>
 </div>
 <div id="pg-risk" class="pg">

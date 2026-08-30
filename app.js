@@ -85,6 +85,7 @@ function combinations(list,k){
 var hkDraw=[], hkSp=0, amDraw=[], amSp=0;
 var hkHist=JSON.parse(localStorage.getItem('hkHist')||'[]');
 var amHist=JSON.parse(localStorage.getItem('amHist')||'[]');
+var settleFilter=localStorage.getItem('settleFilter')||'all';
 var selNums=[];
 var cart=[];
 var today=getToday();
@@ -561,6 +562,12 @@ function renderRecords(){
 }
 function renderSettlementList(){
   var el=document.getElementById('sl');
+  // 同步顶部筛选按钮高亮
+  try{
+    document.querySelectorAll('#settle-filter .btn').forEach(function(b){b.style.background='#2a2a4a';b.style.color='#e94560';});
+    var active=document.getElementById('sf-'+settleFilter);
+    if(active){active.style.background='#e94560';active.style.color='#fff';}
+  }catch(e){}
   var dates=getAllDates();
   if(!dates.length){el.innerHTML='<div class="empty">暂无数据</div>';return;}
   var html='';
@@ -638,8 +645,10 @@ function renderSettlementList(){
     html+='<span style="font-size:11px;color:#888">'+dayTotal+'元 <span style="color:#ffab00">香港'+hkTotal+'</span> <span style="color:#00b894">澳门'+amTotal+'</span></span>';
     html+='</div>';
     html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
-    html+=block('香港', hkBets);
-    html+=block('澳门', amBets);
+    if(settleFilter==='all' || settleFilter==='hk') html+=block('香港', hkBets);
+    if(settleFilter==='all' || settleFilter==='am') html+=block('澳门', amBets);
+    if(settleFilter==='hk' && !hkBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无香港数据</div>';
+    if(settleFilter==='am' && !amBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无澳门数据</div>';
     html+='</div>';
     if(!hkBets.length && !amBets.length){
       html+='<div style="padding:8px;color:#888;text-align:center">无'+date+'数据</div>';
@@ -765,15 +774,29 @@ function loadDraw(){
     if(data){ try{var d=JSON.parse(data); hkDraw=d.drawNumbers; hkSp=d.specialNum; displayNumbers('hk');}catch(e){} }
   }
 }
-function fetchDraw(){
-  toast('正在获取开奖号码...');
+function setSettleFilter(v){
+  settleFilter=v;
+  localStorage.setItem('settleFilter', v);
+  document.querySelectorAll('#settle-filter .btn').forEach(function(b){b.style.background='#2a2a4a';b.style.color='#e94560';});
+  var active=document.getElementById('sf-'+v);
+  if(active){active.style.background='#e94560';active.style.color='#fff';}
+  try{renderSettlementList();}catch(e){}
+  try{renderImportSettled();}catch(e){}
+}
+function fetchDraw(dk){
+  if(dk==='hk') toast('正在获取香港开奖...');
+  else if(dk==='am') toast('正在获取澳门开奖...');
+  else toast('正在获取开奖号码...');
+  var wantHK=!dk || dk==='hk' || dk==='all';
+  var wantAM=!dk || dk==='am' || dk==='all';
+  var totalWant=(wantHK?1:0)+(wantAM?1:0);
   var done=0, okCount=0;
   function check(ok){
     if(ok) okCount++;
     done++;
-    if(done===2){
+    if(done===totalWant){
       if(okCount===0) toast('获取失败，已用本地/手动输入为准');
-      else if(okCount===1) toast('已获取1盘开奖，另一盘请手动输入');
+      else if(okCount < totalWant) toast('已获取'+okCount+'盘开奖');
       else toast('开奖号码已获取');
     }
   }
@@ -829,15 +852,15 @@ function fetchDraw(){
     }
     tryNext();
   }
-  fetchWithFallback('https://www.kj1868.com/openapi/drawLottery/nam6/last.kj?page=1&pageSize=1','am');
-  fetchWithFallback('https://www.kj1868.com/openapi/drawLottery/xg6/last.kj?page=1&pageSize=1','hk');
-  // 额外备选源：香港赛马会官方（示例，失败自动忽略）
+  if(wantAM) fetchWithFallback('https://www.kj1868.com/openapi/drawLottery/nam6/last.kj?page=1&pageSize=1','am');
+  if(wantHK) fetchWithFallback('https://www.kj1868.com/openapi/drawLottery/xg6/last.kj?page=1&pageSize=1','hk');
+  // 额外备选源
   setTimeout(function(){
-    if(!amSp) fetchWithFallback('https://api.macaumarksix.com/draw/latest','am');
-    if(!hkSp) fetchWithFallback('https://api.hkmarksix.com/draw/latest','hk');
+    if(wantAM && !amSp) fetchWithFallback('https://api.macaumarksix.com/draw/latest','am');
+    if(wantHK && !hkSp) fetchWithFallback('https://api.hkmarksix.com/draw/latest','hk');
   },9000);
 }
-var APP_VERSION='1.0.22';
+var APP_VERSION='1.0.23';
 function applyHotPatch(code){
   try{
     // 用 Function 避免污染局部作用域，直接覆盖全局函数

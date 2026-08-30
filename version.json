@@ -1,6 +1,6 @@
 {
-  "version": "1.0.22",
+  "version": "1.0.23",
   "appUrl": "https://yix309672-netizen.github.io/zhuangjia-hot/app.js",
-  "desc": "修复澳门/香港分盘、双空格丢盘、结算双栏、热更新+多代理开奖",
-  "date": "2026-08-30"
+  "desc": "顶部香港澳门分盘，一键获取分开，结算筛选",
+  "date": "2026-08-31"
 }
