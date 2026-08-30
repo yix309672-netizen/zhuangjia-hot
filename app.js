@@ -855,21 +855,24 @@ function applyHotPatch(code){
 function checkHotUpdate(manual){
   var cfg={url:''};
   try{ var saved=JSON.parse(localStorage.getItem('otaConfig')||'{}'); if(saved&&saved.url) cfg.url=saved.url; }catch(e){}
-  // 默认更新源：可在手机上“热更新配置”里修改
-  var defaultUrl=cfg.url || localStorage.getItem('hotUpdateUrl') || '';
+  var GITHUB_HOT='https://yix309672-netizen.github.io/zhuangjia-hot/version.json';
+  // 默认更新源：已为你配置好 GitHub 免费热更，无需手动填
+  var defaultUrl=cfg.url || localStorage.getItem('hotUpdateUrl') || GITHUB_HOT;
   if(!defaultUrl){
     if(manual){
-      var u=prompt('输入热更新地址（version.json 的完整URL）\n例如 https://你的域名/version.json\n留空则使用内置更新', cfg.url||'');
+      var u=prompt('输入热更新地址（version.json 的完整URL）\n例如 https://你的域名/version.json\n留空则使用内置更新', cfg.url||GITHUB_HOT);
       if(u===null) return;
       u=u.trim();
       if(!u){ toast('未配置更新地址'); return; }
       cfg.url=u; localStorage.setItem('otaConfig', JSON.stringify(cfg)); localStorage.setItem('hotUpdateUrl', u);
       defaultUrl=u;
     } else {
-      // 静默检查：若无配置则尝试默认 CDN（可自行替换为你的服务器）
-      // 默认尝试同域下的 version.json，适合 PWA 部署
-      defaultUrl=location.origin + '/version.json';
+      defaultUrl=GITHUB_HOT;
     }
+  }
+  // 若用户从未配置过，自动写入默认 GitHub 地址，方便下次静默更新
+  if(!cfg.url && !localStorage.getItem('hotUpdateUrl')){
+    try{ localStorage.setItem('otaConfig', JSON.stringify({url:GITHUB_HOT})); localStorage.setItem('hotUpdateUrl', GITHUB_HOT); }catch(e){}
   }
   toast('正在检查热更新...');
   fetch(defaultUrl, {cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.json(); }).then(function(ver){
