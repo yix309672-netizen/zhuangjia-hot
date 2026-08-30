@@ -1,13 +1,16 @@
 {
-  "name": "六合彩庄家计算器",
-  "short_name": "庄家计算",
+  "name": "萧易",
+  "short_name": "萧易",
   "description": "六合彩庄家批量计算器 - 支持模拟开奖",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0a1a",
   "theme_color": "#d32f2f",
   "orientation": "portrait-primary",
-  "categories": ["finance", "utilities"],
+  "categories": [
+    "finance",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "icon-192.png",
