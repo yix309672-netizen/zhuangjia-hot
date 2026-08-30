@@ -283,42 +283,83 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 </div>
 </div>
 <div id="pg-odds" class="pg">
-<div class="cd"><div class="ct">赔率表（退本）</div>
-<div class="st2"><table class="ot">
-<tr><th>类型</th><th>赔率</th></tr>
-<tr><td>特马</td><td>44</td></tr>
-<tr><td>2有</td><td>4</td></tr>
-<tr><td>3有</td><td>10</td></tr>
-<tr><td>4有</td><td>30</td></tr>
-<tr><td>5有</td><td>100</td></tr>
-<tr><td>特托</td><td>100</td></tr>
-<tr><td>带1的2有</td><td>3.8</td></tr>
-<tr><td>带1的3有</td><td>9</td></tr>
-<tr><td>带1的4有</td><td>29</td></tr>
-<tr><td>带1的5有</td><td>80</td></tr>
-<tr><td>二中二</td><td>60</td></tr>
-<tr><td>三中二</td><td>20</td></tr>
-<tr><td>三中三</td><td>500</td></tr>
-<tr><td>四中四</td><td>1000</td></tr>
-<tr><td>三肖中特</td><td>3.5</td></tr>
-<tr><td>四肖中特</td><td>2.6</td></tr>
-<tr><td>五肖中特</td><td>2</td></tr>
-<tr><td>六肖中特</td><td>1.8</td></tr>
-<tr><td>红/绿/蓝波</td><td>2.6</td></tr>
-<tr><td>包大小</td><td>1.8</td></tr>
-<tr><td>包单双</td><td>1.8</td></tr>
-<tr><td>0尾</td><td>2</td></tr>
-<tr><td>尾数</td><td>1.8</td></tr>
-<tr><td>2尾碰</td><td>3</td></tr>
-<tr><td>3尾碰</td><td>7</td></tr>
-<tr><td>四尾碰</td><td>15</td></tr>
-<tr><td>五不中~十六不中</td><td>2~15</td></tr>
-<tr><td>中肖</td><td>2</td></tr>
-<tr><td>1号中肖</td><td>1.8</td></tr>
-<tr><td>特肖</td><td>11</td></tr>
-<tr><td>1号特肖</td><td>9</td></tr>
-<tr><td>波色大小单双</td><td>5</td></tr>
-</table></div></div>
+<div class="cd" style="padding:16px"><div class="ct" style="font-size:16px">赔率表（退本）<span style="font-size:11px;color:#888;font-weight:400;margin-left:8px">投100中赔率×100</span></div>
+<div style="display:grid;gap:10px">
+<!-- 特码 -->
+<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #2a2a4a;border-radius:12px;padding:12px">
+<div style="font-size:13px;font-weight:700;color:#ff6b6b;margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="width:3px;height:14px;background:#ff6b6b;border-radius:2px"></span>特码</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="background:#0f0f1a;border:1px solid #2a2a4a;border-radius:10px;padding:12px;text-align:center"><div style="font-size:14px;color:#ccc">特马</div><div style="font-size:26px;font-weight:800;color:#ffab00;margin-top:4px">44</div></div>
+<div style="background:#0f0f1a;border:1px solid #2a2a4a;border-radius:10px;padding:12px;text-align:center"><div style="font-size:14px;color:#ccc">特托</div><div style="font-size:26px;font-weight:800;color:#ffab00;margin-top:4px">100</div></div>
+</div>
+</div>
+<!-- 连肖 有 -->
+<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #2a2a4a;border-radius:12px;padding:12px">
+<div style="font-size:13px;font-weight:700;color:#4ecdc4;margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="width:3px;height:14px;background:#4ecdc4;border-radius:2px"></span>连肖 · 有</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center"><div style="font-size:12px;color:#888">2有</div><div style="font-size:20px;font-weight:800;color:#fff">4</div></div>
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center"><div style="font-size:12px;color:#888">3有</div><div style="font-size:20px;font-weight:800;color:#fff">10</div></div>
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center"><div style="font-size:12px;color:#888">4有</div><div style="font-size:20px;font-weight:800;color:#fff">30</div></div>
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center"><div style="font-size:12px;color:#888">5有</div><div style="font-size:20px;font-weight:800;color:#fff">100</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px">
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center;border:1px solid #2a2a4a"><div style="font-size:11px;color:#888">带1的2有</div><div style="font-size:18px;font-weight:700;color:#ffab00">3.8</div></div>
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center;border:1px solid #2a2a4a"><div style="font-size:11px;color:#888">带1的3有</div><div style="font-size:18px;font-weight:700;color:#ffab00">9</div></div>
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center;border:1px solid #2a2a4a"><div style="font-size:11px;color:#888">带1的4有</div><div style="font-size:18px;font-weight:700;color:#ffab00">29</div></div>
+<div style="background:#0f0f1a;border-radius:10px;padding:10px;text-align:center;border:1px solid #2a2a4a"><div style="font-size:11px;color:#888">带1的5有</div><div style="font-size:18px;font-weight:700;color:#ffab00">80</div></div>
+</div>
+</div>
+<!-- 连码 -->
+<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #ffab00;border-radius:12px;padding:12px">
+<div style="font-size:13px;font-weight:700;color:#ffab00;margin-bottom:8px;display:flex;align-items:center;gap:6px"><span style="width:3px;height:14px;background:#ffab00;border-radius:2px"></span>连码（高赔）</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+<div style="background:linear-gradient(135deg,#2a1a0a,#1a1a2e);border:1px solid #ffab00;border-radius:10px;padding:12px;text-align:center"><div style="font-size:13px;color:#ffab00">二中二</div><div style="font-size:24px;font-weight:800;color:#ffab00">60</div></div>
+<div style="background:#0f0f1a;border-radius:10px;padding:12px;text-align:center"><div style="font-size:13px;color:#ccc">三中二</div><div style="font-size:24px;font-weight:800;color:#fff">20</div></div>
+<div style="background:linear-gradient(135deg,#ff6b6b22,#ffab0022);border:1px solid #ff6b6b;border-radius:10px;padding:12px;text-align:center"><div style="font-size:13px;color:#ff6b6b">三中三</div><div style="font-size:26px;font-weight:800;color:#ff6b6b">500</div></div>
+<div style="background:linear-gradient(135deg,#ff6b6b22,#ffab0022);border:1px solid #ff6b6b;border-radius:10px;padding:12px;text-align:center"><div style="font-size:13px;color:#ff6b6b">四中四</div><div style="font-size:26px;font-weight:800;color:#ff6b6b">1000</div></div>
+</div>
+</div>
+<!-- 肖中特 波色 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:12px">
+<div style="font-size:13px;font-weight:700;color:#a29bfe;margin-bottom:8px">肖中特</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+<div style="background:#0f0f1a;border-radius:8px;padding:8px;text-align:center"><div style="font-size:11px;color:#888">三肖</div><div style="font-size:18px;font-weight:700;color:#fff">3.5</div></div>
+<div style="background:#0f0f1a;border-radius:8px;padding:8px;text-align:center"><div style="font-size:11px;color:#888">四肖</div><div style="font-size:18px;font-weight:700;color:#fff">2.6</div></div>
+<div style="background:#0f0f1a;border-radius:8px;padding:8px;text-align:center"><div style="font-size:11px;color:#888">五肖</div><div style="font-size:18px;font-weight:700;color:#fff">2</div></div>
+<div style="background:#0f0f1a;border-radius:8px;padding:8px;text-align:center"><div style="font-size:11px;color:#888">六肖</div><div style="font-size:18px;font-weight:700;color:#fff">1.8</div></div>
+</div>
+</div>
+<div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:12px">
+<div style="font-size:13px;font-weight:700;color:#ff6b6b;margin-bottom:8px">波色/大小</div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:10px"><span style="font-size:13px;color:#ccc">红/绿/蓝波</span><span style="font-size:18px;font-weight:800;color:#ffab00">2.6</span></div>
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:10px"><span style="font-size:13px;color:#ccc">包大小/单双</span><span style="font-size:18px;font-weight:800;color:#fff">1.8</span></div>
+</div>
+</div>
+</div>
+<!-- 尾数 不中 肖 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:12px">
+<div style="font-size:13px;font-weight:700;color:#00b894;margin-bottom:8px">尾数</div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">0尾</span><span style="font-size:16px;font-weight:700;color:#fff">2</span></div>
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">尾数</span><span style="font-size:16px;font-weight:700;color:#fff">1.8</span></div>
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">2尾碰</span><span style="font-size:16px;font-weight:700;color:#ffab00">3</span></div>
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">3尾碰</span><span style="font-size:16px;font-weight:700;color:#ffab00">7</span></div>
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">四尾碰</span><span style="font-size:16px;font-weight:700;color:#ff6b6b">15</span></div>
+</div>
+</div>
+<div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:12px">
+<div style="font-size:13px;font-weight:700;color:#e17055;margin-bottom:8px">不中 & 肖</div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">五~十六不中</span><span style="font-size:16px;font-weight:700;color:#fff">2~15</span></div>
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">中肖</span><span style="font-size:16px;font-weight:700;color:#fff">2</span></div>
+<div style="display:flex;justify-content:space-between;background:#0f0f1a;border-radius:8px;padding:8px 10px"><span style="font-size:12px;color:#ccc">特肖</span><span style="font-size:18px;font-weight:800;color:#ffab00">11</span></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <script src="app.js?v=21"></script>
