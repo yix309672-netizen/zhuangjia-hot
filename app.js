@@ -2287,6 +2287,14 @@ function parseBatchText(text,options){
 
 
 document.addEventListener('DOMContentLoaded',function(){
+  // 开机闪屏：显示版本号，便于确认是否新版
+  try{
+    var _sb=document.createElement('div');
+    _sb.style.cssText='position:fixed;inset:0;background:#0f0f1a;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Microsoft YaHei;color:#e94560';
+    _sb.innerHTML='<div style="font-size:30px;font-weight:800;margin-bottom:8px;color:#ffab00;letter-spacing:4px">萧 易</div><div style="font-size:14px;color:#888;margin-bottom:4px">六合彩庄家结算</div><div style="font-size:22px;font-weight:700;color:#4ecdc4;margin-top:8px">v '+(typeof APP_VERSION!=="undefined"?APP_VERSION:"")+'</div>';
+    document.body.appendChild(_sb);
+    setTimeout(function(){try{_sb.remove();}catch(e){}},1400);
+  }catch(e){}
   // 激活校验：失败则覆盖为提示页并终止初始化
   if(!ensureActivated()){
     try{
