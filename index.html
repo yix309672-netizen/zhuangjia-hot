@@ -163,7 +163,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 </div>
 <div class="ocr-tools">
 <input type="file" id="batch-image-input" accept="image/*" style="display:none" onchange="handleBatchImageFile(this.files&&this.files[0])">
-<button class="btn bd" type="button" onclick="document.getElementById('batch-image-input').click()">选择截图</button>
+<button class="btn bd" type="button" onclick="pickScreenshot()">选择截图</button>
 <button class="btn bd" type="button" onclick="readBatchClipboardImage()">剪贴板截图</button>
 <button class="btn bd" type="button" onclick="configureBatchOcr()">OCR配置</button>
 </div>
@@ -254,10 +254,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 <button class="btn bd" onclick="pickChaos()">混沌碎形</button>
 </div>
 <div id="pick-result" style="margin-top:10px;font-size:11px;color:#ccc"></div>
-</div>
-<div class="cd"><div class="ct">EV/蒙特卡洛</div>
-<div class="fr"><div class="fg"><label>模拟次数</label><input type="number" id="mc-n" value="10000" step="1000"></div><div class="fg"><label></label><button class="btn ba" onclick="runMC()" style="margin-top:18px">模拟</button></div></div>
-<div id="mc-result" style="font-size:11px;color:#ffab00;margin-top:6px"></div>
 </div>
 <div class="cd"><div class="ct">云端同步</div>
 <div style="display:flex;gap:8px">
@@ -362,7 +358,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 </div>
 </div>
 </div>
-<script src="app.js?v=21"></script>
-<script src="global-commands.js?v=1"></script>
+<script src="app.js?v=22"></script>
 </body>
 </html>

@@ -280,6 +280,31 @@ function configureBatchOcr(){
   try{localStorage.setItem('batchOcrConfig',JSON.stringify(cfg));refreshBatchOcrStatus();toast('OCR配置已保存');}
   catch(e){alert('OCR配置保存失败');}
 }
+function dataURLtoFile(dataUrl,name){
+  var arr=dataUrl.split(','),mime=(arr[0].match(/:(.*?);/)||[])[1]||'image/jpeg';
+  var bin=atob(arr[1]),len=bin.length,u8=new Uint8Array(len);
+  for(var i=0;i<len;i++)u8[i]=bin.charCodeAt(i);
+  return new File([u8],name||'screenshot.jpg',{type:mime});
+}
+function pickScreenshot(){
+  try{
+    var Cap=window.Capacitor;
+    if(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform()){
+      var PP=Cap.registerPlugin?Cap.registerPlugin('PhotoPicker'):(Cap.Plugins&&Cap.Plugins.PhotoPicker);
+      if(PP&&PP.pickImage){
+        PP.pickImage().then(function(res){
+          if(res&&res.dataUrl)handleBatchImageFile(dataURLtoFile(res.dataUrl));
+        }).catch(function(err){
+          // 用户取消不打扰；旧版App无原生插件则降级走系统文件选择
+          if(err&&(err.message==='用户取消了选择'||err.message==='USER_CANCELLED'))return;
+          try{document.getElementById('batch-image-input').click();}catch(e){alert('选择截图失败：'+((err&&err.message)||err));}
+        });
+        return;
+      }
+    }
+  }catch(e){}
+  document.getElementById('batch-image-input').click();
+}
 function handleBatchImageFile(file){
   if(!file)return;
   if(!file.type||file.type.indexOf('image/')!==0)return alert('这里只支持图片截图');
@@ -860,7 +885,7 @@ function fetchDraw(dk){
     if(wantHK && !hkSp) fetchWithFallback('https://api.hkmarksix.com/draw/latest','hk');
   },9000);
 }
-var APP_VERSION='1.0.27';
+var APP_VERSION='1.0.28';
 function applyHotPatch(code){
   try{
     // 用 Function 避免污染局部作用域，直接覆盖全局函数
@@ -1342,15 +1367,6 @@ function pickLuo(){
 function pickChaos(){
   var nums=[]; var x=0.5; for(var i=0;i<6;i++){ x=3.9*x*(1-x); nums.push(Math.floor(x*49)+1); }
   document.getElementById('pick-result').innerHTML='混沌: '+nums.join(',');
-}
-function runMC(){
-  var n=parseInt(document.getElementById('mc-n').value)||10000;
-  var total=G.filter(function(g){return !g.settled;}).length;
-  if(!total) return document.getElementById('mc-result').innerHTML='暂无未结投注';
-  var win=0; for(var i=0;i<n;i++){ var r=Math.floor(Math.random()*49)+1; if(G.some(function(g){return g.nums.indexOf(r)>=0;})) win++; }
-  var p=(win/n*100).toFixed(2);
-  var ev=(win/n*10 -1).toFixed(3);
-  document.getElementById('mc-result').innerHTML='模拟 '+n+' 次 命中 '+win+' ('+p+'%) EV '+ev;
 }
 function exportCloud(){
   var data={G:G, customers:customers, hkHist:hkHist, amHist:amHist};
