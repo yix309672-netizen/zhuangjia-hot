@@ -80,11 +80,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 <div class="tab" onclick="sp2('cust')">客户</div>
 <div class="tab on" onclick="sp2('add')">投注</div>
 <div class="tab" onclick="sp2('list')">记录</div>
-<div class="tab" onclick="sp2('rs')">结算</div>
+<div class="tab" onclick="sp2('hk')">香港</div>
+<div class="tab" onclick="sp2('am')">澳门</div>
 <div class="tab" onclick="sp2('odds')">赔率</div>
 <div class="tab" onclick="sp2('risk')">风控</div>
 <div class="tab" onclick="sp2('import')">对奖</div>
-<div class="tab" onclick="sp2('pick')">选号</div>
+</div>
+<div class="tabs" style="margin-top:6px">
+<div class="tab" onclick="sp2('pick')" style="flex:1">选号</div>
 </div>
 <div id="pg-cust" class="pg">
 <div class="cd">
@@ -184,29 +187,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 <button class="btn bt" onclick="cl2()">清空今天</button>
 </div>
 </div>
-<div id="pg-rs" class="pg">
-<div style="margin-bottom:10px"><button class="btn ba" onclick="fetchDraw()" style="width:100%;padding:14px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);font-size:16px;letter-spacing:2px">一键获取最新开奖号码</button></div>
+<div id="pg-hk" class="pg">
 <div class="cd" style="padding:12px">
 <div class="ct">香港开奖</div>
 <div class="draw-num" id="draw-display-hk" style="font-size:20px;word-break:break-all;min-height:22px;color:#ffab00;font-weight:700">-</div>
-<div class="draw-info" id="draw-info-hk" style="font-size:11px">6正码+1特码 · 一键获取后自动填入</div>
+<div class="draw-info" id="draw-info-hk" style="font-size:11px">6正码+1特码 · 获取后自动填入</div>
 <input type="text" id="dn-hk" placeholder="12,9,34,25,40,7,29" style="display:none">
-<button class="btn bc" onclick="manualInput('hk')" style="margin-top:10px;padding:14px;font-size:16px;letter-spacing:2px">确认香港开奖</button>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button class="btn ba" onclick="fetchDraw('hk')" style="flex:1;padding:14px;font-size:14px;letter-spacing:1px;background:linear-gradient(135deg,#9c27b0,#7b1fa2)">获取香港开奖</button>
+<button class="btn bc" onclick="manualInput('hk')" style="flex:1;padding:14px;font-size:14px;letter-spacing:1px">确认香港开奖</button>
 </div>
+<button class="btn ba" onclick="settleAll('hk')" style="width:100%;margin-top:8px;padding:12px;background:linear-gradient(135deg,#ffab00,#ff8f00);color:#1a1a2e;font-size:14px;font-weight:700;letter-spacing:1px">香港结算</button>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn bt" onclick="undoSettle()" style="flex:1;padding:12px">撤销香港结算</button></div>
+<div class="cd"><div class="ct">香港结算结果</div><div class="lt" id="sl-hk"><div class="empty">请先开奖再结算</div></div></div>
+</div>
+<div id="pg-am" class="pg">
 <div class="cd" style="padding:12px">
 <div class="ct">澳门开奖</div>
 <div class="draw-num" id="draw-display-am" style="font-size:20px;word-break:break-all;min-height:22px;color:#00b894;font-weight:700">-</div>
-<div class="draw-info" id="draw-info-am" style="font-size:11px">6正码+1特码 · 一键获取后自动填入</div>
+<div class="draw-info" id="draw-info-am" style="font-size:11px">6正码+1特码 · 获取后自动填入</div>
 <input type="text" id="dn-am" placeholder="25,30,37,19,7,17,39" style="display:none">
-<button class="btn bc" onclick="manualInput('am')" style="margin-top:10px;padding:14px;font-size:16px;letter-spacing:2px;background:linear-gradient(135deg,#00b894,#00a381)">确认澳门开奖</button>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button class="btn ba" onclick="fetchDraw('am')" style="flex:1;padding:14px;font-size:14px;letter-spacing:1px;background:linear-gradient(135deg,#00b894,#00a381)">获取澳门开奖</button>
+<button class="btn bc" onclick="manualInput('am')" style="flex:1;padding:14px;font-size:14px;letter-spacing:1px;background:linear-gradient(135deg,#00b894,#00a381)">确认澳门开奖</button>
 </div>
-<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn ba" onclick="settleAll('hk');settleAll('am')" style="flex:1;padding:12px;background:linear-gradient(135deg,#e94560,#c23152);font-size:14px">一键结算两盘</button><button class="btn bt" onclick="undoSettle()" style="flex:0 0 90px;padding:12px">撤销</button></div>
-<div style="display:flex;gap:6px;margin-bottom:8px" id="settle-filter">
-<button class="btn bd" onclick="setSettleFilter('all')" id="sf-all" style="flex:1;background:#e94560;color:#fff">全部</button>
-<button class="btn bd" onclick="setSettleFilter('hk')" id="sf-hk" style="flex:1">香港</button>
-<button class="btn bd" onclick="setSettleFilter('am')" id="sf-am" style="flex:1">澳门</button>
+<button class="btn ba" onclick="settleAll('am')" style="width:100%;margin-top:8px;padding:12px;background:linear-gradient(135deg,#00b894,#00a381);font-size:14px;font-weight:700;letter-spacing:1px">澳门结算</button>
 </div>
-<div class="cd"><div class="ct">结算结果（分盘）</div><div class="lt" id="sl"><div class="empty">请先开奖再结算</div></div></div>
+<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn bt" onclick="undoSettle()" style="flex:1;padding:12px">撤销澳门结算</button></div>
+<div class="cd"><div class="ct">澳门结算结果</div><div class="lt" id="sl-am"><div class="empty">请先开奖再结算</div></div></div>
 </div>
 <div id="pg-risk" class="pg">
 <div class="cd"><div class="ct">风控看板（按号风险）</div>
@@ -358,6 +367,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei',sans-serif;b
 </div>
 </div>
 </div>
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>

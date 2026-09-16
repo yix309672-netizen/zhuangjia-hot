@@ -85,7 +85,7 @@ function combinations(list,k){
 var hkDraw=[], hkSp=0, amDraw=[], amSp=0;
 var hkHist=JSON.parse(localStorage.getItem('hkHist')||'[]');
 var amHist=JSON.parse(localStorage.getItem('amHist')||'[]');
-var settleFilter=localStorage.getItem('settleFilter')||'all';
+var _sfRaw=localStorage.getItem('settleFilter')||'hk'; var settleFilter=(_sfRaw==='all'?'hk':_sfRaw);
 var selNums=[];
 var cart=[];
 var today=getToday();
@@ -586,13 +586,23 @@ function renderRecords(){
   el.innerHTML=html;
 }
 function renderSettlementList(){
+  // 兼容旧单容器 + 新双容器：优先渲染 sl-hk / sl-am，保留 sl 兼容
+  var hasHK=document.getElementById('sl-hk');
+  var hasAM=document.getElementById('sl-am');
+  if(hasHK||hasAM){
+    if(hasHK) renderSettlementFor('hk');
+    if(hasAM) renderSettlementFor('am');
+    var old=document.getElementById('sl');
+    if(old&&!hasHK&&!hasAM){
+      // 旧模板回退
+    } else if(old&&hasHK&&hasAM){
+      // 旧容器不再使用
+      try{old.innerHTML='';}catch(e){}
+    }
+    return;
+  }
   var el=document.getElementById('sl');
-  // 同步顶部筛选按钮高亮
-  try{
-    document.querySelectorAll('#settle-filter .btn').forEach(function(b){b.style.background='#2a2a4a';b.style.color='#e94560';});
-    var active=document.getElementById('sf-'+settleFilter);
-    if(active){active.style.background='#e94560';active.style.color='#fff';}
-  }catch(e){}
+  if(!el) return;
   var dates=getAllDates();
   if(!dates.length){el.innerHTML='<div class="empty">暂无数据</div>';return;}
   var html='';
@@ -663,21 +673,103 @@ function renderSettlementList(){
     }
     var hkTotal=hkBets.reduce(function(a,b){return a+b.tb;},0);
     var amTotal=amBets.reduce(function(a,b){return a+b.tb;},0);
-    var dayTotal=hkTotal+amTotal;
+    var isHK=settleFilter==='hk';
+    var curBets=isHK?hkBets:amBets;
+    var curTotal=isHK?hkTotal:amTotal;
+    var curLabel=isHK?'香港':'澳门';
+    var curColor=isHK?'#ffab00':'#00b894';
     html+='<div style="margin-bottom:16px;background:#16213e;border-radius:12px;padding:10px;border:1px solid #2a2a4a">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f0f1a;border-radius:8px;margin-bottom:10px">';
-    html+='<span style="font-weight:700;color:#ffab00;font-size:13px">'+date+'</span>';
-    html+='<span style="font-size:11px;color:#888">'+dayTotal+'元 <span style="color:#ffab00">香港'+hkTotal+'</span> <span style="color:#00b894">澳门'+amTotal+'</span></span>';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f0f1a;border-radius:8px;margin-bottom:10px;border-left:4px solid '+curColor+'">';
+    html+='<span style="font-weight:700;color:'+curColor+';font-size:13px">'+date+' · '+curLabel+'</span>';
+    html+='<span style="font-size:11px;color:#888">'+curTotal+'元 · '+curBets.length+'笔</span>';
     html+='</div>';
     html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
-    if(settleFilter==='all' || settleFilter==='hk') html+=block('香港', hkBets);
-    if(settleFilter==='all' || settleFilter==='am') html+=block('澳门', amBets);
-    if(settleFilter==='hk' && !hkBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无香港数据</div>';
-    if(settleFilter==='am' && !amBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无澳门数据</div>';
+    if(curBets.length) html+=block(curLabel, curBets);
+    else html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无'+curLabel+'数据</div>';
     html+='</div>';
-    if(!hkBets.length && !amBets.length){
-      html+='<div style="padding:8px;color:#888;text-align:center">无'+date+'数据</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+function renderSettlementFor(dk){
+  var el=document.getElementById(dk==='hk'?'sl-hk':'sl-am');
+  if(!el) return;
+  var dates=getAllDates();
+  if(!dates.length){el.innerHTML='<div class="empty">暂无数据</div>';return;}
+  var html='';
+  dates.forEach(function(date){
+    var bets=getBetsByDate(date);
+    var arr=bets.filter(function(g){ return dk==='hk' ? (!g.draw || g.draw==='hk') : g.draw==='am'; });
+    function block(label, arr){
+      var isHK=label==='香港';
+      var settled=arr.filter(function(g){return g.settled;});
+      var unsettled=arr.filter(function(g){return !g.settled;});
+      var totalBet=arr.reduce(function(a,b){return a+b.tb;},0);
+      var totalPayout=settled.reduce(function(a,b){return a+(b.result?b.result.payout:0);},0);
+      var profit=settled.length? (settled.reduce(function(a,b){return a+b.tb;},0)-totalPayout) : 0;
+      var borderColor=isHK?'#ffab00':'#00b894';
+      var bgColor=isHK?'#1a1a2e':'#0f1a1a';
+      var h='<div style="flex:1;min-width:280px;background:'+bgColor+';border:1.5px solid '+borderColor+';border-radius:12px;padding:10px;margin-bottom:8px">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:'+(isHK?'#2a1a0a':'#0a2a1a')+';border-radius:8px;margin-bottom:8px;border-left:4px solid '+borderColor+'">';
+      h+='<span style="font-weight:700;color:'+borderColor+';font-size:14px">'+label+'</span>';
+      h+='<span style="font-size:10px;color:#888">'+arr.length+'笔 '+totalBet+'元</span>';
+      h+='</div>';
+      if(!arr.length){
+        h+='<div style="text-align:center;color:#555;padding:16px;font-size:11px">暂无'+label+'投注</div>';
+      } else {
+        h+='<div style="display:flex;gap:6px;font-size:10px;color:#888;margin-bottom:8px;padding:0 4px">';
+        if(settled.length) h+='<span style="color:#4caf50">✓已结算'+settled.length+'</span>';
+        if(unsettled.length) h+='<span style="color:#ff9800">◷未结算'+unsettled.length+'</span>';
+        if(settled.length) h+='<span style="margin-left:auto;color:'+(profit>=0?'#4caf50':'#e94560')+'">'+(profit>=0?'庄赢':'庄亏')+' '+Math.abs(profit).toFixed(0)+'</span>';
+        h+='</div>';
+        if(settled.length){
+          var names={};
+          settled.forEach(function(g){if(!names[g.name])names[g.name]={bets:[],totalBet:0,totalPayout:0,totalCB:0,winCount:0};names[g.name].bets.push(g);names[g.name].totalBet+=g.tb;names[g.name].totalPayout+=g.result?g.result.payout:0;names[g.name].totalCB+=g.cb;if(g.result&&g.result.win)names[g.name].winCount++;});
+          var sortedNames=Object.keys(names).sort(function(a,b){return names[b].totalBet-names[a].totalBet;});
+          sortedNames.forEach(function(name){
+            var n=names[name];
+            var p=n.totalBet-n.totalPayout;
+            var winRate=n.bets.length? Math.round(n.winCount/n.bets.length*100) : 0;
+            h+='<div style="background:#0f0f1a;border:1px solid #2a2a4a;border-radius:8px;padding:8px;margin-bottom:6px">';
+            h+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;color:#e94560;font-size:13px">'+name+'</span><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(p>=0?'#1a3a2a':'#3a1a1a')+';color:'+(p>=0?'#4caf50':'#ff5252')+'">'+(p>=0?'赢':'亏')+' '+Math.abs(p).toFixed(0)+'</span></div>';
+            h+='<div style="display:flex;gap:8px;font-size:10px;color:#888;margin-top:4px;flex-wrap:wrap">';
+            h+='<span>投'+n.bets.length+'笔 '+n.totalBet+'元</span><span>中'+n.winCount+'笔</span><span>赔'+n.totalPayout.toFixed(0)+'</span><span>反水'+n.totalCB.toFixed(0)+'</span><span>胜率'+winRate+'%</span>';
+            h+='</div>';
+            h+='<div style="margin-top:6px;border-top:1px dashed #2a2a4a;padding-top:4px">';
+            n.bets.forEach(function(g){
+              var st=g.result&&g.result.win?'<span style="color:#4caf50">✓中 +'+g.result.payout.toFixed(0)+'</span>':'<span style="color:#666">✗不中</span>';
+              h+='<div style="display:flex;justify-content:space-between;font-size:10px;padding:2px 0;color:#aaa"><span>'+(TN[g.type]||g.type)+' ['+formatNums(g)+'] '+g.tb+'元</span><span>'+st+'</span></div>';
+            });
+            h+='</div>';
+            h+='</div>';
+          });
+        }
+        if(unsettled.length){
+          h+='<div style="margin-top:6px;padding:6px;background:rgba(255,152,0,0.08);border:1px dashed #ff9800;border-radius:6px">';
+          h+='<div style="font-size:10px;color:#ff9800;font-weight:600;margin-bottom:4px">待结算 '+unsettled.length+'笔</div>';
+          var uNames={}; unsettled.forEach(function(g){if(!uNames[g.name])uNames[g.name]=[];uNames[g.name].push(g);});
+          Object.keys(uNames).forEach(function(nm){
+            var arr2=uNames[nm]; var tb2=arr2.reduce(function(a,b){return a+b.tb;},0);
+            h+='<div style="font-size:10px;color:#aaa;display:flex;justify-content:space-between"><span>'+nm+' '+arr2.length+'笔</span><span>'+tb2+'元</span></div>';
+          });
+          h+='</div>';
+        }
+      }
+      h+='</div>';
+      return h;
     }
+    var total=arr.reduce(function(a,b){return a+b.tb;},0);
+    var label=dk==='hk'?'香港':'澳门';
+    var color=dk==='hk'?'#ffab00':'#00b894';
+    html+='<div style="margin-bottom:16px;background:#16213e;border-radius:12px;padding:10px;border:1px solid #2a2a4a">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f0f1a;border-radius:8px;margin-bottom:10px;border-left:4px solid '+color+'">';
+    html+='<span style="font-weight:700;color:'+color+';font-size:13px">'+date+' · '+label+'</span>';
+    html+='<span style="font-size:11px;color:#888">'+total+'元 · '+arr.length+'笔</span>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    if(arr.length) html+=block(label, arr);
+    else html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无'+label+'数据</div>';
+    html+='</div>';
     html+='</div>';
   });
   el.innerHTML=html;
@@ -800,11 +892,10 @@ function loadDraw(){
   }
 }
 function setSettleFilter(v){
+  // 旧过滤兼容：新版为独立双模板 pg-hk/pg-am
+  if(v==='hk'||v==='am'){ try{sp2(v);}catch(e){ settleFilter=v; localStorage.setItem('settleFilter',v); renderSettlementList(); } return; }
   settleFilter=v;
   localStorage.setItem('settleFilter', v);
-  document.querySelectorAll('#settle-filter .btn').forEach(function(b){b.style.background='#2a2a4a';b.style.color='#e94560';});
-  var active=document.getElementById('sf-'+v);
-  if(active){active.style.background='#e94560';active.style.color='#fff';}
   try{renderSettlementList();}catch(e){}
   try{renderImportSettled();}catch(e){}
 }
@@ -885,7 +976,7 @@ function fetchDraw(dk){
     if(wantHK && !hkSp) fetchWithFallback('https://api.hkmarksix.com/draw/latest','hk');
   },9000);
 }
-var APP_VERSION='1.0.28';
+var APP_VERSION='1.0.29';
 function applyHotPatch(code){
   try{
     // 用 Function 避免污染局部作用域，直接覆盖全局函数
@@ -1058,12 +1149,15 @@ function ensureActivated(){
 function sp2(name){
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
-  document.getElementById('pg-'+name).classList.add('on');
-  var tabs=document.querySelectorAll('.tab');
-  var map={cust:0,add:1,list:2,rs:3,odds:4,risk:5,import:6,pick:7};
+  var pg=document.getElementById('pg-'+name);
+  if(pg) pg.classList.add('on');
+  else { var fallback=document.getElementById('pg-add'); if(fallback) fallback.classList.add('on'); }
+  var tabs=document.querySelectorAll('.tabs .tab');
+  // 顶部主tab 0-7，底部选号单独一行
+  var map={cust:0,add:1,list:2,hk:3,am:4,odds:5,risk:6,import:7,pick:8};
   if(map[name]!==undefined&&tabs[map[name]])tabs[map[name]].classList.add('on');
   if(name==='list')renderRecords();
-  if(name==='rs')renderSettlementList();
+  if(name==='hk'||name==='am'||name==='rs')renderSettlementList();
   if(name==='cust')renderCustomerList();
   if(name==='add')refreshCustomerDropdown();
   if(name==='import')renderImportSettled();
