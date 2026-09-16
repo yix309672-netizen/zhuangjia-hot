@@ -672,21 +672,25 @@ function renderSettlementList(){
       return h;
     }
     var hkTotal=hkBets.reduce(function(a,b){return a+b.tb;},0);
+    // 旧模板兼容：单容器同时展示香港+澳门双块（新模板已拆为 pg-hk/pg-am，此分支仅旧版触发）
+    var hkTotal=hkBets.reduce(function(a,b){return a+b.tb;},0);
     var amTotal=amBets.reduce(function(a,b){return a+b.tb;},0);
-    var isHK=settleFilter==='hk';
-    var curBets=isHK?hkBets:amBets;
-    var curTotal=isHK?hkTotal:amTotal;
-    var curLabel=isHK?'香港':'澳门';
-    var curColor=isHK?'#ffab00':'#00b894';
+    var dayTotal=hkTotal+amTotal;
     html+='<div style="margin-bottom:16px;background:#16213e;border-radius:12px;padding:10px;border:1px solid #2a2a4a">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f0f1a;border-radius:8px;margin-bottom:10px;border-left:4px solid '+curColor+'">';
-    html+='<span style="font-weight:700;color:'+curColor+';font-size:13px">'+date+' · '+curLabel+'</span>';
-    html+='<span style="font-size:11px;color:#888">'+curTotal+'元 · '+curBets.length+'笔</span>';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0f0f1a;border-radius:8px;margin-bottom:10px">';
+    html+='<span style="font-weight:700;color:#ffab00;font-size:13px">'+date+'</span>';
+    html+='<span style="font-size:11px;color:#888">'+dayTotal+'元 <span style="color:#ffab00">香港'+hkTotal+'</span> <span style="color:#00b894">澳门'+amTotal+'</span></span>';
     html+='</div>';
     html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
-    if(curBets.length) html+=block(curLabel, curBets);
-    else html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无'+curLabel+'数据</div>';
+    // 兼容旧过滤：all 显示双块，hk/am 单显
+    if(settleFilter==='all' || settleFilter==='hk' || !settleFilter) html+=block('香港', hkBets);
+    if(settleFilter==='all' || settleFilter==='am') html+=block('澳门', amBets);
+    if((settleFilter==='hk') && !hkBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无香港数据</div>';
+    if((settleFilter==='am') && !amBets.length) html+='<div style="flex:1;text-align:center;color:#555;padding:16px">无澳门数据</div>';
     html+='</div>';
+    if(!hkBets.length && !amBets.length){
+      html+='<div style="padding:8px;color:#888;text-align:center">无'+date+'数据</div>';
+    }
     html+='</div>';
   });
   el.innerHTML=html;
@@ -976,7 +980,7 @@ function fetchDraw(dk){
     if(wantHK && !hkSp) fetchWithFallback('https://api.hkmarksix.com/draw/latest','hk');
   },9000);
 }
-var APP_VERSION='1.0.30';
+var APP_VERSION='1.0.31';
 // 热更新核心：用 script 注入全局执行，确保 var/function 覆盖生效（修复旧版 Function 隔离问题）
 window.applyHotPatch = function(code){
   try{
@@ -1158,9 +1162,12 @@ function sp2(name){
   if(pg) pg.classList.add('on');
   else { var fallback=document.getElementById('pg-add'); if(fallback) fallback.classList.add('on'); }
   var tabs=document.querySelectorAll('.tabs .tab');
-  // 顶部主tab 0-7，底部选号单独一行
-  var map={cust:0,add:1,list:2,hk:3,am:4,odds:5,risk:6,import:7,pick:8};
+  // 兼容旧单结算(rs)与新双模板(hk/am)：旧版顶部 结算 在索引3，新版 香港 在3、澳门 在4
+  var map={cust:0,add:1,list:2,rs:3,hk:3,am:4,odds:5,risk:6,import:7,pick:8};
   if(map[name]!==undefined&&tabs[map[name]])tabs[map[name]].classList.add('on');
+  // 旧模板 rs 与新 hk 共用同一 tab 位置，额外兼容
+  if(name==='rs' && tabs[3]) tabs[3].classList.add('on');
+  if((name==='hk'||name==='am') && document.getElementById('pg-rs')){ try{ document.getElementById('pg-rs').classList.add('on'); }catch(e){} }
   if(name==='list')renderRecords();
   if(name==='hk'||name==='am'||name==='rs')renderSettlementList();
   if(name==='cust')renderCustomerList();

@@ -1,4 +1,4 @@
-var CACHE='calc-v6';
+var CACHE='calc-v7';
 var ASSETS=['./','./index.html','./app.js','./manifest.json','./icon-192.svg'];
 self.addEventListener('install',function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(ASSETS);}));self.skipWaiting();});
 self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==CACHE}).map(function(k){return caches.delete(k);}));}));self.clients.claim();});

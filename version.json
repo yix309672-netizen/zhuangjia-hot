@@ -1,5 +1,5 @@
 {
-  "version": "1.0.30",
-  "appUrl": "https://yix309672-netizen.github.io/zhuangjia-hot/app.js?v=1.0.30",
-  "desc": "修复热更OK无反应；结算拆分为香港/澳门双模板"
+  "version": "1.0.31",
+  "appUrl": "https://yix309672-netizen.github.io/zhuangjia-hot/app.js?v=1.0.31",
+  "desc": "兼容旧版单结算模板；热更修复+双模板(新装生效)"
 }
