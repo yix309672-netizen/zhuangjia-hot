@@ -976,21 +976,26 @@ function fetchDraw(dk){
     if(wantHK && !hkSp) fetchWithFallback('https://api.hkmarksix.com/draw/latest','hk');
   },9000);
 }
-var APP_VERSION='1.0.29';
-function applyHotPatch(code){
+var APP_VERSION='1.0.30';
+// 热更新核心：用 script 注入全局执行，确保 var/function 覆盖生效（修复旧版 Function 隔离问题）
+window.applyHotPatch = function(code){
   try{
-    // 用 Function 避免污染局部作用域，直接覆盖全局函数
-    var fn=new Function(code+ '\n;return true;');
-    // 先备份关键数据，防止被覆盖时丢失
     var _bak={G:G.slice(), customers:customers.slice(), hkDraw:hkDraw.slice(), amDraw:amDraw.slice(), hkSp:hkSp, amSp:amSp, hkHist:hkHist.slice(), amHist:amHist.slice()};
-    fn();
-    // 热更后尝试恢复数据并重绘
+    var s=document.createElement('script');
+    s.text=code;
+    document.head.appendChild(s);
+    try{ s.remove(); }catch(e){}
     try{ G=_bak.G; customers=_bak.customers; hkDraw=_bak.hkDraw; amDraw=_bak.amDraw; hkSp=_bak.hkSp; amSp=_bak.amSp; hkHist=_bak.hkHist; amHist=_bak.amHist; save(); saveC(); }catch(e){}
     try{ renderRecords(); renderSettlementList(); renderRisk(); renderTrend(); }catch(e){}
-    console.log('热更新应用成功', APP_VERSION);
+    // 强制刷新顶部版本号显示
+    try{ var hv=document.getElementById('hot-ver'); if(hv) hv.textContent=' | 热更:'+(localStorage.getItem('__hot_app_ver')||window.APP_VERSION); var av=document.getElementById('app-ver'); if(av) av.textContent=window.APP_VERSION||APP_VERSION; }catch(e){}
+    console.log('热更新应用成功', window.APP_VERSION||APP_VERSION);
     return true;
   }catch(e){ console.error('热更新失败',e); return false; }
-}
+};
+var applyHotPatch = window.applyHotPatch;
+// 兼容旧版 Function 隔离：若此文件被旧版 applyHotPatch 以 new Function 执行，window 上的修复仍会生效
+try{ window.applyHotPatch = window.applyHotPatch; }catch(e){}
 function checkHotUpdate(manual){
   var cfg={url:''};
   try{ var saved=JSON.parse(localStorage.getItem('otaConfig')||'{}'); if(saved&&saved.url) cfg.url=saved.url; }catch(e){}
